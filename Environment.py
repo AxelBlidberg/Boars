@@ -59,6 +59,11 @@ class Environment:
         
         return content
 
+    def PushUpdate(self, time):
+        for flower in self.flowers:
+            pass
+
+
 class Flower:
     def __init__(self, envsize) -> None:
 
@@ -109,12 +114,22 @@ class Nest:
         pass
 
 
+<<<<<<< HEAD
+=======
+    def UpdateFlower(self, time):
+        pass
+
+    #add Pollen 
+>>>>>>> 32b61aac3c3c88f89154347e53ba9f0d8eb859bc
 
 class Hazards:
     def __init__(self) -> None:
         pass
 
 def PlotFunction(data):
+    '''
+    Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
+    '''
     types = [item[1] for item in data]
     x_values = [item[2] for item in data]
     y_values = [item[3] for item in data]
@@ -124,11 +139,6 @@ def PlotFunction(data):
     colors = [color_map[t] for t in types]
 
     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
-
-    # Add legend based on 'type'
-    handles = [plt.Line2D([0], [0], marker='o', color='w', label=t, 
-                         markerfacecolor=plt.cm.viridis(color_map[t]), markersize=10) for t in unique_types]
-
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title('Scatter Plot with Colors')
@@ -139,10 +149,7 @@ def PlotFunction(data):
 test = Environment(10)
 
 test.AddFlower(20)
-print(len(test.flowers))
 neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 PlotFunction(A)
-print(neighbors)
-print(A)
 
