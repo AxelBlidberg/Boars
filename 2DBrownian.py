@@ -11,15 +11,27 @@ class Bee:
         self.y = y
         self.size = size
         self.path = []
+        self.velocity = 0
         self.color = color
         self.fed = 0         # 0=hungry, 1 = fed?
         self.stepLength = stepLength
+        self.max_velocity = 5
 
     def update(self, environment):
         delta_x = np.random.normal(0, self.stepLength)
         delta_y = np.random.normal(0, self.stepLength)
+        delta_velocity = np.random.randint(-10, 10)/10
+
         
-       
+        currentPosition = (self.x,self.y)
+        lastPosition = self.path[-1]
+        angle = currentPosition - lastPosition
+        
+        new_velocity = self.velocity + delta_velocity
+        if new_velocity > max_velocity:
+            new_velocity = self.max_velocity
+        
+        self.velocity = new_velocity
         self.x = (self.x + delta_x)
         self.y = (self.y + delta_y)
 
