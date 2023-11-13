@@ -75,14 +75,36 @@ class Hazards(Environment):
     def __init__(self, size) -> None:
         super().__init__(size)
 
+def PlotFunction(data):
+    types = [item[1] for item in data]
+    x_values = [item[2] for item in data]
+    y_values = [item[3] for item in data]
+
+    unique_types = set(types)
+    color_map = {t: i for i, t in enumerate(unique_types)}
+    colors = [color_map[t] for t in types]
+
+    plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
+
+    # Add legend based on 'type'
+    handles = [plt.Line2D([0], [0], marker='o', color='w', label=t, 
+                         markerfacecolor=plt.cm.viridis(color_map[t]), markersize=10) for t in unique_types]
+    plt.legend(handles=handles, title='Type')
+
+    plt.xlabel('X-axis')
+    plt.ylabel('Y-axis')
+    plt.title('Scatter Plot with Colors')
+    plt.show()
+
 
 
 test = Environment(10)
 
-test.AddFlower(5)
+test.AddFlower(20)
 print(len(test.flowers))
 neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
+PlotFunction(A)
 print(neighbors)
 print(A)
 
