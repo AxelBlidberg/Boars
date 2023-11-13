@@ -85,11 +85,6 @@ def PlotFunction(data):
     colors = [color_map[t] for t in types]
 
     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
-
-    # Add legend based on 'type'
-    handles = [plt.Line2D([0], [0], marker='o', color='w', label=t, 
-                         markerfacecolor=plt.cm.viridis(color_map[t]), markersize=10) for t in unique_types]
-
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title('Scatter Plot with Colors')
@@ -103,7 +98,4 @@ test.AddFlower(20)
 print(len(test.flowers))
 neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
-PlotFunction(A)
-print(neighbors)
-print(A)
 
