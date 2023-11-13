@@ -7,6 +7,7 @@ class Environment:
         self.xLimit = size
         self.yLimit = size
         self.flowers = []
+        self.nests = []
         self.hazards = []
 
     def GetSurroundings(self, position, radius):
@@ -33,16 +34,19 @@ class Environment:
         Method to add one or several flowers to the environment
 
         n = Number of flowers to add
+        '''
+        for _ in range(n):
+            self.flowers.append(Flower(self.xLimit))
+
+    def AddBeeNest(self):
+        '''
+        Method to add one or several nests to the environment
+
+        n = Number of nests to add
         size = Size of the environment for correct placement of flowers
         '''
         for _ in range(n):
-            x = self.xLimit*np.random.rand()
-            y = self.yLimit*np.random.rand()
-            temp = Flower(x,y)
-            self.flowers.append(temp)
-
-    def AddBeeNest(self):
-        pass
+            self.nests.append(Nest(self.xLimit))
 
     def ExportContent(self):
         '''
@@ -56,20 +60,55 @@ class Environment:
         return content
 
 class Flower:
-    def __init__(self, x, y) -> None:
-        self.x = x
-        self.y = y
+    def __init__(self, envsize) -> None:
+
+
+        self.x = envsize*np.random.rand()
+        self.y = envsize*np.random.rand()
+  
         self.type = np.random.randint(1, 5)
         self.nectarAmount = np.random.randint(1,10)
 
-        self.pollen = 0
+        self.pollen = {}
         
 
-    
     def decreaseNectar(self):
-        self.nectarAmount -= 1
+        '''
+        Decreases the nectar in a flower
+        '''
+        if self.nectarAmount < 0:
+            self.nectarAmount -= 1
+        
+    
 
-    #add Pollen 
+    def getLocation(self):
+        '''
+        Returns the coordinates of a flower 
+        '''
+        return self.x, self.y
+    
+
+
+class Nest:
+    def __init__(self, envsize) -> None:
+
+        self.x = envsize*np.random.rand()
+        self.y = envsize*np.random.rand()
+    
+
+    def getLocation(self):
+        '''
+        Returns the coordinates of a nest
+        '''
+        return self.x, self.y
+    
+    def isOccupied(self) -> bool:
+        '''
+        Checks if a nest is occupied by a bee
+        '''
+        pass
+
+
 
 class Hazards:
     def __init__(self) -> None:
