@@ -71,9 +71,9 @@ class Flower:
 
     #add Pollen 
 
-class Hazards(Environment):
-    def __init__(self, size) -> None:
-        super().__init__(size)
+class Hazards:
+    def __init__(self) -> None:
+        pass
 
 def PlotFunction(data):
     types = [item[1] for item in data]
@@ -89,7 +89,6 @@ def PlotFunction(data):
     # Add legend based on 'type'
     handles = [plt.Line2D([0], [0], marker='o', color='w', label=t, 
                          markerfacecolor=plt.cm.viridis(color_map[t]), markersize=10) for t in unique_types]
-    plt.legend(handles=handles, title='Type')
 
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
