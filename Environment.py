@@ -38,7 +38,7 @@ class Environment:
         for _ in range(n):
             self.flowers.append(Flower(self.xLimit))
 
-    def AddBeeNest(self):
+    def AddBeeNest(self, n):
         '''
         Method to add one or several nests to the environment
 
@@ -72,10 +72,10 @@ class Flower:
         self.y = envsize*np.random.rand()
   
         self.type = np.random.randint(1, 5)
-        self.nectarAmount = np.random.randint(1,10)
+        self.flowersize = np.random.randint(1, 5)
 
-        self.pollen = {}
-        
+        self.nectarAmount = np.random.randint(1,10)
+ 
 
     def decreaseNectar(self):
         '''
@@ -83,14 +83,27 @@ class Flower:
         '''
         if self.nectarAmount < 0:
             self.nectarAmount -= 1
+    
+    
+    
+    def pollination(self):
+        pass
         
     
+    def getNectarAmount(self):
+        return self.nectarAmount
 
-    def getLocation(self):
+    def getLocation(self) -> list:
         '''
         Returns the coordinates of a flower 
         '''
-        return self.x, self.y
+        return [self.x, self.y]
+    
+    def getType(self):
+        return self.type
+    
+    def getSize(self):
+        return self.flowersize
     
 
 
@@ -101,12 +114,13 @@ class Nest:
         self.y = envsize*np.random.rand()
     
 
-    def getLocation(self):
+    def getLocation(self) -> list:
         '''
         Returns the coordinates of a nest
         '''
-        return self.x, self.y
+        return [self.x, self.y]
     
+
     def isOccupied(self) -> bool:
         '''
         Checks if a nest is occupied by a bee
@@ -114,17 +128,12 @@ class Nest:
         pass
 
 
-<<<<<<< HEAD
-=======
-    def UpdateFlower(self, time):
-        pass
-
-    #add Pollen 
->>>>>>> 32b61aac3c3c88f89154347e53ba9f0d8eb859bc
 
 class Hazards:
     def __init__(self) -> None:
         pass
+
+
 
 def PlotFunction(data):
     '''
@@ -146,10 +155,10 @@ def PlotFunction(data):
 
 
 
-test = Environment(10)
+test = Environment(100)
 
-test.AddFlower(20)
-neighbors = test.GetSurroundings([5,5], 5)
+test.AddFlower(10)
+#neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 PlotFunction(A)
 
