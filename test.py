@@ -1,3 +1,5 @@
+# Just a program to test individual functions
+
 import numpy as np
 
 Euclidan = lambda x1, x2: np.sqrt(sum([(x1[i] - x2[i])**2 for i in range(len(x1))]))
