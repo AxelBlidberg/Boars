@@ -60,9 +60,14 @@ class Environment:
         return content
 
     def PushUpdate(self, time):
-        for flower in self.flowers:
-            pass
-
+        # Update flowers
+        for i, flower in enumerate(self.flowers):
+            status = flower.UpdateFlower(time)
+            if status == 'NewFlower':
+                self.AddFlower(1)
+            elif status == 'Death':
+                del self.flowers[i]
+                
 
 class Flower:
     def __init__(self, envsize) -> None:
@@ -75,7 +80,12 @@ class Flower:
         self.flowersize = np.random.randint(1, 5)
 
         self.nectarAmount = np.random.randint(1,10)
- 
+
+        self.pollen = {}
+
+        self.lifespan = 100
+        self.birth = 0
+        
 
     def decreaseNectar(self):
         '''
@@ -105,6 +115,17 @@ class Flower:
     def getSize(self):
         return self.flowersize
     
+    def UpdateFlower(self, time):
+        '''
+        Update rules for flowers
+        '''
+        if self.pollen[self.type] >= 10:
+            self.pollen[self.type] -= 10
+            return 'NewFlower'
+        elif time - self.birth < self.lifespan:
+            return 'Death'
+        else:
+            return 'NoUpdate'
 
 
 class Nest:
@@ -128,6 +149,10 @@ class Nest:
         pass
 
 
+    def UpdateFlower(self, time):
+        pass
+
+    #add Pollen 
 
 class Hazards:
     def __init__(self) -> None:
