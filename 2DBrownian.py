@@ -5,17 +5,20 @@ from OpenGL.GLUT import *
 #import imageio  
 import numpy as np
 
-class Particle:
-    def __init__(self, x, y, size=0.02, color=(0.0, 1.0, 1.0)):
+class Bee:
+    stepLength = 0.01
+    def __init__(self, x, y, angle, size=0.02, color=(0.0, 1.0, 1.0)):
         self.x = x
         self.y = y
+        self.angle = angle
         self.size = size
         self.path = []
         self.color = color
+        self.fed = 0         # 0=hungry, 1 = fed?
 
     def update(self):
-        delta_x = np.random.normal(0, 0.01)
-        delta_y = np.random.normal(0, 0.01)
+        delta_x = np.random.normal(0, stepLength)
+        delta_y = np.random.normal(0, stepLength)
 
        
         self.x = (self.x + delta_x)
