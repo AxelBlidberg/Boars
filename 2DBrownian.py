@@ -6,8 +6,7 @@ from OpenGL.GLUT import *
 import numpy as np
 
 class Bee:
-    stepLength = 0.01
-    def __init__(self, x, y, angle, size=0.02, color=(0.0, 1.0, 1.0)):
+    def __init__(self, x, y, angle, stepLength = 0.01, size=0.02, color=(0.0, 1.0, 1.0)):
         self.x = x
         self.y = y
         self.angle = angle
@@ -15,10 +14,11 @@ class Bee:
         self.path = []
         self.color = color
         self.fed = 0         # 0=hungry, 1 = fed?
+        self.stepLength = stepLength
 
-    def update(self):
-        delta_x = np.random.normal(0, stepLength)
-        delta_y = np.random.normal(0, stepLength)
+    def update(self, environment):
+        delta_x = np.random.normal(0, self.stepLength)
+        delta_y = np.random.normal(0, self.stepLength)
 
        
         self.x = (self.x + delta_x)
@@ -27,6 +27,7 @@ class Bee:
         self.path.append((self.x, self.y))
 
     def draw(self):
+
         glColor3f(*self.color)
         glBegin(GL_TRIANGLE_FAN)
         glVertex2f(self.x, self.y)
@@ -55,8 +56,8 @@ def main():
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
-    particle = Particle(0.5, 0.5, color=(1, 1, 0.0))  
-
+    environment = []
+    particle = Bee(0.5, 0.5,0,color=(1,1,0))
     
     # writer = imageio.get_writer('brownian_motion_with_trace.gif', duration=0.1)
 
@@ -68,8 +69,8 @@ def main():
 
         glClear(GL_COLOR_BUFFER_BIT)
         glClearColor(0.2, 0.2, 0.2, 0.2)
-
-        particle.update()
+        
+        particle.update(environment)
         particle.draw()
         particle.draw_path()
 
