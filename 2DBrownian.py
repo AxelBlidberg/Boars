@@ -6,10 +6,9 @@ from OpenGL.GLUT import *
 import numpy as np
 
 class Bee:
-    def __init__(self, x, y, angle, stepLength = 0.01, size=0.02, color=(0.0, 1.0, 1.0)):
+    def __init__(self, x, y, stepLength = 0.01, size=0.02, color=(0.0, 1.0, 1.0)):
         self.x = x
         self.y = y
-        self.angle = angle
         self.size = size
         self.path = []
         self.color = color
@@ -19,7 +18,7 @@ class Bee:
     def update(self, environment):
         delta_x = np.random.normal(0, self.stepLength)
         delta_y = np.random.normal(0, self.stepLength)
-
+        
        
         self.x = (self.x + delta_x)
         self.y = (self.y + delta_y)
@@ -57,7 +56,7 @@ def main():
     glLoadIdentity()
 
     environment = []
-    particle = Bee(0.5, 0.5,0,color=(1,1,0))
+    particle = Bee(0.5, 0.5,color=(1,1,0))
     
     # writer = imageio.get_writer('brownian_motion_with_trace.gif', duration=0.1)
 
