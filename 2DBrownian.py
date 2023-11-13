@@ -10,35 +10,48 @@ class Bee:
         self.x = x
         self.y = y
         self.size = size
-        self.path = []
-        self.velocity = 0
+        self.path = [[self.x,self.y]]
+        self.velocity = [0.01,0.01]
         self.color = color
         self.fed = 0         # 0=hungry, 1 = fed?
-        self.max_velocity = 5
+        self.max_speed = 0.05
 
     def update(self, environment):
         
-        delta_velocity = np.random.randint(-10, 10)/1000
-        delta_angle = np.random.randint(-10,10)/1000
         
-        currentPosition = (self.x,self.y)
-        lastPosition = self.path[-1]
-        angle = (currentPosition - lastPosition)
+        #currentPosition = (self.x,self.y)
+        #lastPosition = self.path[-1]
+        #self.velocity = np.array(currentPosition) - np.array(lastPosition)
         
-        new_velocity = self.velocity + delta_velocity
-        if new_velocity > max_velocity:
-            new_velocity = self.max_velocity
+        speed = np.linalg.norm(self.velocity)
+        delta_speed = np.random.randint(-5,10)/10**5
+        new_speed = speed + delta_speed
+        if new_speed > self.max_speed:
+            new_speed = self.max_speed
+        """
+        if abs(self.x) >= 1:
+            self.velocity = [-self.velocity[0],self.velocity[1]]
+        if abs(self.y) >= 1:
+            self.velocity = [self.velocity[0],-self.velocity[1]]
+        """
+        angle_change_rate = 1/10**3
+        delta_velocity = np.array([np.random.randint(-10,10)*angle_change_rate, np.random.randint(-10,10)*angle_change_rate])
+        new_velocity = np.array(self.velocity + delta_velo3ity)
+        norm = np.linalg.norm(new_velocity)
+        if norm == 0:
+            norm = 0.0001
+        self.velocity = (new_velocity/norm) * new_speed
         
-        delta_x = self.velocity 
-        delta_y = self.velocity
         
-       
-        self.velocity = new_velocity
-        self.x = (self.x + delta_x)
-        self.y = (self.y + delta_y)
 
+        delta_x = self.velocity[0]
+        delta_y = self.velocity[1]
+        self.x = self.x + delta_x
+        self.y = self.y + delta_y
+        
         self.path.append((self.x, self.y))
-
+        
+        
     def draw(self):
 
         glColor3f(*self.color)
@@ -70,16 +83,23 @@ def main():
     glLoadIdentity()
 
     environment = []
-    particle = Bee(0.5, 0.5,color=(1,1,0))
+    particle = Bee(0, 0,color=(1,1,0))
     
     # writer = imageio.get_writer('brownian_motion_with_trace.gif', duration=0.1)
 
-    while True:
+    #while True:
+    for i in range(500):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+        
+        if i == 499:
+            pygame.quit()
+            quit()
+            break
 
+        
         glClear(GL_COLOR_BUFFER_BIT)
         glClearColor(0.2, 0.2, 0.2, 0.2)
         
@@ -99,7 +119,8 @@ def main():
         # writer.append_data(frame)
 
         pygame.display.flip()
-        pygame.time.wait(10)
+        pygame.time.wait(100)
+
 
     # writer.close()
 
