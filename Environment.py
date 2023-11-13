@@ -55,6 +55,11 @@ class Environment:
         
         return content
 
+    def PushUpdate(self, time):
+        for flower in self.flowers:
+            pass
+
+
 class Flower:
     def __init__(self, x, y) -> None:
         self.x = x
@@ -69,6 +74,9 @@ class Flower:
     def decreaseNectar(self):
         self.nectarAmount -= 1
 
+    def UpdateFlower(self, time):
+        pass
+
     #add Pollen 
 
 class Hazards:
@@ -76,6 +84,9 @@ class Hazards:
         pass
 
 def PlotFunction(data):
+    '''
+    Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
+    '''
     types = [item[1] for item in data]
     x_values = [item[2] for item in data]
     y_values = [item[3] for item in data]
@@ -95,7 +106,7 @@ def PlotFunction(data):
 test = Environment(10)
 
 test.AddFlower(20)
-print(len(test.flowers))
 neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
+PlotFunction(A)
 
