@@ -32,18 +32,19 @@ class Environment:
     def InitializeFlowers(self, n):
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2))
+            self.
 
 
-    def AddFlower(self, center, radius):
+    def AddFlower(self, n):
         '''
         Method to add one or several flowers to the environment
 
         n = Number of flowers to add
         '''
-        self.flowers.append(Flower(center, radius))
+        for _ in range(n):
+            self.flowers.append(Flower(self.xLimit))
 
-    def AddBeeNest(self, n):
+    def AddBeeNest(self):
         '''
         Method to add one or several nests to the environment
 
@@ -68,24 +69,20 @@ class Environment:
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
-            if status[0] == 1:
-                self.AddFlower(status[1], 2)
-            elif status[0] == 2:
+            if status == 'NewFlower':
+                self.AddFlower(1)
+            elif status == 'Death':
                 del self.flowers[i]
                 
 
 class Flower:
     def __init__(self, center, radius) -> None:
 
-        # Add control to ensure location is within environment
 
-
-        self.x = center[0] + radius*np.random.randn()
-        self.y = center[1] + radius*np.random.randn()
+        self.x = center + radius*np.random.randn()
+        self.y = radius*np.random.randn()
   
         self.type = np.random.randint(1, 5)
-        self.flowersize = np.random.randint(1, 5)
-
         self.nectarAmount = np.random.randint(1,10)
 
         self.pollen = {}
@@ -100,27 +97,14 @@ class Flower:
         '''
         if self.nectarAmount < 0:
             self.nectarAmount -= 1
-    
-    
-    
-    def pollination(self):
-        pass
         
     
-    def getNectarAmount(self):
-        return self.nectarAmount
 
-    def getLocation(self) -> list:
+    def getLocation(self):
         '''
         Returns the coordinates of a flower 
         '''
-        return [self.x, self.y]
-    
-    def getType(self):
-        return self.type
-    
-    def getSize(self):
-        return self.flowersize
+        return self.x, self.y
     
     def UpdateFlower(self, time):
         '''
@@ -128,11 +112,11 @@ class Flower:
         '''
         if self.pollen[self.type] >= 10:
             self.pollen[self.type] -= 10
-            return [1, [self.x, self.y]]
+            return 'NewFlower'
         elif time - self.birth < self.lifespan:
-            return [2, []]
+            return 'Death'
         else:
-            return [0, []]
+            return 'NoUpdate'
 
 
 class Nest:
@@ -142,13 +126,12 @@ class Nest:
         self.y = envsize*np.random.rand()
     
 
-    def getLocation(self) -> list:
+    def getLocation(self):
         '''
         Returns the coordinates of a nest
         '''
-        return [self.x, self.y]
+        return self.x, self.y
     
-
     def isOccupied(self) -> bool:
         '''
         Checks if a nest is occupied by a bee
@@ -164,8 +147,6 @@ class Nest:
 class Hazards:
     def __init__(self) -> None:
         pass
-
-
 
 def PlotFunction(data):
     '''
@@ -187,10 +168,9 @@ def PlotFunction(data):
 
 
 
-test = Environment(100)
+test = Environment(10)
 
-test.AddFlower(10)
-#neighbors = test.GetSurroundings([5,5], 5)
+test.AddFlower(20)
+neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 PlotFunction(A)
-
