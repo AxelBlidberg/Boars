@@ -28,15 +28,16 @@ class Bee:
         new_speed = speed + delta_speed
         if new_speed > self.max_speed:
             new_speed = self.max_speed
-        """
+        
         if abs(self.x) >= 1:
-            self.velocity = [-self.velocity[0],self.velocity[1]]
+            self.velocity = [-self.velocity[0]*1.5,self.velocity[1]]
         if abs(self.y) >= 1:
-            self.velocity = [self.velocity[0],-self.velocity[1]]
-        """
-        angle_change_rate = 1/10**3
+            self.velocity = [self.velocity[0],-self.velocity[1]*1.5]
+        
+        
+        angle_change_rate = 5/10**4
         delta_velocity = np.array([np.random.randint(-10,10)*angle_change_rate, np.random.randint(-10,10)*angle_change_rate])
-        new_velocity = np.array(self.velocity + delta_velo3ity)
+        new_velocity = np.array(self.velocity + delta_velocity)
         norm = np.linalg.norm(new_velocity)
         if norm == 0:
             norm = 0.0001
