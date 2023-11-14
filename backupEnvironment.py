@@ -32,17 +32,16 @@ class Environment:
     def InitializeFlowers(self, n):
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.
+            self.flowers.append(Flower(center, self.xLimit/2))
 
 
-    def AddFlower(self, n):
+    def AddFlower(self, center, radius):
         '''
         Method to add one or several flowers to the environment
 
         n = Number of flowers to add
         '''
-        for _ in range(n):
-            self.flowers.append(Flower(self.xLimit))
+        self.flowers.append(Flower(center, radius))
 
     def AddBeeNest(self):
         '''
@@ -69,18 +68,20 @@ class Environment:
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
-            if status == 'NewFlower':
-                self.AddFlower(1)
-            elif status == 'Death':
+            if status[0] == 1:
+                self.AddFlower(status[1], 2)
+            elif status[0] == 2:
                 del self.flowers[i]
                 
 
 class Flower:
     def __init__(self, center, radius) -> None:
 
+        # Add control to ensure location is within environment
 
-        self.x = center + radius*np.random.randn()
-        self.y = radius*np.random.randn()
+
+        self.x = center[0] + radius*np.random.randn()
+        self.y = center[1] + radius*np.random.randn()
   
         self.type = np.random.randint(1, 5)
         self.nectarAmount = np.random.randint(1,10)
@@ -112,11 +113,11 @@ class Flower:
         '''
         if self.pollen[self.type] >= 10:
             self.pollen[self.type] -= 10
-            return 'NewFlower'
+            return [1, [self.x, self.y]]
         elif time - self.birth < self.lifespan:
-            return 'Death'
+            return [2, []]
         else:
-            return 'NoUpdate'
+            return [0, []]
 
 
 class Nest:
@@ -174,3 +175,4 @@ test.AddFlower(20)
 neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 PlotFunction(A)
+
