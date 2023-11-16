@@ -9,6 +9,7 @@ class Environment:
         self.flowers = []
         self.nests = []
         self.hazards = []
+        self.iterations = 1
 
     def GetSurroundings(self, position, radius):
         '''
@@ -32,8 +33,7 @@ class Environment:
     def InitializeFlowers(self, n):
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2))
-
+            self.flowers.append(Flower(center, self.xLimit/2, self.iterations))
 
     def AddFlower(self, center, radius):
         '''
@@ -64,10 +64,11 @@ class Environment:
         
         return content
 
-    def PushUpdate(self, time):
+    def PushUpdate(self):
+        self.iterations += 1
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(time)
+            status = flower.UpdateFlower(self.iterations)
             if status[0] == 1:
                 self.AddFlower(status[1], 2)
             elif status[0] == 2:
@@ -75,7 +76,7 @@ class Environment:
                 
 
 class Flower:
-    def __init__(self, center, radius) -> None:
+    def __init__(self, center, radius, birth) -> None:
 
         # Add control to ensure location is within environment
 
@@ -88,10 +89,11 @@ class Flower:
 
         self.nectarAmount = np.random.randint(1,10)
 
-        self.pollen = {}
+        self.pollen = {f'{i}': 0 for i in range(1,6)}
+        print(self.pollen)
 
         self.lifespan = 100
-        self.birth = 0
+        self.creation = birth
         
 
     def decreaseNectar(self):
@@ -100,7 +102,6 @@ class Flower:
         '''
         if self.nectarAmount < 0:
             self.nectarAmount -= 1
-    
     
     
     def pollination(self):
@@ -126,10 +127,10 @@ class Flower:
         '''
         Update rules for flowers
         '''
-        if self.pollen[self.type] >= 10:
+        if self.pollen[f'{self.type}'] >= 10:
             self.pollen[self.type] -= 10
             return [1, [self.x, self.y]]
-        elif time - self.birth < self.lifespan:
+        elif time - self.creation < self.lifespan:
             return [2, []]
         else:
             return [0, []]
@@ -192,5 +193,6 @@ test = Environment(100)
 test.InitializeFlowers(10)
 #neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
+test.PushUpdate()
 PlotFunction(A)
 
