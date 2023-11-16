@@ -102,8 +102,13 @@ class Flower:
             self.nectarAmount -= 1
     
     
-    def pollination(self):
-        pass
+    def pollination(self, beeInstance):
+        '''
+        Pollinates flowers depending on the pollen carried by a bee
+        '''
+
+        for pollenType, amount in beeInstance.pollenCarried.items():
+            self.pollen[pollenType] += amount
         
     
     def getNectarAmount(self):
@@ -111,11 +116,12 @@ class Flower:
 
     def getLocation(self) -> list:
         '''
-        Returns the coordinates of a flower 
+        Returns the coordinates of a specific flower 
         '''
         return [self.x, self.y]
     
     def getType(self):
+
         return self.type
     
     def getSize(self):
@@ -123,7 +129,7 @@ class Flower:
     
     def UpdateFlower(self, time):
         '''
-        Update rules for flowers
+        Update rules for flowers, 
         '''
         if self.pollen[f'{self.type}'] >= 10:
             self.pollen[self.type] -= 10
@@ -165,9 +171,16 @@ class Nest:
         '''
         (Update nectar/pollen in the nest?)
         '''
-        pass
+        
+    def depositPollen(self, pollen):
 
-    #add Pollen 
+        for pollenType, amount in pollen.items():
+            self.pollenStorage[pollenType] += amount
+
+    def depositNectar(self, nectar):
+
+        self.nectarStorage += nectar
+
 
 class Hazards:
     def __init__(self) -> None:
@@ -198,8 +211,10 @@ def PlotFunction(data):
 test = Environment(100)
 
 test.InitializeFlowers(10)
+
 #neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 test.PushUpdate()
+
 PlotFunction(A)
 
