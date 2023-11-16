@@ -1,5 +1,4 @@
 import numpy as np
-import turtle
 import matplotlib.pyplot as plt
 
 class Environment:
@@ -90,7 +89,6 @@ class Flower:
         self.nectarAmount = np.random.randint(1,10)
 
         self.pollen = {f'{i}': 0 for i in range(1,6)}
-        print(self.pollen)
 
         self.lifespan = 100
         self.creation = birth
@@ -150,14 +148,23 @@ class Nest:
         return [self.x, self.y]
     
 
-    def isOccupied(self) -> bool:
+    def isOccupied(self, nestInstance) -> bool:
         '''
         Checks if a nest is occupied by a bee
         '''
         pass
 
+    def assignNest(self, nestInstance, beeInstance):
+        '''
+        Assign a nest to a bee
+        '''
+        if not isOccupied(nestInstance):
+            pass        
 
-    def UpdateFlower(self, time):
+    def UpdateNest(self, time):
+        '''
+        (Update nectar/pollen in the nest?)
+        '''
         pass
 
     #add Pollen 
