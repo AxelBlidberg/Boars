@@ -189,7 +189,7 @@ def PlotFunction(data):
 
 test = Environment(100)
 
-test.AddFlower(10)
+test.InitializeFlowers(10)
 #neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
 PlotFunction(A)
