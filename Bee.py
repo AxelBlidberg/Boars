@@ -14,12 +14,11 @@ class Bee:
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {}        # how much pollen and what kind
         self.max_speed = 0.05
+        self.vision_length = 0.2
         # add self.speed? (= norm of velocity)
 
     def update(self):
         minimum_norm = 0.0001
-        vision_length = 0.2
-        vision_angle = 0.8
         speed_change_rate = 1/10**5
         angle_change_rate = 5/10**4
         
@@ -50,17 +49,13 @@ class Bee:
         
     def choose_flower(self, nearby):  
         # assuming "radius" in environment = "vision length" here
-        vision_length = 0.2
         empty_flower = []
         found_flower = False
 
         nearest_flower = [1000]
         
         for flower in nearby:
-            x_flower, y_flower = flower[2], flower[3]
-
             if flower[0] < nearest_flower[0]:  #[0] --> distance
-                print(flower, '<', nearest_flower)
                 nearest_flower = flower
                 found_flower = True
 

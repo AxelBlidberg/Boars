@@ -4,6 +4,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from Bee import * 
+from Environment import *
 
 
 
@@ -15,8 +16,9 @@ def main():
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
-    
-    nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]] 
+    environment = Environment(1)
+    environment.InitializeFlowers(10)
+    #nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]] 
 
     particle = Bee(0, 0,color=(1,1,0))
     
@@ -38,15 +40,18 @@ def main():
         
         glClear(GL_COLOR_BUFFER_BIT)
         glClearColor(0.2, 0.2, 0.2, 0.2)
-        
+
+        flowers = environment.ExportContent()
+        nearby = environment.GetSurroundings([particle.x,particle.y], particle.vision_length)
+
         particle.update()
         particle.draw()
         particle.draw_path()
-        particle.draw_vision_field()
-        found_flower, empty_flower = particle.find_flowers(nearby)
+        found_flower, empty_flower = particle.choose_flower(nearby)
         if found_flower:
-            nearby.pop(nearby.index(empty_flower))  # should not be nearby
-
+            print(flowers)
+            flowers.pop(flowers.index(empty_flower))  # should not be nearby
+            
         
         # Capture the current frame
         data = glReadPixels(0, 0, *display, GL_RGB, GL_UNSIGNED_BYTE)
@@ -76,7 +81,6 @@ def main_no_game():    # For testing without plotting
         if i == 499:
             break
         particle.update()
-        #particle.draw_vision_field()
         found_flower, empty_flower = particle.find_flowers(nearby)
         if found_flower:
             nearby.pop(nearby.index(empty_flower)) # should not be nearby

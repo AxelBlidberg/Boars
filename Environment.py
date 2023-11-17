@@ -86,9 +86,8 @@ class Flower:
 
         # Add control to ensure location is within environment
 
-
-        self.x = center[0] + radius*np.random.randn()
-        self.y = center[1] + radius*np.random.randn()
+        self.x = center[0] + radius*np.random.randn() # randn ger tydligen normalfördelning, så kan bli större än 1, mvh sonja
+        self.y = center[1] + radius*np.random.randn() # kanske använd random.randint(0,2000)/1000-1 eller liknande
   
         self.type = np.random.randint(1, 5)
         self.flowersize = np.random.randint(1, 5)
@@ -201,7 +200,6 @@ def PlotFunction(data):
     plt.show()
 
 
-
 test = Environment(100)
 
 test.InitializeFlowers(10)
@@ -210,5 +208,4 @@ test.InitializeFlowers(10)
 A = test.ExportContent()
 test.PushUpdate()
 
-PlotFunction(A)
-
+#PlotFunction(A)
