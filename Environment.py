@@ -72,7 +72,14 @@ class Environment:
                 self.AddFlower(status[1], 2)
             elif status[0] == 2:
                 del self.flowers[i]
-                
+
+    def Interaction(self, type, x, y):
+        pass
+        if type == 'flower':
+            for flower in self.flowers:
+                if flower.x == x and flower.y == y:
+                    pass
+                pass     
 
 class Flower:
     def __init__(self, center, radius, birth) -> None:
@@ -94,7 +101,7 @@ class Flower:
         self.creation = birth
         
 
-    def decreaseNectar(self):
+    def DecreaseNectar(self):
         '''
         Decreases the nectar in a flower
         '''
@@ -102,7 +109,7 @@ class Flower:
             self.nectarAmount -= 1
     
     
-    def pollination(self, beeInstance):
+    def Pollination(self, beeInstance):
         '''
         Pollinates flowers depending on the pollen carried by a bee
         '''
@@ -111,20 +118,20 @@ class Flower:
             self.pollen[pollenType] += amount
         
     
-    def getNectarAmount(self):
+    def GetNectarAmount(self):
         return self.nectarAmount
 
-    def getLocation(self) -> list:
+    def GetLocation(self) -> list:
         '''
         Returns the coordinates of a specific flower 
         '''
         return [self.x, self.y]
     
-    def getType(self):
+    def GetType(self):
 
         return self.type
     
-    def getSize(self):
+    def GetSize(self):
         return self.flowersize
     
     def UpdateFlower(self, time):
@@ -147,39 +154,26 @@ class Nest:
         self.y = envsize*np.random.rand()
     
 
-    def getLocation(self) -> list:
+    def GetLocation(self) -> list:
         '''
         Returns the coordinates of a nest
         '''
         return [self.x, self.y]
     
 
-    def isOccupied(self, nestInstance) -> bool:
+    def IsOccupied(self, nestInstance) -> bool:
         '''
         Checks if a nest is occupied by a bee
         '''
         pass
 
-    def assignNest(self, nestInstance, beeInstance):
+    def AssignNest(self, nestInstance, beeInstance):
         '''
         Assign a nest to a bee
         '''
-        if not isOccupied(nestInstance):
+        if not self.IsOccupied(nestInstance):
             pass        
 
-    def UpdateNest(self, time):
-        '''
-        (Update nectar/pollen in the nest?)
-        '''
-        
-    def depositPollen(self, pollen):
-
-        for pollenType, amount in pollen.items():
-            self.pollenStorage[pollenType] += amount
-
-    def depositNectar(self, nectar):
-
-        self.nectarStorage += nectar
 
 
 class Hazards:
