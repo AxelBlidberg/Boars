@@ -9,11 +9,11 @@ from Environment import *
 
 
 def draw_environment(env):
-        size = 10
-        color = (1.0, 1.0, 1.0)
+        size = 0.04
+        color = (1.0, 0.0, 1.0)
         glColor3f(*color)
         for flower in env.flowers:
-
+            
             glBegin(GL_TRIANGLE_FAN)
             glVertex2f(flower.x, flower.y)
             num_segments = 100
@@ -26,9 +26,9 @@ def draw_environment(env):
 
 
 def main():
-    
+    size = 500
     pygame.init()
-    display = (500, 500)
+    display = (size, size)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
     glMatrixMode(GL_MODELVIEW)
@@ -36,8 +36,9 @@ def main():
     
     nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]] 
     
-    environment = Environment([800, 600])
-    environment.InitializeFlowers()
+    environment = Environment(size)
+    environment.InitializeFlowers(10)
+    print(len(environment.flowers))
 
     particle = Bee(0, 0,color=(1,1,0))
     
@@ -74,12 +75,12 @@ def main():
 
         
         # Capture the current frame
-        data = glReadPixels(0, 0, *display, GL_RGB, GL_UNSIGNED_BYTE)
-        image = pygame.image.fromstring(data, display, 'RGB')
-        frame = pygame.surfarray.array3d(image)
+        #data = glReadPixels(0, 0, *display, GL_RGB, GL_UNSIGNED_BYTE)
+        #image = pygame.image.fromstring(data, display, 'RGB')
+        #frame = pygame.surfarray.array3d(image)
 
         # Flip the frame vertically
-        frame = np.flipud(frame)
+        #frame = np.flipud(frame)
 
   
         # writer.append_data(frame)
