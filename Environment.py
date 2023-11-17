@@ -1,5 +1,4 @@
 import numpy as np
-import turtle
 import matplotlib.pyplot as plt
 
 class Environment:
@@ -9,6 +8,7 @@ class Environment:
         self.flowers = []
         self.nests = []
         self.hazards = []
+        self.iterations = 1
 
     def GetSurroundings(self, position, radius):
         '''
@@ -32,8 +32,7 @@ class Environment:
     def InitializeFlowers(self, n):
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2))
-
+            self.flowers.append(Flower(center, self.xLimit/2, self.iterations))
 
     def AddFlower(self, center, radius):
         '''
@@ -64,18 +63,26 @@ class Environment:
         
         return content
 
-    def PushUpdate(self, time):
+    def PushUpdate(self):
+        self.iterations += 1
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(time)
+            status = flower.UpdateFlower(self.iterations)
             if status[0] == 1:
                 self.AddFlower(status[1], 2)
             elif status[0] == 2:
                 del self.flowers[i]
-                
+
+    def Interaction(self, type, x, y):
+        pass
+        if type == 'flower':
+            for flower in self.flowers:
+                if flower.x == x and flower.y == y:
+                    pass
+                pass     
 
 class Flower:
-    def __init__(self, center, radius) -> None:
+    def __init__(self, center, radius, birth) -> None:
 
         # Add control to ensure location is within environment
 
@@ -88,13 +95,13 @@ class Flower:
 
         self.nectarAmount = np.random.randint(1,10)
 
-        self.pollen = {}
+        self.pollen = {f'{i}': 0 for i in range(1,6)}
 
         self.lifespan = 100
-        self.birth = 0
+        self.creation = birth
         
 
-    def decreaseNectar(self):
+    def DecreaseNectar(self):
         '''
         Decreases the nectar in a flower
         '''
@@ -102,34 +109,39 @@ class Flower:
             self.nectarAmount -= 1
     
     
-    
-    def pollination(self):
-        pass
+    def Pollination(self, beeInstance):
+        '''
+        Pollinates flowers depending on the pollen carried by a bee
+        '''
+
+        for pollenType, amount in beeInstance.pollenCarried.items():
+            self.pollen[pollenType] += amount
         
     
-    def getNectarAmount(self):
+    def GetNectarAmount(self):
         return self.nectarAmount
 
-    def getLocation(self) -> list:
+    def GetLocation(self) -> list:
         '''
-        Returns the coordinates of a flower 
+        Returns the coordinates of a specific flower 
         '''
         return [self.x, self.y]
     
-    def getType(self):
+    def GetType(self):
+
         return self.type
     
-    def getSize(self):
+    def GetSize(self):
         return self.flowersize
     
     def UpdateFlower(self, time):
         '''
-        Update rules for flowers
+        Update rules for flowers, 
         '''
-        if self.pollen[self.type] >= 10:
+        if self.pollen[f'{self.type}'] >= 10:
             self.pollen[self.type] -= 10
             return [1, [self.x, self.y]]
-        elif time - self.birth < self.lifespan:
+        elif time - self.creation < self.lifespan:
             return [2, []]
         else:
             return [0, []]
@@ -142,24 +154,27 @@ class Nest:
         self.y = envsize*np.random.rand()
     
 
-    def getLocation(self) -> list:
+    def GetLocation(self) -> list:
         '''
         Returns the coordinates of a nest
         '''
         return [self.x, self.y]
     
 
-    def isOccupied(self) -> bool:
+    def IsOccupied(self, nestInstance) -> bool:
         '''
         Checks if a nest is occupied by a bee
         '''
         pass
 
+    def AssignNest(self, nestInstance, beeInstance):
+        '''
+        Assign a nest to a bee
+        '''
+        if not self.IsOccupied(nestInstance):
+            pass        
 
-    def UpdateFlower(self, time):
-        pass
 
-    #add Pollen 
 
 class Hazards:
     def __init__(self) -> None:
@@ -190,7 +205,10 @@ def PlotFunction(data):
 test = Environment(100)
 
 test.InitializeFlowers(10)
+
 #neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
+test.PushUpdate()
+
 PlotFunction(A)
 
