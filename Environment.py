@@ -202,13 +202,13 @@ def PlotFunction(data):
 
 
 
-test = Environment(100)
+#test = Environment(100)
 
-test.InitializeFlowers(10)
+#test.InitializeFlowers(10)
 
 #neighbors = test.GetSurroundings([5,5], 5)
-A = test.ExportContent()
-test.PushUpdate()
+#A = test.ExportContent()
+#test.PushUpdate()
 
-PlotFunction(A)
+#PlotFunction(A)
 

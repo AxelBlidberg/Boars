@@ -3,20 +3,41 @@ import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
-from Bee import * 
 
+from Bee import * 
+from Environment import *
+
+
+def draw_environment(env):
+        size = 10
+        color = (1.0, 1.0, 1.0)
+        glColor3f(*color)
+        for flower in env.flowers:
+
+            glBegin(GL_TRIANGLE_FAN)
+            glVertex2f(flower.x, flower.y)
+            num_segments = 100
+            for i in range(num_segments + 1):
+                theta = (2.0 * np.pi * i) / num_segments
+                x = flower.x + size * np.cos(theta)
+                y = flower.y + size * np.sin(theta)
+                glVertex2f(x, y)
+            glEnd()
 
 
 def main():
     
     pygame.init()
-    display = (800, 600)
+    display = (500, 500)
     pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
     
     nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]] 
+    
+    environment = Environment([800, 600])
+    environment.InitializeFlowers()
 
     particle = Bee(0, 0,color=(1,1,0))
     
@@ -35,10 +56,14 @@ def main():
             quit()
             break
 
-        
+    
+
         glClear(GL_COLOR_BUFFER_BIT)
         glClearColor(0.2, 0.2, 0.2, 0.2)
         
+
+        draw_environment(environment)
+
         particle.update()
         particle.draw()
         particle.draw_path()
