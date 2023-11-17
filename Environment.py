@@ -30,36 +30,50 @@ class Environment:
         return nearby
 
     def InitializeFlowers(self, n):
+        '''
+        Initializes n number of flowers in the environment
+        '''
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, self.iterations))
+            self.flowers.append(Flower(center, self.xLimit/2, self.iterations, self.xLimit, self.yLimit))
 
-    def AddFlower(self, center, radius):
+    def AddFlower(self, center, radius, flowerType):
         '''
         Method to add one or several flowers to the environment
 
         n = Number of flowers to add
         '''
-        self.flowers.append(Flower(center, radius))
+        self.flowers.append(Flower(center, radius, self.iterations, self.xLimit, self.yLimit, flowerType))
+
+    def InitializeBeeNest(self, n):
+        '''
+        Method to initialize n nests in the beginning of the simulation
+        
+        n = Number of nests to add
+        '''
+        center = [self.xLimit/2, self.yLimit/2]
+        for _ in range(n):
+            self.nests.append(Nest(center, self.xLimit/2, self.xLimit, self.yLimit))
 
     def AddBeeNest(self, n):
         '''
-        Method to add one or several nests to the environment
+        Method to add one or several nests to the environment during the simulation
 
         n = Number of nests to add
-        size = Size of the environment for correct placement of flowers
         '''
-        for _ in range(n):
-            self.nests.append(Nest(self.xLimit))
+        pass
 
     def ExportContent(self):
         '''
-        Exports a list of the format [class, 'Type', x, y] ex: ['flower', 1, x, y]
+        Exports a list of the format [class, 'Type', x, y, object] ex: ['flower', 1, x, y, Flower]
         '''
         content = []
 
         for flower in self.flowers:
-            content.append(['flower', flower.type, flower.x, flower.y])
+            content.append(['flower', flower.type, flower.x, flower.y, flower])
+
+        for nest in self.nests:
+            content.append(['Nest', 'Nest', nest.x, nest.y, nest])
         
         return content
 
@@ -73,33 +87,46 @@ class Environment:
             elif status[0] == 2:
                 del self.flowers[i]
 
-    def Interaction(self, type, x, y):
-        pass
-        if type == 'flower':
-            for flower in self.flowers:
-                if flower.x == x and flower.y == y:
-                    pass
-                pass     
+    def GetObject(self, x, y):
+        '''
+        Returns the object at the specified location for outside manipulation of object, like depositing/ taking pollen.
+
+        x = X coordinate
+        y = Y coordinate
+        type = Which type of object
+        '''
+        content = self.ExportContent()
+        for i in range(len(content)):
+            if content[i][2] == x and content[i][3] == y:
+                return content[i][-1]
+
 
 class Flower:
-    def __init__(self, center, radius, birth) -> None:
-
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
         # Add control to ensure location is within environment
-
-
-        self.x = center[0] + radius*np.random.randn()
-        self.y = center[1] + radius*np.random.randn()
-  
-        self.type = np.random.randint(1, 5)
+        self.x = center[0] + radius*np.random.uniform(-1, 1)
+        if self.x < 0:
+            self.x = 0
+        elif self.x > xLimit:
+            self.x = xLimit
+        self.y = center[1] + radius*np.random.uniform(-1, 1)
+        if self.y < 0:
+            self.y = 0
+        elif self.y > yLimit:
+            self.y = yLimit
+        self.location = [self.x, self.y]
+        if t == 'random':
+            self.type = np.random.randint(1, 5)
+        else:
+            self.type = t
         self.flowersize = np.random.randint(1, 5)
-
         self.nectarAmount = np.random.randint(1,10)
-
         self.pollen = {f'{i}': 0 for i in range(1,6)}
-
         self.lifespan = 100
         self.creation = birth
-        
+
+    def __str__(self) -> str:
+        return f'Flower of type: {self.type} at ({self.x:3.1f}, {self.y:3.1f})'
 
     def DecreaseNectar(self):
         '''
@@ -108,32 +135,13 @@ class Flower:
         if self.nectarAmount < 0:
             self.nectarAmount -= 1
     
-    
     def Pollination(self, beeInstance):
         '''
         Pollinates flowers depending on the pollen carried by a bee
         '''
-
         for pollenType, amount in beeInstance.pollenCarried.items():
             self.pollen[pollenType] += amount
-        
-    
-    def GetNectarAmount(self):
-        return self.nectarAmount
 
-    def GetLocation(self) -> list:
-        '''
-        Returns the coordinates of a specific flower 
-        '''
-        return [self.x, self.y]
-    
-    def GetType(self):
-
-        return self.type
-    
-    def GetSize(self):
-        return self.flowersize
-    
     def UpdateFlower(self, time):
         '''
         Update rules for flowers, 
@@ -148,10 +156,20 @@ class Flower:
 
 
 class Nest:
-    def __init__(self, envsize) -> None:
+    def __init__(self, center, radius, xLimit, yLimit) -> None:
 
-        self.x = envsize*np.random.rand()
-        self.y = envsize*np.random.rand()
+        # Location of the nest
+        self.x = center[0] + radius*np.random.uniform(-1, 1)
+        if self.x < 0:
+            self.x = 0
+        elif self.x > xLimit:
+            self.x = xLimit
+        self.y = center[1] + radius*np.random.uniform(-1, 1)
+        if self.y < 0:
+            self.y = 0
+        elif self.y > yLimit:
+            self.y = yLimit
+        self.location = [self.x, self.y]
     
 
     def GetLocation(self) -> list:
@@ -160,6 +178,8 @@ class Nest:
         '''
         return [self.x, self.y]
     
+    def __str__(self) -> str:
+        return f'Nest at ({self.x}, {self.y})'
 
     def IsOccupied(self, nestInstance) -> bool:
         '''
@@ -175,40 +195,74 @@ class Nest:
             pass        
 
 
-
 class Hazards:
     def __init__(self) -> None:
         pass
 
 
-
-def PlotFunction(data):
+def PlotFunction(data, limit):
     '''
     Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
     '''
-    types = [item[1] for item in data]
-    x_values = [item[2] for item in data]
-    y_values = [item[3] for item in data]
+    # Divide data
+    flowers = []
+    for object in data:
+        if object[0] == 'flower':
+            flowers.append(object)
+
+    nests = []
+    for object in data:
+        if object[0] == 'Nest':
+            nests.append(object)
+
+    types = [item[1] for item in flowers]
+    x_values = [item[2] for item in flowers]
+    x_NestValues = [item[2] for item in nests]
+    y_values = [item[3] for item in flowers]
+    y_NestValues = [item[3] for item in nests]
 
     unique_types = set(types)
     color_map = {t: i for i, t in enumerate(unique_types)}
     colors = [color_map[t] for t in types]
 
     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
+    plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=100)
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title('Scatter Plot with Colors')
+    plt.xlim([0, limit])
+    plt.ylim([0, limit])
     plt.show()
 
 
 
 test = Environment(100)
 
-test.InitializeFlowers(10)
+test.InitializeFlowers(5)
+
+test.InitializeBeeNest(5)
+
+for i in range(10):
+    obj = np.random.choice(test.flowers)
+    test.AddFlower(obj.location, 5, obj.type)
+
+for i in range(10):
+    obj = np.random.choice(test.flowers)
+    C = test.GetObject(obj.x, obj.y)
+    print(f'Selected flower: {C}')
+
+
+
 
 #neighbors = test.GetSurroundings([5,5], 5)
 A = test.ExportContent()
+B = test.flowers
+#for b in B:
+#    print(b)
+
+for a in A:
+    print(a)
 test.PushUpdate()
 
-PlotFunction(A)
+PlotFunction(A, 100)
 
