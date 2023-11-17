@@ -1,7 +1,11 @@
+import numpy as np
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
+from Bee import * 
+
+
 
 def main():
     
@@ -56,7 +60,7 @@ def main():
         # writer.append_data(frame)
 
         pygame.display.flip()
-        pygame.time.wait(100)
+        pygame.time.wait(50)
         
 
     # writer.close()

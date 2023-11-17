@@ -1,3 +1,8 @@
+import numpy as np
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+
 class Bee:
     def __init__(self, x, y, size=0.02, color=(0.0, 1.0, 1.0)):
         self.x = x
