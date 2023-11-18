@@ -33,11 +33,12 @@ class Bee:
             direction_to_nearest = np.array([nearest_flower.x - self.x, nearest_flower.y - self.y])
 
             # Add angular noise to the direction
-            noise = np.random.uniform(-1/2, 1/2, size=2)*2 
+            noise = np.random.uniform(-1, 1, size=2)*2 
 
             self.velocity += alignment_strength * direction_to_nearest
             self.velocity += noise*self.angular_noise
-
+        
+        # restrict speed
         norm = np.linalg.norm(self.velocity)
         if norm > 0:
             self.velocity /= norm
@@ -56,7 +57,7 @@ class Bee:
 
         if distance > 0:
             normalized_direction = direction_vector / distance
-            angle = np.arccos(np.dot(self.velocity, normalized_direction))
+            angle = np.arccos(np.clip(np.dot(self.velocity, normalized_direction), -1.0, 1.0))
             return angle <= self.vision_angle / 2 and distance <= self.vision_range
 
         return False

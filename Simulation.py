@@ -13,23 +13,31 @@ class BeeSim:
 
         self.root = tk.Tk()
         self.root.title("Bee Simulation")
+        
+        self.canvas_frame = tk.Frame(self.root)
+        self.canvas_frame.pack(side="left", padx=10)
+        self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#333333')
+        self.canvas.pack()
+
+        # Frame for sliders
+        self.slider_frame = tk.Frame(self.root)
+        self.slider_frame.pack(side="right", padx=10)
 
         # Sliders for controlling parameters
-        self.angular_noise_slider = Scale(self.root, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
-        self.angular_noise_slider.set(0.0)
+        self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
+        self.angular_noise_slider.set(0.65)
         self.angular_noise_slider.pack()
 
-        self.vision_range_slider = Scale(self.root, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
+        self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
         self.vision_range_slider.set(50)
         self.vision_range_slider.pack()
 
-        self.vision_angle_slider = Scale(self.root, label="Vision Angle", from_=0, to=360, resolution=1, orient="horizontal", length=200)
+        self.vision_angle_slider = Scale(self.slider_frame, label="Vision Angle", from_=0, to=360, resolution=1, orient="horizontal", length=200)
         self.vision_angle_slider.set(180)
         self.vision_angle_slider.pack()
 
 
-        self.canvas = tk.Canvas(self.root, width=size, height=size, bg='#333333')
-        self.canvas.pack()
+        
 
         self.nearby = [[0.001, 'right', 0.5, 0.5], [0.003, 'left', -0.5, -0.5]]
 
@@ -91,10 +99,9 @@ class BeeSim:
     
     def check_boundary_collision(self, bee):
 
-        if bee.x < 0 or bee.x > self.size:
-            bee.velocity[0] *= -1  
-
-        if bee.y < 0 or bee.y > self.size:
+        if bee.x < 0+5 or bee.x > self.size-5:
+            bee.velocity[0] *= -1
+        if bee.y < 0+5 or bee.y > self.size-5:
             bee.velocity[1] *= -1 
     
     def run_simulation(self):
@@ -102,5 +109,5 @@ class BeeSim:
         self.root.mainloop()
 
 if __name__ == "__main__":
-    bee_sim = BeeSim(size= 1000, num_bees=4, num_flowers=150)
+    bee_sim = BeeSim(size= 800, num_bees=4, num_flowers=200)
     bee_sim.run_simulation()
