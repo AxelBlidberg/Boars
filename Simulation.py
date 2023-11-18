@@ -1,111 +1,106 @@
+import tkinter as tk
 import numpy as np
-import pygame
-from pygame.locals import *
-from OpenGL.GL import *
-from OpenGL.GLUT import *
 
-from Bee import * 
+
+from tkinter import Scale
+from Bee import *
 from Environment import *
 
+class BeeSim:
+    def __init__(self, size=500, num_bees=1, num_flowers=1):
+        self.size = size
+        self.num_flowers = num_flowers
 
-def draw_environment(env):
-        size = 0.04
-        color = (1.0, 0.0, 1.0)
-        glColor3f(*color)
-        for flower in env.flowers:
-            
-            glBegin(GL_TRIANGLE_FAN)
-            glVertex2f(flower.x, flower.y)
-            num_segments = 100
-            for i in range(num_segments + 1):
-                theta = (2.0 * np.pi * i) / num_segments
-                x = flower.x + size * np.cos(theta)
-                y = flower.y + size * np.sin(theta)
-                glVertex2f(x, y)
-            glEnd()
+        self.root = tk.Tk()
+        self.root.title("Bee Simulation")
+
+        # Sliders for controlling parameters
+        self.angular_noise_slider = Scale(self.root, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
+        self.angular_noise_slider.set(0.0)
+        self.angular_noise_slider.pack()
+
+        self.vision_range_slider = Scale(self.root, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
+        self.vision_range_slider.set(50)
+        self.vision_range_slider.pack()
+
+        self.vision_angle_slider = Scale(self.root, label="Vision Angle", from_=0, to=360, resolution=1, orient="horizontal", length=200)
+        self.vision_angle_slider.set(180)
+        self.vision_angle_slider.pack()
 
 
-def main():
-    size = 500
-    pygame.init()
-    display = (size, size)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+        self.canvas = tk.Canvas(self.root, width=size, height=size, bg='#333333')
+        self.canvas.pack()
 
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
+        self.nearby = [[0.001, 'right', 0.5, 0.5], [0.003, 'left', -0.5, -0.5]]
+
+        self.environment = Environment(size)
+        self.environment.InitializeFlowers(num_flowers)
+
+        self.bees = [Bee(np.random.uniform(0, size), np.random.uniform(0, size)) for _ in range(num_bees)]
+
+    def draw_environment(self):
+        size = 4
+        for flower in self.environment.flowers:
+            x, y = flower.x, flower.y
+            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill='white')
+
+    def draw_bees(self):
+        for bee in self.bees:
+            x, y = bee.x, bee.y
+            self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill='yellow')
+
+    def draw_vision_field(self):
+        for bee in self.bees:
+            x, y = bee.x, bee.y
+            vision_points = bee.vision_points
+
+            self.canvas.create_line(x, y, vision_points[0][0], vision_points[0][1], fill='blue', width=2)
+            self.canvas.create_line(x, y, vision_points[1][0], vision_points[1][1], fill='blue', width=2)
+
+    def draw_paths(self):
+        for bee in self.bees:
+            path = bee.path
+            if path:
+                self.canvas.create_line(path, fill='yellow', width=2)
+
+    def update_model(self):
+       
+        angular_noise = float(self.angular_noise_slider.get())
+        vision_range = int(self.vision_range_slider.get())
+        vision_angle = (float(self.vision_angle_slider.get())*2*np.pi)/360
+
+        for bee in self.bees:
+            bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
+            bee.update(self.environment.flowers)
+            self.check_boundary_collision(bee)
+
+        self.canvas.delete('all')
+
+        self.draw_environment()
+        self.draw_bees()
+
+        for bee in self.bees:
+            found_flower, empty_flower = bee.find_flowers(self.nearby)
+            if found_flower:
+                self.nearby.pop(self.nearby.index(empty_flower))
+
+        #self.draw_vision_field()
+        self.draw_paths()
+
+        self.root.after(50, self.update_model)
     
-    nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]] 
+    def check_boundary_collision(self, bee):
+
+        if bee.x < 0 or bee.x > self.size:
+            bee.velocity[0] *= -1  
+
+        if bee.y < 0 or bee.y > self.size:
+            bee.velocity[1] *= -1 
     
-    environment = Environment(size)
-    environment.InitializeFlowers(10)
-    print(len(environment.flowers))
-
-    particle = Bee(0, 0,color=(1,1,0))
-    
-    # writer = imageio.get_writer('brownian_motion_with_trace.gif', duration=0.1)
-
-    #while True:
-    for i in range(500):
-        
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-        
-        if i == 499:
-            pygame.quit()
-            quit()
-            break
-
-    
-
-        glClear(GL_COLOR_BUFFER_BIT)
-        glClearColor(0.2, 0.2, 0.2, 0.2)
-        
-
-        draw_environment(environment)
-
-        particle.update()
-        particle.draw()
-        particle.draw_path()
-        particle.draw_vision_field()
-        found_flower, empty_flower = particle.find_flowers(nearby)
-        if found_flower:
-            nearby.pop(nearby.index(empty_flower))  # should not be nearby
-
-        
-        # Capture the current frame
-        #data = glReadPixels(0, 0, *display, GL_RGB, GL_UNSIGNED_BYTE)
-        #image = pygame.image.fromstring(data, display, 'RGB')
-        #frame = pygame.surfarray.array3d(image)
-
-        # Flip the frame vertically
-        #frame = np.flipud(frame)
-
-  
-        # writer.append_data(frame)
-
-        pygame.display.flip()
-        pygame.time.wait(50)
-        
-
-    # writer.close()
-
-
-def main_no_game():    # For testing without plotting
-
-    particle = Bee(0, 0,color=(1,1,0))
-    nearby = [[0.001,'right',0.5,0.5],[0.003,'left',-0.5,-0.5]]
-
-    for i in range(500):
-
-        if i == 499:
-            break
-        particle.update()
-        #particle.draw_vision_field()
-        found_flower, empty_flower = particle.find_flowers(nearby)
-        if found_flower:
-            nearby.pop(nearby.index(empty_flower)) # should not be nearby
+    def run_simulation(self):
+        self.root.after(0, self.update_model)
+        self.root.mainloop()
 
 if __name__ == "__main__":
-    main()
+    bee_sim = BeeSim(size= 1000, num_bees=4, num_flowers=150)
+    bee_sim.run_simulation()

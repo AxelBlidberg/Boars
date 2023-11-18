@@ -1,8 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Environment:
     def __init__(self, size) -> None:
+        self.size = size
         self.xLimit = size
         self.yLimit = size
         self.flowers = []
@@ -182,23 +182,23 @@ class Hazards:
 
 
 
-def PlotFunction(data):
-    '''
-    Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
-    '''
-    types = [item[1] for item in data]
-    x_values = [item[2] for item in data]
-    y_values = [item[3] for item in data]
+# def PlotFunction(data):
+#     '''
+#     Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
+#     '''
+#     types = [item[1] for item in data]
+#     x_values = [item[2] for item in data]
+#     y_values = [item[3] for item in data]
 
-    unique_types = set(types)
-    color_map = {t: i for i, t in enumerate(unique_types)}
-    colors = [color_map[t] for t in types]
+#     unique_types = set(types)
+#     color_map = {t: i for i, t in enumerate(unique_types)}
+#     colors = [color_map[t] for t in types]
 
-    plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
-    plt.xlabel('X-axis')
-    plt.ylabel('Y-axis')
-    plt.title('Scatter Plot with Colors')
-    plt.show()
+#     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
+#     plt.xlabel('X-axis')
+#     plt.ylabel('Y-axis')
+#     plt.title('Scatter Plot with Colors')
+#     plt.show()
 
 
 
