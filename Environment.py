@@ -32,7 +32,7 @@ class Environment:
     def InitializeFlowers(self, n):
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, self.iterations))
+            self.flowers.append(Flower(center, self.xLimit/4, self.iterations))
 
     def AddFlower(self, center, radius):
         '''
@@ -89,7 +89,8 @@ class Flower:
 
         self.x = center[0] + radius*np.random.randn()
         self.y = center[1] + radius*np.random.randn()
-  
+
+
         self.type = np.random.randint(1, 5)
         self.flowersize = np.random.randint(1, 5)
 
