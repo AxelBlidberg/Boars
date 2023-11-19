@@ -11,9 +11,8 @@ class BeeSim(tk.Tk):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
-        self.show_vision_var = False
+       
 
-        
         self.title("Bee Simulation")
         
         self.canvas_frame = tk.Frame(self)
@@ -27,18 +26,18 @@ class BeeSim(tk.Tk):
 
         # Sliders for controlling parameters
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
-        self.angular_noise_slider.set(0.15)
+        self.angular_noise_slider.set(0.45)
         self.angular_noise_slider.pack()
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
-        self.vision_range_slider.set(50)
+        self.vision_range_slider.set(30)
         self.vision_range_slider.pack()
 
         self.vision_angle_slider = Scale(self.slider_frame, label="Vision Angle", from_=0, to=359, resolution=1, orient="horizontal", length=200)
-        self.vision_angle_slider.set(180)
+        self.vision_angle_slider.set(280)
         self.vision_angle_slider.pack()
 
-        self.show_vision_var = tk.BooleanVar(value=False)
+        self.show_vision_var = tk.BooleanVar(value=True)
         self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
         self.draw_vision_checkbox.pack(pady=5)
 
@@ -55,7 +54,7 @@ class BeeSim(tk.Tk):
         size = 4
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill='white')
+            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.color)
     
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
@@ -71,11 +70,15 @@ class BeeSim(tk.Tk):
         self.canvas.create_arc(bee.x - bee.vision_range, bee.y - bee.vision_range, bee.x + bee.vision_range, bee.y + bee.vision_range,
                             start=-start_angle, extent=extent, outline='lightblue', width=1)
 
-
     def DrawPath(self, bee):
         if bee.path:
             self.canvas.create_line(bee.path, fill='#ffea61', width=1)
     
+    def CheckBoundaryCollision(self, bee): # fastnar på blommor utanför canvas fixas nog bäst i Environment
+        if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
+            return
+        bee.orientation += np.pi/2
+
     def UpdateModel(self):
         self.canvas.delete('all')
 
@@ -103,11 +106,6 @@ class BeeSim(tk.Tk):
 
         self.after(50, self.UpdateModel)
 
-
-    def CheckBoundaryCollision(self, bee): # fastnar på blommor utanför canvas fixas nog bäst i Environment
-        if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
-            return
-        bee.orientation += np.pi
 
     
 if __name__ == "__main__":

@@ -1,7 +1,5 @@
 import numpy as np
 
-
-
 class Bee:
     def __init__(self, x, y, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = x
@@ -11,10 +9,11 @@ class Bee:
 
         self.speed = speed
         self.orientation = np.random.uniform(0, 2 * np.pi)
+        self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
         self.angular_noise = angular_noise
 
         self.visited_flowers = []
-        self.visit_radius = 2
+        self.visit_radius = 4
         self.short_memory = 10
         
         self.vision_angle = vision_angle
@@ -45,33 +44,34 @@ class Bee:
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
+                nearest_flower.color="#2b79cb"
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
-                else:
-                    self.visited_flowers.append(nearest_flower)
+                
         else:
             self.orientation = self.orientation + self.angular_noise * W 
         
+
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
+        self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
         self.path.append([self.x, self.y])
 
         if len(self.path) > self.path_length:
             self.path.pop(0)
 
     def InFieldOfView(self, obj):
-        # Check if the object is within the field of view and range
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
         distance = np.linalg.norm(direction_vector)
-
+        
         if distance > 0:
-            angle_to_obj = np.arctan2(direction_vector[1], direction_vector[0])
-            angle_difference = np.abs(angle_to_obj - self.orientation)
 
-            return angle_difference <= self.vision_angle / 2 and distance <= self.vision_range
+            cos_angle = np.dot(self.velocity, direction_vector) / (np.linalg.norm(self.velocity) * distance)
+            angle_threshold = np.cos(np.deg2rad(self.vision_angle / 2))
+            if cos_angle >= angle_threshold and distance <= self.vision_range:
+                return True
 
         return False
-
 
  
 

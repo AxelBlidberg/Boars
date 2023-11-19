@@ -82,10 +82,10 @@ class Environment:
                 pass     
 
 class Flower:
-    def __init__(self, center, radius, birth) -> None:
+    def __init__(self, center, radius, birth, color="#cbc19c") -> None:
 
         # Add control to ensure location is within environment
-
+        self.color = color
 
         self.x = center[0] + radius*np.random.randn()
         self.y = center[1] + radius*np.random.randn()
