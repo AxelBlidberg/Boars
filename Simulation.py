@@ -46,8 +46,11 @@ class BeeSim(tk.Tk):
 
         self.environment = Environment(size)
         self.environment.InitializeFlowers(num_flowers)
+        
+        self.timestep = 0
+        self.max_age = 500 # in timesteps
 
-        self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10)) for _ in range(num_bees)]
+        self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10),self.timestep) for _ in range(num_bees)]
 
         self.after(50, self.UpdateModel)
 
@@ -82,12 +85,23 @@ class BeeSim(tk.Tk):
 
     def UpdateModel(self):
         self.canvas.delete('all')
+        self.timestep += 1
 
         angular_noise = float(self.angular_noise_slider.get())
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
+         
+        # new bees
+        if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
+            self.bees.append(Bee(np.random.uniform(10, self.size-10), np.random.uniform(10, self.size-10),self.timestep))
 
         for bee in self.bees:
+
+            # kill bee if old
+            if self.timestep - bee.birth > self.max_age:
+                del bee
+                continue
+
             bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
             
             bee.Update(self.environment. flowers)
@@ -97,7 +111,7 @@ class BeeSim(tk.Tk):
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
-             
+        
         self.DrawEnvironment()
       
         self.after(50, self.UpdateModel)
