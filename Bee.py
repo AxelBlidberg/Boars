@@ -39,9 +39,39 @@ class Bee:
             self.orientation = np.arctan2(direction_to_nearest[1], direction_to_nearest[0]) + self.angular_noise * W
 
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
+
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
-                nearest_flower.color="#2b79cb"
+                flower_type = nearest_flower.type 
+                pollenAmount = nearest_flower.pollen
+                
+                pollen_taken = np.random.randint(0, pollenAmount)
+
+                if flower_type in self.pollen.keys():
+                    r = np.random.random()
+                    if r < 1: #dummy value TODO: Fixa varierande reproduktion för varje blomma
+                        nearest_flower.pollen += self.pollen[flower_type] #Allt pollen ges från biet till blomman om pollen sker
+
+                    else:
+                        self.pollen[flower_type] += pollen_taken #Biet tar en viss mängd pollen
+
+                        #Vill ta bort pollen från bieet om pollinering sker
+
+                    #Pollinera eventuellt blomman
+
+                else:
+                    self.pollen[flower_type] = pollen_taken
+                    
+                nearest_flower.pollenAmount = pollenAmount - pollen_taken
+
+                color_scale = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
+                
+                interval = 100
+                index = min(nearest_flower.pollenAmount // interval, len(color_scale) - 1)
+                nearest_flower.color = color_scale[index]
+
+                #nearest_flower.color= color_scale[nearest_flower.pollenAmount]   
+                
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
                 
