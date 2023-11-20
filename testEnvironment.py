@@ -29,8 +29,8 @@ def PlotFunction(data, limit):
     color_map = {t: i for i, t in enumerate(unique_types)}
     colors = [color_map[t] for t in types]
 
-    plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
-    plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=100)
+    plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=10, alpha=0.8, label=types)
+    plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=20)
     plt.xlabel('X-axis')
     plt.ylabel('Y-axis')
     plt.title('Scatter Plot with Colors')
@@ -50,9 +50,9 @@ def AddNests(n):
 
 
 # Variables
-size = 100
-flowers = 10
-nests = 10
+size = 1000
+flowers = 100
+nests = 30
 envType1 = 'urban'
 envType2 = 'agriculture'
 
@@ -64,7 +64,8 @@ print('\n > Creation distribution:        ', env.FlowerDistribution())
 
 AddFlowers(30)
 AddNests(10)
+env.PushUpdate()
 
 print(' > Procreation distribution:     ', env.FlowerDistribution())
 
-#PlotFunction(env.ExportContent(), size)
+PlotFunction(env.ExportContent(), size)
