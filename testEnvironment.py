@@ -38,21 +38,33 @@ def PlotFunction(data, limit):
     plt.ylim([0, limit])
     plt.show()
 
+def AddFlowers(n):
+    for i in range(n):
+        obj = np.random.choice(env.flowers)
+        env.AddFlower(obj.location, 5, obj.type)
+
+def AddNests(n):
+    for i in range(n):
+        obj = np.random.choice(env.nests)
+        env.AddBeeNest(obj.location, 5)
+
+
 # Variables
 size = 100
 flowers = 10
-envType = 'urban'
-envType = 'agriculture'
+nests = 10
+envType1 = 'urban'
+envType2 = 'agriculture'
 
-env = Environment(size, envType)
+env = Environment(size)
+env2 = Environment(size, envType2)
 env.InitializeFlowers(flowers)
-env.InitializeBeeNest(10)
-print('Creation distribution: ', env.FlowerDistribution())
+env.InitializeBeeNest(nests)
+print('\n > Creation distribution:        ', env.FlowerDistribution())
 
-for i in range(30):
-    obj = np.random.choice(env.flowers)
-    env.AddFlower(obj.location, 5, obj.type)
+AddFlowers(30)
+AddNests(10)
 
-print('Procreation distribution', env.FlowerDistribution())
+print(' > Procreation distribution:     ', env.FlowerDistribution())
 
-PlotFunction(env.ExportContent(), size)
+#PlotFunction(env.ExportContent(), size)
