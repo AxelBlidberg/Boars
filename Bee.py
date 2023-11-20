@@ -22,6 +22,7 @@ class Bee:
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {}        # how much pollen and what kind
 
+
         self.color = color
 
         #self.vision_points = np.array([[10,0],[0,10]]) #coordinates of 2 points making a triangle if combined with position
@@ -34,6 +35,7 @@ class Bee:
         # Get nearby flowers within the field of view and range excluding visited.
         nearby_flowers = [flower for flower in flowers if self.InFieldOfView(flower)]
         nearby_flowers = [flower for flower in nearby_flowers if flower not in self.visited_flowers]
+
 
         
         if nearby_flowers:
@@ -64,6 +66,7 @@ class Bee:
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
         distance = np.linalg.norm(direction_vector)
         
+
         if distance > 0:
 
             cos_angle = np.dot(self.velocity, direction_vector) / (np.linalg.norm(self.velocity) * distance)
@@ -121,3 +124,4 @@ class Bee:
             
             return found_flower, empty_flower
         
+

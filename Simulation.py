@@ -1,7 +1,7 @@
 import tkinter as tk
 import numpy as np
-from tkinter import Scale
 
+from tkinter import Scale
 
 from Bee import *
 from Environment import *
@@ -28,6 +28,7 @@ class BeeSim(tk.Tk):
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
         self.angular_noise_slider.set(0.45)
         self.angular_noise_slider.pack()
+
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
         self.vision_range_slider.set(30)
@@ -98,12 +99,7 @@ class BeeSim(tk.Tk):
                 self.DrawVisionField(bee)  
              
         self.DrawEnvironment()
-        
-        #for bee in self.bees:
-        #    found_flower, empty_flower = bee.find_flowers(self.nearby)
-        #    if found_flower:
-        #        self.nearby.pop(self.nearby.index(empty_flower))
-
+      
         self.after(50, self.UpdateModel)
 
 
