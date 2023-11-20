@@ -1,11 +1,12 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 class Environment:
-    def __init__(self, size) -> None:
-        self.size = size
+    def __init__(self, size, environmentType='countryside') -> None:
+        print(f'An environment has been created of type {environmentType}')
         self.xLimit = size
         self.yLimit = size
+        self.envType = environmentType
         self.flowers = []
         self.nests = []
         self.hazards = []
@@ -36,8 +37,7 @@ class Environment:
         '''
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-
-            self.flowers.append(Flower(center, self.xLimit/2, self.iterations, self.xLimit, self.yLimit))
+            self.flowers.append(Flower(center, self.xLimit/2, self.iterations, t='random', environment=self.envType))
 
     def AddFlower(self, center, radius, flowerType):
         '''
@@ -45,7 +45,7 @@ class Environment:
 
         n = Number of flowers to add
         '''
-        self.flowers.append(Flower(center, radius, self.iterations, self.xLimit, self.yLimit, flowerType))
+        self.flowers.append(Flower(center, radius, self.iterations, t=flowerType))
 
     def InitializeBeeNest(self, n):
         '''
@@ -79,6 +79,22 @@ class Environment:
         
         return content
 
+    def FlowerDistribution(self):
+        distribution = {'Lavender': 0, 'Bee balm': 0, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}
+        for flower in self.flowers:
+            if flower.type == 1:
+                distribution['Lavender'] += 1
+            elif flower.type == 2:
+                distribution['Bee balm'] += 1
+            elif flower.type == 3:
+                distribution['Sunflower'] += 1
+            elif flower.type == 4:
+                distribution['Coneflower'] += 1
+            elif flower.type == 5:
+                distribution['Blueberry'] += 1
+        return distribution
+
+
     def PushUpdate(self):
         self.iterations += 1
         # Update flowers
@@ -88,7 +104,6 @@ class Environment:
                 self.AddFlower(status[1], 2)
             elif status[0] == 2:
                 del self.flowers[i]
-
 
     def GetObject(self, x, y):
         '''
@@ -105,7 +120,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', environment = 'countryside', color="#fffdff") -> None:
+    def __init__(self, center, radius, birth, t='random', environment = 'countryside', color="#fffdff") -> None:
 
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
@@ -114,23 +129,23 @@ class Flower:
         self.color = color
         
         # Type of flower
+        types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflowers, Blueberry]
         if t == 'random':
             if environment == 'countryside':
                 probabilities = [2, 2, 3, 5, 4]
                 pSum = sum(probabilities)
                 probabilities = [p/pSum for p in probabilities]
-                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
+                self.type = np.random.choice(types, p=probabilities)
             elif environment == 'urban':
                 probabilities = [5, 4, 3, 2, 1]
                 pSum = sum(probabilities)
                 probabilities = [p/pSum for p in probabilities]
-                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
+                self.type = np.random.choice(types, p=probabilities)
             elif environment == 'agriculture':
-                probabilities = [4, 1, 5, 1, 3]
+                probabilities = [3, 1, 5, 1, 4]
                 pSum = sum(probabilities)
                 probabilities = [p/pSum for p in probabilities]
-                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
-            self.type = np.random.randint(1, 6)
+                self.type = np.random.choice(types, p=probabilities)
         else:
             self.type = t
 
@@ -153,9 +168,9 @@ class Flower:
             self.lifespan = life
             self.pollen = 4*pollen
             
-        self.flowersize = np.random.randint(1, 5)
+
         self.nectarAmount = np.random.randint(1,10)
-        self.pollen = {f'{i}': 0 for i in range(1,6)}
+        self.collectedPollen = {f'{i}': 0 for i in range(1,6)}
         self.lifespan = 100
         self.creation = birth
 
@@ -190,7 +205,7 @@ class Flower:
         '''
         Update rules for flowers, 
         '''
-        if self.pollen[f'{self.type}'] >= 10:
+        if self.collectedPollen[f'{self.type}'] >= 10:
             self.pollen[self.type] -= 10
             return [1, [self.x, self.y]]
         elif time - self.creation < self.lifespan:
@@ -244,67 +259,3 @@ class Hazards:
         pass
 
 
-
-def PlotFunction(data, limit):
-    '''
-    Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
-    '''
-    # Divide data
-    flowers = []
-    for object in data:
-        if object[0] == 'flower':
-            flowers.append(object)
-
-    nests = []
-    for object in data:
-        if object[0] == 'Nest':
-            nests.append(object)
-
-    types = [item[1] for item in flowers]
-    x_values = [item[2] for item in flowers]
-    x_NestValues = [item[2] for item in nests]
-    y_values = [item[3] for item in flowers]
-    y_NestValues = [item[3] for item in nests]
-
-    plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
-    plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=100)
-    plt.xlabel('X-axis')
-    plt.ylabel('Y-axis')
-    plt.title('Scatter Plot with Colors')
-    plt.xlim([0, limit])
-    plt.ylim([0, limit])
-    plt.show()
-
-
-
-#test = Environment(100)
-#
-#test.InitializeFlowers(5)
-#
-#test.InitializeBeeNest(5)
-#
-#for i in range(30):
-#    obj = np.random.choice(test.flowers)
-#    test.AddFlower(obj.location, 5, obj.type)
-#
-#for i in range(10):
-#    obj = np.random.choice(test.flowers)
-#    C = test.GetObject(obj.x, obj.y)
-#    print(f'Selected flower: {C}')
-#
-
-
-
-##neighbors = test.GetSurroundings([5,5], 5)
-#A = test.ExportContent()
-#B = test.flowers
-##for b in B:
-##    print(b)
-#
-#for a in A:
-#    print(a)
-#test.PushUpdate()
-#
-#
-#PlotFunction(A, 100)
-#
