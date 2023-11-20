@@ -22,7 +22,6 @@ class Bee:
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {}        # how much pollen and what kind
 
-
         self.color = color
         self.birth = birth
 
@@ -33,8 +32,6 @@ class Bee:
         # Get nearby flowers within the field of view and range excluding visited.
         nearby_flowers = [flower for flower in flowers if self.InFieldOfView(flower)]
         nearby_flowers = [flower for flower in nearby_flowers if flower not in self.visited_flowers]
-
-
         
         if nearby_flowers:
             nearest_flower = min(nearby_flowers, key=lambda flower: np.linalg.norm([flower.x - self.x, flower.y - self.y]))
