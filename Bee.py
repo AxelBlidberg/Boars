@@ -1,4 +1,5 @@
 import numpy as np
+#from Environment import AddFlower
 
 class Bee:
     def __init__(self, x, y, birth, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
@@ -23,6 +24,8 @@ class Bee:
         self.pollen = {}        # how much pollen and what kind
 
         self.color = color
+        #self.vision_points = np.array([[10,0],[0,10]]) #coordinates of 2 points making a triangle if combined with position
+        # add self.speed? (= norm of velocity)
         self.birth = birth
 
     def Update(self, flowers):
@@ -39,9 +42,34 @@ class Bee:
             self.orientation = np.arctan2(direction_to_nearest[1], direction_to_nearest[0]) + self.angular_noise * W
 
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
+            
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
-                nearest_flower.color="#2b79cb"
+                flower_type = nearest_flower.type 
+                pollenAmount = nearest_flower.pollenAmount
+                pollen_taken = np.random.randint(0,pollenAmount)
+
+                if flower_type in self.pollen.keys():
+                    r = np.random.random()
+                    if r < 1: #dummy value TODO: Fixa varierande reproduktion för varje blomma
+                        nearest_flower.pollenAmount += self.pollen[flower_type] #Allt pollen ges från biet till blomman om pollen sker
+
+                    else:
+                        self.pollen[flower_type] += pollen_taken #Biet tar en viss mängd pollen
+
+                        #Vill ta bort pollen från bieet om pollinering sker
+
+                    #Pollinera eventuellt blomman
+
+                else:
+                    self.pollen[flower_type] = pollen_taken
+                    
+                nearest_flower.pollenAmount = pollenAmount - pollen_taken
+
+                color_scale = ["#FFFFCC", "#FFFF99","#FFFF66", "#FFCC33","#FFD700","#B8860B","#FAFAD2", "#EEE8AA","#FFEB3B","#FFC107"]
+                
+                nearest_flower.color= color_scale[nearest_flower.pollenAmount]
+
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
                 
@@ -71,3 +99,51 @@ class Bee:
                 return True
 
         return False
+
+ 
+
+    def find_flowers(self, nearby):   # Fix needed for when bee is pointing downwards
+            # assuming "radius" in environment = "vision length" here
+            vision_length = 20
+            empty_flower = []
+            found_flower = False
+
+            bee_position = np.array([self.x,self.y])
+            
+            left_line = [bee_position,self.vision_points[0,:]]
+            left_distances = left_line[0] - left_line[1]     # ∆x = bee x-left point x, ∆y = bee y -left point y
+            left_slope = left_distances[1]/left_distances[0] # =∆y/∆x
+            left_constant = self.y / (left_slope * self.x)   # m = y/kx
+            
+            right_line = [bee_position,self.vision_points[1,:]]
+            right_distances = right_line[0] - right_line[1]     # ∆x = bee x-right point x, ∆y = bee y -right point y
+            right_slope = right_distances[1]/right_distances[0] # =∆y/∆x
+            right_constant = self.y / (right_slope * self.x)    # m = y/kx
+            
+            
+            nearest_flower = [1000]
+            
+            for flower in nearby:
+                x_flower, y_flower = flower[2], flower[3]
+                distance = np.sqrt((self.x-x_flower)**2 + (self.y-y_flower)**2)   # remove later since circle already done in environemnt
+                if distance > vision_length:  # if outside circle
+                    continue
+                if y_flower < left_slope * x_flower + left_constant: # if under left line
+                    continue
+                elif y_flower < right_slope * x_flower + right_constant: # if under right line
+                    continue
+                else:
+                    if flower[0] < nearest_flower[0]:  #[0] --> distance
+                        print(flower, '<', nearest_flower)
+                        nearest_flower = flower
+                        found_flower = True
+                    else:
+                        continue
+                        
+            if found_flower: 
+                # go to coordinates of flower
+                self.x,self.y = nearest_flower[2],nearest_flower[3]
+                print('found flower',nearest_flower)
+                empty_flower = nearest_flower
+            
+            return found_flower, empty_flower

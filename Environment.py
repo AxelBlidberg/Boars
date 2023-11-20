@@ -123,8 +123,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, t='random', environment = 'countryside', color="#fffdff") -> None:
-
+    def __init__(self, center, radius, birth, t='random', environment = 'countryside', color="#fffdff", outer_color="#FFC107") -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
@@ -152,30 +151,32 @@ class Flower:
         else:
             self.type = t
 
+
         # Characteristics of flowers
         life = 100
         pollen = 100
+        self.lifespan = 100
+        self.creation = birth
+        colors = ['purple','orange','pink','blue','yellow']
+        self.outer_color = colors[self.type-1]
         if self.type == 1: # Lavender
             self.lifespan = 2*life
-            self.pollen = pollen
+            self.pollenAmount = pollen
         elif self.type == 2: # Bee balm
             self.lifespan = 2*life
-            self.pollen = pollen
+            self.pollenAmount = pollen
         elif self.type == 3: # Sunflower
             self.lifespan = life
-            self.pollen = 4*pollen
+            self.pollenAmount = 4*pollen
         elif self.type == 4: # Coneflowers
             self.lifespan = life
-            self.pollen = pollen
+            self.pollenAmount = pollen
         elif self.type == 5: # Blueberry
             self.lifespan = life
-            self.pollen = 4*pollen
+            self.pollenAmount = 4*pollen
             
 
         self.nectarAmount = np.random.randint(1,10)
-        self.collectedPollen = {f'{i}': 0 for i in range(1,6)}
-        self.lifespan = 100
-        self.creation = birth
 
 
     def __str__(self) -> str:
@@ -205,11 +206,15 @@ class Flower:
             self.pollen[pollenType] += amount
 
     def UpdateFlower(self, time):
+
+        #Pollen förmultnar vill vi inkludera det?
+        #Vi har ej hittat något om att pollen återgenereras 
         '''
         Update rules for flowers, 
         '''
-        if self.collectedPollen[f'{self.type}'] >= 10:
-            self.pollen[self.type] -= 10
+        if self.pollenAmount > 9: #Byta ut mot bi, alltså om bit har pollen från samma blomtyp pollinera med en viss sannolikhet
+            self.pollenAmount -= 9
+            #Har den blivit pollinerad?
             return [1, [self.x, self.y]]
         elif time - self.creation < self.lifespan:
             return [2, []]

@@ -12,12 +12,11 @@ class BeeSim(tk.Tk):
         self.size = size
         self.num_flowers = num_flowers
        
-
         self.title("Bee Simulation")
         
         self.canvas_frame = tk.Frame(self)
         self.canvas_frame.pack(side="left", padx=10)
-        self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#252526')
+        self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#355E3B')
         self.canvas.pack()
 
         # Frame for sliders
@@ -28,7 +27,6 @@ class BeeSim(tk.Tk):
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
         self.angular_noise_slider.set(0.45)
         self.angular_noise_slider.pack()
-
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
         self.vision_range_slider.set(30)
@@ -56,16 +54,19 @@ class BeeSim(tk.Tk):
         self.after(50, self.UpdateModel)
 
     def DrawEnvironment(self):
-        flower_size = 4
+        size = 3
+        outer_size = 8
+
+        self.environment.PushUpdate()
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - flower_size, y - flower_size, x + flower_size, y + flower_size, fill=flower.color)
-
+            self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outer_color)
+            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.color)
+    
         nest_size = 10
         for nest in self.environment.nests:
             x, y = nest.x, nest.y
             self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill='black')
-
 
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
