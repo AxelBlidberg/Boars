@@ -102,7 +102,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', environment = 'countryside') -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
@@ -110,9 +110,43 @@ class Flower:
 
         # Type of flower
         if t == 'random':
-            self.type = np.random.randint(1, 5)
+            if environment == 'countryside':
+                probabilities = [2, 2, 3, 5, 4]
+                pSum = sum(probabilities)
+                probabilities = [p/pSum for p in probabilities]
+                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
+            elif environment == 'urban':
+                probabilities = [5, 4, 3, 2, 1]
+                pSum = sum(probabilities)
+                probabilities = [p/pSum for p in probabilities]
+                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
+            elif environment == 'agriculture':
+                probabilities = [4, 1, 5, 1, 3]
+                pSum = sum(probabilities)
+                probabilities = [p/pSum for p in probabilities]
+                self.type = np.random.choice([1, 2, 3, 4, 5], p=probabilities)
+            self.type = np.random.randint(1, 6)
         else:
             self.type = t
+
+        # Characteristics of flowers
+        life = 100
+        pollen = 100
+        if self.type == 1: # Lavender
+            self.lifespan = 2*life
+            self.pollen = pollen
+        elif self.type == 2: # Bee balm
+            self.lifespan = 2*life
+            self.pollen = pollen
+        elif self.type == 3: # Sunflower
+            self.lifespan = life
+            self.pollen = 4*pollen
+        elif self.type == 4: # Coneflowers
+            self.lifespan = life
+            self.pollen = pollen
+        elif self.type == 5: # Blueberry
+            self.lifespan = life
+            self.pollen = 4*pollen
             
         self.flowersize = np.random.randint(1, 5)
         self.nectarAmount = np.random.randint(1,10)
@@ -122,7 +156,16 @@ class Flower:
 
 
     def __str__(self) -> str:
-        return f'Flower of type: {self.type} at ({self.x:3.1f}, {self.y:3.1f})'
+        if self.type == 1:
+            return f'Lavender ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
+        elif self.type == 2:
+            return f'Bee balm ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
+        elif self.type == 3:
+            return f'Sunflower ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
+        elif self.type == 4:
+            return f'Coneflower ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
+        elif self.type == 5:
+            return f'Blueberry ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
 
     def DecreaseNectar(self):
         '''
@@ -233,7 +276,7 @@ def PlotFunction(data, limit):
 
 test = Environment(100)
 
-test.InitializeFlowers(5)
+test.InitializeFlowers(10)
 
 test.InitializeBeeNest(5)
 
