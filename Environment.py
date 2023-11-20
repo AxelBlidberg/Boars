@@ -1,8 +1,9 @@
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib as plt
 
 class Environment:
     def __init__(self, size) -> None:
+        self.size = size
         self.xLimit = size
         self.yLimit = size
         self.flowers = []
@@ -35,6 +36,7 @@ class Environment:
         '''
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
+
             self.flowers.append(Flower(center, self.xLimit/2, self.iterations, self.xLimit, self.yLimit))
 
     def AddFlower(self, center, radius, flowerType):
@@ -87,6 +89,7 @@ class Environment:
             elif status[0] == 2:
                 del self.flowers[i]
 
+
     def GetObject(self, x, y):
         '''
         Returns the object at the specified location for outside manipulation of object, like depositing/ taking pollen.
@@ -102,12 +105,13 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#fffdff") -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
-
+        self.color = color
+        
         # Type of flower
         if t == 'random':
             self.type = np.random.randint(1, 5)
@@ -196,6 +200,7 @@ class Hazards:
         pass
 
 
+
 def PlotFunction(data, limit):
     '''
     Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
@@ -217,9 +222,10 @@ def PlotFunction(data, limit):
     y_values = [item[3] for item in flowers]
     y_NestValues = [item[3] for item in nests]
 
-    unique_types = set(types)
-    color_map = {t: i for i, t in enumerate(unique_types)}
-    colors = [color_map[t] for t in types]
+#     unique_types = set(types)
+#     color_map = {t: i for i, t in enumerate(unique_types)}
+#     colors = [color_map[t] for t in types]
+
 
     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
     plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=100)
@@ -231,32 +237,34 @@ def PlotFunction(data, limit):
     plt.show()
 
 
-test = Environment(100)
+#test = Environment(100)
+#
+#test.InitializeFlowers(5)
+#
+#test.InitializeBeeNest(5)
+#
+#for i in range(30):
+#    obj = np.random.choice(test.flowers)
+#    test.AddFlower(obj.location, 5, obj.type)
+#
+#for i in range(10):
+#    obj = np.random.choice(test.flowers)
+#    C = test.GetObject(obj.x, obj.y)
+#    print(f'Selected flower: {C}')
+#
 
-test.InitializeFlowers(5)
-
-test.InitializeBeeNest(5)
-
-for i in range(30):
-    obj = np.random.choice(test.flowers)
-    test.AddFlower(obj.location, 5, obj.type)
-
-for i in range(10):
-    obj = np.random.choice(test.flowers)
-    C = test.GetObject(obj.x, obj.y)
-    print(f'Selected flower: {C}')
 
 
-
-
-#neighbors = test.GetSurroundings([5,5], 5)
-A = test.ExportContent()
-B = test.flowers
-#for b in B:
-#    print(b)
-
-for a in A:
-    print(a)
-test.PushUpdate()
-
-PlotFunction(A, 100)
+##neighbors = test.GetSurroundings([5,5], 5)
+#A = test.ExportContent()
+#B = test.flowers
+##for b in B:
+##    print(b)
+#
+#for a in A:
+#    print(a)
+#test.PushUpdate()
+#
+#
+#PlotFunction(A, 100)
+#
