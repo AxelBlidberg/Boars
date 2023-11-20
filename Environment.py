@@ -103,22 +103,12 @@ class Environment:
 
 class Flower:
     def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
-        # Add control to ensure location is within environment
+        # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
-        if self.x < 0:
-            print('Outside limit')
-            self.x = 0
-        elif self.x > xLimit:
-            print('Outside limit')
-            self.x = xLimit
         self.y = center[1] + radius*np.random.uniform(-1, 1)
-        if self.y < 0:
-            print('Outside limit')
-            self.y = 0
-        elif self.y > yLimit:
-            print('Outside limit')
-            self.y = yLimit
         self.location = [self.x, self.y]
+
+        # Type of flower
         if t == 'random':
             self.type = np.random.randint(1, 5)
         else:
