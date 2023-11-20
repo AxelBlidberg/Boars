@@ -1,9 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Environment:
     def __init__(self, size, environmentType='countryside') -> None:
-        print(f'An environment has been created of type {environmentType}')
+        print(f'\nAn environment has been created of type: \'{environmentType}\'')
         self.xLimit = size
         self.yLimit = size
         self.envType = environmentType
@@ -43,7 +44,9 @@ class Environment:
         '''
         Method to add one or several flowers to the environment
 
-        n = Number of flowers to add
+        center = Around which coordinate the flower should be created
+        radius = distance from center allowed
+        flowerType = Which flower should be created
         '''
         self.flowers.append(Flower(center, radius, self.iterations, t=flowerType))
 
@@ -55,15 +58,16 @@ class Environment:
         '''
         center = [self.xLimit/2, self.yLimit/2]
         for _ in range(n):
-            self.nests.append(Nest(center, self.xLimit/2, self.xLimit, self.yLimit))
+            self.nests.append(Nest(center, self.xLimit/2))
 
-    def AddBeeNest(self, n):
+    def AddBeeNest(self, center, radius):
         '''
         Method to add one or several nests to the environment during the simulation
 
-        n = Number of nests to add
+        center = Around which coordinate the nest should be created
+        radius = Allowed distance from center
         '''
-        pass
+        self.nests.append(Nest(center, radius))
 
     def ExportContent(self):
         '''
@@ -93,7 +97,6 @@ class Environment:
             elif flower.type == 5:
                 distribution['Blueberry'] += 1
         return distribution
-
 
     def PushUpdate(self):
         self.iterations += 1
@@ -215,22 +218,12 @@ class Flower:
 
 
 class Nest:
-    def __init__(self, center, radius, xLimit, yLimit) -> None:
-
-        # Location of the nest
+    def __init__(self, center, radius) -> None:
+        # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
-        if self.x < 0:
-            self.x = 0
-        elif self.x > xLimit:
-            self.x = xLimit
         self.y = center[1] + radius*np.random.uniform(-1, 1)
-        if self.y < 0:
-            self.y = 0
-        elif self.y > yLimit:
-            self.y = yLimit
         self.location = [self.x, self.y]
     
-
     def GetLocation(self) -> list:
         '''
         Returns the coordinates of a nest
