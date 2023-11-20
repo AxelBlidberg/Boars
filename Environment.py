@@ -105,7 +105,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#fffdff") -> None:
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#FFC107") -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
@@ -119,7 +119,7 @@ class Flower:
             self.type = t
             
         self.flowersize = np.random.randint(1, 5)
-        self.nectarAmount = np.random.randint(1,10)
+        self.pollenAmount = np.random.randint(1,10)
         self.pollen = {f'{i}': 0 for i in range(1,6)}
         self.lifespan = 100
         self.creation = birth
@@ -128,12 +128,12 @@ class Flower:
     def __str__(self) -> str:
         return f'Flower of type: {self.type} at ({self.x:3.1f}, {self.y:3.1f})'
 
-    def DecreaseNectar(self):
+    def DecreasePollen(self):
         '''
-        Decreases the nectar in a flower
+        Decreases the pollen in a flower
         '''
-        if self.nectarAmount < 0:
-            self.nectarAmount -= 1
+        if self.pollenAmount < 0:
+            self.pollenAmount -= 1
     
     def Pollination(self, beeInstance):
         '''
@@ -148,6 +148,7 @@ class Flower:
         '''
         if self.pollen[f'{self.type}'] >= 10:
             self.pollen[self.type] -= 10
+            #Har den blivit pollinerad?
             return [1, [self.x, self.y]]
         elif time - self.creation < self.lifespan:
             return [2, []]

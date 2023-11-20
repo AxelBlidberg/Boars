@@ -12,7 +12,6 @@ class BeeSim(tk.Tk):
         self.size = size
         self.num_flowers = num_flowers
        
-
         self.title("Bee Simulation")
         
         self.canvas_frame = tk.Frame(self)
@@ -28,7 +27,6 @@ class BeeSim(tk.Tk):
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
         self.angular_noise_slider.set(0.45)
         self.angular_noise_slider.pack()
-
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
         self.vision_range_slider.set(30)

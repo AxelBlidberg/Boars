@@ -35,8 +35,6 @@ class Bee:
         # Get nearby flowers within the field of view and range excluding visited.
         nearby_flowers = [flower for flower in flowers if self.InFieldOfView(flower)]
         nearby_flowers = [flower for flower in nearby_flowers if flower not in self.visited_flowers]
-
-
         
         if nearby_flowers:
             nearest_flower = min(nearby_flowers, key=lambda flower: np.linalg.norm([flower.x - self.x, flower.y - self.y]))
@@ -44,9 +42,26 @@ class Bee:
             self.orientation = np.arctan2(direction_to_nearest[1], direction_to_nearest[0]) + self.angular_noise * W
 
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
+            
+            #Vilken blomma är detta och hur mycket pollen har den
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
-                nearest_flower.color="#2b79cb"
+                flower_type = nearest_flower.type 
+                pollenAmount = nearest_flower.pollenAmount
+                pollen_taken = np.random.randint(0,pollenAmount)
+
+                if flower_type in self.pollen.keys():
+                    self.pollen[flower_type] += pollen_taken
+
+                else:
+                    self.pollen[flower_type] = pollen_taken
+                    
+                nearest_flower.pollenAmount = pollenAmount - pollen_taken
+
+                color_scale = ["#FFFFCC", "#FFFF99","#FFFF66", "#FFCC33","#FFD700","#B8860B","#FAFAD2", "#EEE8AA","#FFEB3B","#FFC107"]
+                
+                nearest_flower.color= color_scale[nearest_flower.pollenAmount]
+
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
                 
@@ -89,12 +104,12 @@ class Bee:
             left_line = [bee_position,self.vision_points[0,:]]
             left_distances = left_line[0] - left_line[1]     # ∆x = bee x-left point x, ∆y = bee y -left point y
             left_slope = left_distances[1]/left_distances[0] # =∆y/∆x
-            left_constant = self.y / (left_slope * self.x)        # m = y/kx
+            left_constant = self.y / (left_slope * self.x)   # m = y/kx
             
             right_line = [bee_position,self.vision_points[1,:]]
             right_distances = right_line[0] - right_line[1]     # ∆x = bee x-right point x, ∆y = bee y -right point y
             right_slope = right_distances[1]/right_distances[0] # =∆y/∆x
-            right_constant = self.y / (right_slope * self.x)        # m = y/kx
+            right_constant = self.y / (right_slope * self.x)    # m = y/kx
             
             
             nearest_flower = [1000]
