@@ -105,7 +105,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#FFC107") -> None:
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#FFC107",outer_color="#FFC107") -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
@@ -117,9 +117,12 @@ class Flower:
             self.type = np.random.randint(1, 5)
         else:
             self.type = t
+
+        colors = ['purple','orange','pink','blue','yellow']
+        self.outer_color = colors[self.type-1]
             
         self.flowersize = np.random.randint(1, 5)
-        self.pollenAmount = np.random.randint(1,10)
+        self.pollenAmount = 9 #np.random.randint(1,10)
         self.pollen = {f'{i}': 0 for i in range(1,6)}
         self.lifespan = 100
         self.creation = birth
@@ -127,13 +130,6 @@ class Flower:
 
     def __str__(self) -> str:
         return f'Flower of type: {self.type} at ({self.x:3.1f}, {self.y:3.1f})'
-
-    def DecreasePollen(self):
-        '''
-        Decreases the pollen in a flower
-        '''
-        if self.pollenAmount < 0:
-            self.pollenAmount -= 1
     
     def Pollination(self, beeInstance):
         '''
@@ -143,11 +139,15 @@ class Flower:
             self.pollen[pollenType] += amount
 
     def UpdateFlower(self, time):
+
+        #Pollen förmultnar vill vi inkludera det?
+        #Vi har ej hittat något om att pollen återgenereras 
         '''
         Update rules for flowers, 
         '''
-        if self.pollen[f'{self.type}'] >= 10:
-            self.pollen[self.type] -= 10
+        print(self.pollenAmount)
+        if self.pollenAmount > 9: #Byta ut mot bi, alltså om bit har pollen från samma blomtyp pollinera med en viss sannolikhet
+            self.pollenAmount -= 9
             #Har den blivit pollinerad?
             return [1, [self.x, self.y]]
         elif time - self.creation < self.lifespan:

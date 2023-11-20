@@ -1,4 +1,5 @@
 import numpy as np
+#from Environment import AddFlower
 
 class Bee:
     def __init__(self, x, y, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
@@ -24,7 +25,6 @@ class Bee:
 
 
         self.color = color
-
         #self.vision_points = np.array([[10,0],[0,10]]) #coordinates of 2 points making a triangle if combined with position
         # add self.speed? (= norm of velocity)
 
@@ -43,7 +43,6 @@ class Bee:
 
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
             
-            #Vilken blomma är detta och hur mycket pollen har den
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
                 flower_type = nearest_flower.type 
@@ -51,7 +50,16 @@ class Bee:
                 pollen_taken = np.random.randint(0,pollenAmount)
 
                 if flower_type in self.pollen.keys():
-                    self.pollen[flower_type] += pollen_taken
+                    r = np.random.random()
+                    if r < 1: #dummy value TODO: Fixa varierande reproduktion för varje blomma
+                        nearest_flower.pollenAmount += self.pollen[flower_type] #Allt pollen ges från biet till blomman om pollen sker
+
+                    else:
+                        self.pollen[flower_type] += pollen_taken #Biet tar en viss mängd pollen
+
+                        #Vill ta bort pollen från bieet om pollinering sker
+
+                    #Pollinera eventuellt blomman
 
                 else:
                     self.pollen[flower_type] = pollen_taken
