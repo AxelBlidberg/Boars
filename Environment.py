@@ -10,7 +10,7 @@ class Environment:
         self.flowers = []
         self.nests = []
         self.hazards = []
-        self.iterations = 0
+        self.iterations = 0 #behövs eventuellt inte
 
     def GetSurroundings(self, position, radius) -> list:
         '''
@@ -194,7 +194,7 @@ class Flower:
         '''
         Update rules for flowers, 
         '''
-        if self.pollen >= 500:
+        if self.pollen > 500:
             self.pollen -= 500
             return [1, [self.x, self.y]]
         

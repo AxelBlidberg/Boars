@@ -113,7 +113,7 @@ class BeeSim(tk.Tk):
 
         # new bees
         
-        if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
+        if self.timestep % 100==0: # change to pollen-related, and so new bees are born in nests?
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
             self.bees.append(Bee(nest.x, nest.y, self.timestep))
         

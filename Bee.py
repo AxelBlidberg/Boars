@@ -70,7 +70,7 @@ class Bee:
 
                 color_scale = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
                 
-                interval = 100
+                interval = 100 #olika nyanser av gult i blomman för varje "100 pollen"
                 index = min(nearest_flower.pollen // interval, len(color_scale) - 1)
 
                 nearest_flower.centerColor = color_scale[index]
