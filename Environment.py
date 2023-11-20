@@ -1,8 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 class Environment:
     def __init__(self, size) -> None:
+        self.size = size
         self.xLimit = size
         self.yLimit = size
         self.flowers = []
@@ -35,6 +35,7 @@ class Environment:
         '''
         for _ in range(n):
             center = [self.xLimit/2, self.yLimit/2]
+
             self.flowers.append(Flower(center, self.xLimit/2, self.iterations, self.xLimit, self.yLimit))
 
     def AddFlower(self, center, radius, flowerType):
@@ -86,6 +87,7 @@ class Environment:
                 self.AddFlower(status[1], 2)
             elif status[0] == 2:
                 del self.flowers[i]
+
 
     def GetObject(self, x, y):
         '''
@@ -196,6 +198,7 @@ class Hazards:
         pass
 
 
+
 def PlotFunction(data, limit):
     '''
     Temporary function for plotting the environment. Takes a special formatted list obtained from the ExportContent method in the Environment class.
@@ -217,9 +220,10 @@ def PlotFunction(data, limit):
     y_values = [item[3] for item in flowers]
     y_NestValues = [item[3] for item in nests]
 
-    unique_types = set(types)
-    color_map = {t: i for i, t in enumerate(unique_types)}
-    colors = [color_map[t] for t in types]
+#     unique_types = set(types)
+#     color_map = {t: i for i, t in enumerate(unique_types)}
+#     colors = [color_map[t] for t in types]
+
 
     plt.scatter(x_values, y_values, c=colors, cmap='viridis', s=50, alpha=0.8, label=types)
     plt.scatter(x_NestValues, y_NestValues, marker='^', color='black', label='Black Triangles', s=100)
@@ -258,5 +262,6 @@ B = test.flowers
 for a in A:
     print(a)
 test.PushUpdate()
+
 
 PlotFunction(A, 100)
