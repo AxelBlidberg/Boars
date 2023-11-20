@@ -101,6 +101,7 @@ class Environment:
                 return content[i][-1]
 
 
+
 class Flower:
     def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
         # Add control to ensure location is within environment
@@ -119,11 +120,13 @@ class Flower:
             self.type = np.random.randint(1, 5)
         else:
             self.type = t
+            
         self.flowersize = np.random.randint(1, 5)
         self.nectarAmount = np.random.randint(1,10)
         self.pollen = {f'{i}': 0 for i in range(1,6)}
         self.lifespan = 100
         self.creation = birth
+
 
     def __str__(self) -> str:
         return f'Flower of type: {self.type} at ({self.x:3.1f}, {self.y:3.1f})'
@@ -235,7 +238,6 @@ def PlotFunction(data, limit):
     plt.show()
 
 
-
 test = Environment(100)
 
 test.InitializeFlowers(5)
@@ -265,4 +267,3 @@ for a in A:
 test.PushUpdate()
 
 PlotFunction(A, 100)
-
