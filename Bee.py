@@ -2,7 +2,7 @@ import numpy as np
 #from Environment import AddFlower
 
 class Bee:
-    def __init__(self, x, y, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    def __init__(self, x, y, birth, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = x
         self.y = y
         self.path = [[self.x, self.y]]
@@ -23,10 +23,10 @@ class Bee:
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {}        # how much pollen and what kind
 
-
         self.color = color
         #self.vision_points = np.array([[10,0],[0,10]]) #coordinates of 2 points making a triangle if combined with position
         # add self.speed? (= norm of velocity)
+        self.birth = birth
 
     def Update(self, flowers):
         # Angular noise to the direction
@@ -84,6 +84,7 @@ class Bee:
 
         if len(self.path) > self.path_length:
             self.path.pop(0)
+        
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
@@ -146,5 +147,3 @@ class Bee:
                 empty_flower = nearest_flower
             
             return found_flower, empty_flower
-        
-

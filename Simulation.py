@@ -44,8 +44,12 @@ class BeeSim(tk.Tk):
 
         self.environment = Environment(size)
         self.environment.InitializeFlowers(num_flowers)
+        self.environment.InitializeBeeNest(3)
+        
+        self.timestep = 0
+        self.max_age = 500 # bees max age, in timesteps
 
-        self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10)) for _ in range(num_bees)]
+        self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10),self.timestep) for _ in range(num_bees)]
 
         self.after(50, self.UpdateModel)
 
@@ -59,6 +63,11 @@ class BeeSim(tk.Tk):
             self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outer_color)
             self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.color)
     
+        nest_size = 10
+        for nest in self.environment.nests:
+            x, y = nest.x, nest.y
+            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill='black')
+
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
         self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill=bee.color)
@@ -84,12 +93,24 @@ class BeeSim(tk.Tk):
 
     def UpdateModel(self):
         self.canvas.delete('all')
+        self.timestep += 1
 
         angular_noise = float(self.angular_noise_slider.get())
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
+         
+        # new bees
+        if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
+            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
+            self.bees.append(Bee(nest.x, nest.y, self.timestep))
 
         for bee in self.bees:
+
+            # kill bee if old
+            if self.timestep - bee.birth > self.max_age:
+                del bee
+                continue
+
             bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
             
             bee.Update(self.environment. flowers)
@@ -99,7 +120,7 @@ class BeeSim(tk.Tk):
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
-             
+        
         self.DrawEnvironment()
       
         self.after(50, self.UpdateModel)
