@@ -130,11 +130,9 @@ class Flower:
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         
-        self.centerColor = '#FFC107'
-        
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
-        possibleColors = ['purple', 'red', 'orange', 'pink', 'blue']
+        possibleOuterColors = ['purple', 'red', 'orange', 'pink', 'blue']
         
         if t == 'random':
             if environment == 'countryside':
@@ -174,7 +172,14 @@ class Flower:
             self.lifespan = life
             self.pollen = 4*pollen
         
-        self.outer_color = possibleColors[self.type - 1]
+        
+        #olika nyanser av gult i blomman för varje "100 pollen den har"
+        self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
+                
+        self.centerColor = self.possibleCenterColors[min(self.pollen//100, len(self.possibleCenterColors) - 1)]
+        
+        #self.centerColor = '#FFC107'
+        self.outerColor = possibleOuterColors[self.type - 1]
 
         self.creation = birth
 

@@ -64,7 +64,7 @@ class BeeSim(tk.Tk):
         
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outer_color)
+            self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outerColor)
             self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
         
         nest_size = 5
