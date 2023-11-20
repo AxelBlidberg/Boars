@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib as plt
 
 class Environment:
     def __init__(self, size) -> None:
@@ -104,12 +105,13 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, xLimit, yLimit, t='random') -> None:
+    def __init__(self, center, radius, birth, xLimit, yLimit, t='random', color="#fffdff") -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
-
+        self.color = color
+        
         # Type of flower
         if t == 'random':
             self.type = np.random.randint(1, 5)
@@ -235,33 +237,34 @@ def PlotFunction(data, limit):
     plt.show()
 
 
-test = Environment(100)
-
-test.InitializeFlowers(5)
-
-test.InitializeBeeNest(5)
-
-for i in range(30):
-    obj = np.random.choice(test.flowers)
-    test.AddFlower(obj.location, 5, obj.type)
-
-for i in range(10):
-    obj = np.random.choice(test.flowers)
-    C = test.GetObject(obj.x, obj.y)
-    print(f'Selected flower: {C}')
-
-
-
-
-#neighbors = test.GetSurroundings([5,5], 5)
-A = test.ExportContent()
-B = test.flowers
-#for b in B:
-#    print(b)
-
-for a in A:
-    print(a)
-test.PushUpdate()
+#test = Environment(100)
+#
+#test.InitializeFlowers(5)
+#
+#test.InitializeBeeNest(5)
+#
+#for i in range(30):
+#    obj = np.random.choice(test.flowers)
+#    test.AddFlower(obj.location, 5, obj.type)
+#
+#for i in range(10):
+#    obj = np.random.choice(test.flowers)
+#    C = test.GetObject(obj.x, obj.y)
+#    print(f'Selected flower: {C}')
+#
 
 
-PlotFunction(A, 100)
+
+##neighbors = test.GetSurroundings([5,5], 5)
+#A = test.ExportContent()
+#B = test.flowers
+##for b in B:
+##    print(b)
+#
+#for a in A:
+#    print(a)
+#test.PushUpdate()
+#
+#
+#PlotFunction(A, 100)
+#
