@@ -46,20 +46,27 @@ class BeeSim(tk.Tk):
 
         self.environment = Environment(size)
         self.environment.InitializeFlowers(num_flowers)
+        self.environment.InitializeBeeNest(3)
         
         self.timestep = 0
-        self.max_age = 500 # in timesteps
+        self.max_age = 500 # bees max age, in timesteps
 
         self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10),self.timestep) for _ in range(num_bees)]
 
         self.after(50, self.UpdateModel)
 
     def DrawEnvironment(self):
-        size = 4
+        flower_size = 4
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.color)
-    
+            self.canvas.create_oval(x - flower_size, y - flower_size, x + flower_size, y + flower_size, fill=flower.color)
+
+        nest_size = 10
+        for nest in self.environment.nests:
+            x, y = nest.x, nest.y
+            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill='black')
+
+
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
         self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill=bee.color)
@@ -93,7 +100,8 @@ class BeeSim(tk.Tk):
          
         # new bees
         if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
-            self.bees.append(Bee(np.random.uniform(10, self.size-10), np.random.uniform(10, self.size-10),self.timestep))
+            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
+            self.bees.append(Bee(nest.x, nest.y, self.timestep))
 
         for bee in self.bees:
 
