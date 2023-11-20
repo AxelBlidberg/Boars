@@ -52,6 +52,8 @@ class BeeSim(tk.Tk):
     def DrawEnvironment(self):
         size = 3
         outer_size = 8
+
+        self.environment.PushUpdate()
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
             self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outer_color)
