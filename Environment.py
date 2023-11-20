@@ -39,7 +39,7 @@ class Environment:
             center = [self.xLimit/2, self.yLimit/2]
             self.flowers.append(Flower(center, self.xLimit/2, self.iterations, t='random', environment=self.envType))
 
-    def AddFlower(self, center, radius, flowerType) -> None:
+    def AddFlower(self, center, radius, time, flowerType) -> None:
         '''
         Method to add one or several flowers to the environment
 
@@ -47,7 +47,7 @@ class Environment:
         radius = distance from center allowed
         flowerType = Which flower should be created
         '''
-        self.flowers.append(Flower(center, radius, self.iterations, t=flowerType))
+        self.flowers.append(Flower(center, radius, time, flowerType))
 
     def InitializeBeeNest(self, n) -> None:
         '''
@@ -98,13 +98,13 @@ class Environment:
                 distribution['Blueberry'] += 1
         return distribution
 
-    def PushUpdate(self):
+    def PushUpdate(self, time):
         self.iterations += 1
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(self.iterations)
+            status = flower.UpdateFlower(time)
             if status[0] == 1:
-                self.AddFlower(status[1], 2, flower.type)
+                self.AddFlower(status[1], 10, time, flower.type)
             elif status[0] == 2:
                 del self.flowers[i]
 
@@ -123,17 +123,18 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, t='random', environment ='countryside', color='#FFC107', outer_color='#FFC107'):
+    def __init__(self, center, radius, birth, t='random', environment ='countryside'):
 
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
-        self.color = color
+        
+        self.centerColor = '#FFC107'
         
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
-        colors = ['purple', 'red', 'orange', 'pink', 'blue']
+        possibleColors = ['purple', 'red', 'orange', 'pink', 'blue']
         
         if t == 'random':
             if environment == 'countryside':
@@ -153,11 +154,9 @@ class Flower:
                 self.type = np.random.choice(types, p=probabilities)
         else:
             self.type = t
-        
-        self.outer_color = colors[self.type - 1]
 
         # Characteristics of flowers
-        life = 100
+        life = 500
         pollen = 100
         if self.type == 1: # Lavender
             self.lifespan = 2*life
@@ -174,10 +173,10 @@ class Flower:
         elif self.type == 5: # Blueberry
             self.lifespan = life
             self.pollen = 4*pollen
-    
-        self.lifespan = 100
-        self.creation = birth
+        
+        self.outer_color = possibleColors[self.type - 1]
 
+        self.creation = birth
 
     def __str__(self) -> str:
         if self.type == 1:
@@ -195,12 +194,13 @@ class Flower:
         '''
         Update rules for flowers, 
         '''
-        if self.pollen >= 200:
-            self.pollen -= 200
+        if self.pollen >= 500:
+            self.pollen -= 500
             return [1, [self.x, self.y]]
         
-        elif time - self.creation < self.lifespan:
+        elif (time - self.creation) > self.lifespan:
             return [2, []]
+        
         else:
             return [0, []]
 
@@ -211,6 +211,7 @@ class Nest:
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
+        self.color='#5C4033'
     
     def GetLocation(self) -> list:
         '''

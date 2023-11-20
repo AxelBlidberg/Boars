@@ -65,15 +65,15 @@ class BeeSim(tk.Tk):
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
             self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outer_color)
-            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.color)
+            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
         
         nest_size = 5
         
         for nest in self.environment.nests:
             x, y = nest.x, nest.y
-            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill='black')
+            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill=nest.color)
 
-        #self.environment.PushUpdate()
+        self.environment.PushUpdate(self.timestep)
 
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
@@ -112,19 +112,19 @@ class BeeSim(tk.Tk):
 
 
         # new bees
-        '''
+        
         if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
             self.bees.append(Bee(nest.x, nest.y, self.timestep))
-        '''
+        
         for bee in self.bees:
 
             # kill bee if old
-            '''
+            
             if self.timestep - bee.birth > self.max_age:
                 del bee
                 continue
-            '''
+            
             bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
             
             bee.Update(self.environment. flowers)
@@ -142,5 +142,5 @@ class BeeSim(tk.Tk):
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=800, num_bees=5, num_flowers=100)
+    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150)
     bee_sim.mainloop()

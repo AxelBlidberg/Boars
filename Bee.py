@@ -42,33 +42,38 @@ class Bee:
 
             if distance_to_nearest <= self.visit_radius:
                 self.visited_flowers.append(nearest_flower)
-                flower_type = nearest_flower.type 
-                pollenAmount = nearest_flower.pollen
+                flowerType = nearest_flower.type 
                 
-                pollen_taken = np.random.randint(0, pollenAmount)
+                pollen_taken = np.random.randint(0, nearest_flower.pollen)
 
-                if flower_type in self.pollen.keys():
+                if flowerType in self.pollen.keys():
+                    
                     r = np.random.random()
+
                     if r < 1: #dummy value TODO: Fixa varierande reproduktion för varje blomma
-                        nearest_flower.pollen += self.pollen[flower_type] #Allt pollen ges från biet till blomman om pollen sker
+
+                        nearest_flower.pollen += self.pollen[flowerType] #Allt pollen ges från biet till blomman om pollen sker just nu
+                        self.pollen[flowerType] = 0
 
                     else:
-                        self.pollen[flower_type] += pollen_taken #Biet tar en viss mängd pollen
+                        self.pollen[flowerType] += pollen_taken #Biet tar en viss mängd pollen
+                        nearest_flower.pollen -= pollen_taken
 
                         #Vill ta bort pollen från bieet om pollinering sker
 
                     #Pollinera eventuellt blomman
 
                 else:
-                    self.pollen[flower_type] = pollen_taken
+                    self.pollen[flowerType] = pollen_taken
                     
-                nearest_flower.pollenAmount = pollenAmount - pollen_taken
+                #nearest_flower.pollen = nearest_flower.pollen - pollen_taken
 
                 color_scale = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
                 
                 interval = 100
-                index = min(nearest_flower.pollenAmount // interval, len(color_scale) - 1)
-                nearest_flower.color = color_scale[index]
+                index = min(nearest_flower.pollen // interval, len(color_scale) - 1)
+
+                nearest_flower.centerColor = color_scale[index]
 
                 #nearest_flower.color= color_scale[nearest_flower.pollenAmount]   
                 
