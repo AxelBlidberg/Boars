@@ -57,15 +57,16 @@ envType1 = 'urban'
 envType2 = 'agriculture'
 
 env = Environment(size)
-env2 = Environment(size, envType2)
 env.InitializeFlowers(flowers)
 env.InitializeBeeNest(nests)
 print('\n > Creation distribution:        ', env.FlowerDistribution())
+print(len(env.flowers))
 
 AddFlowers(30)
 AddNests(10)
-env.PushUpdate()
+#env.PushUpdate()
 
 print(' > Procreation distribution:     ', env.FlowerDistribution())
+print(len(env.flowers))
 
-PlotFunction(env.ExportContent(), size)
+#PlotFunction(env.ExportContent(), size)
