@@ -31,13 +31,18 @@ class Environment:
         nearby = sorted(nearby, key= lambda x: x[0])
         return nearby
 
-    def InitializeFlowers(self, n) -> None:
+    def InitializeFlowers(self, n, time) -> None:
         '''
         Initializes n number of flowers in the environment
         '''
-        for _ in range(n):
+        if time > 1:
+            ages_new_flowers = [time]*n
+        else: 
+            ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
+        
+        for i in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, self.iterations, t='random', environment=self.envType))
+            self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i], t='random', environment=self.envType))
 
     def AddFlower(self, center, radius, time, flowerType) -> None:
         '''
@@ -217,6 +222,7 @@ class Nest:
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.color='#5C4033'
+        self.pollen = 0
     
     def GetLocation(self) -> list:
         '''
