@@ -47,13 +47,12 @@ class BeeSim(tk.Tk):
         self.environment = Environment(size)
         self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
-
-
         
         self.timestep = 0
-        self.max_age = 500 # bees max age, in timesteps
 
-        self.bees = [Bee(self.environment.nests[i].x, self.environment.nests[i].y, self.timestep) for i in range(num_bees)]
+        self.max_age = 500 # bees max age, in timesteps
+        ages_first_bees = np.random.normal(loc=-80, scale= 20, size=num_bees) # random birth-dates on first bees
+        self.bees = [Bee(self.environment.nests[i].x, self.environment.nests[i].y, ages_first_bees[i]) for i in range(num_bees)]
 
         self.after(50, self.UpdateModel)
 
