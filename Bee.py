@@ -115,16 +115,15 @@ class Bee:
         if nearby_home:
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
             if distance_to_home <= self.visit_radius:
-                print('bee went home to leave pollen. Pollen levels before:',self.pollen)
-                print('Nest pollen level:',self.home.pollen)
-                leave_home_ratio = 1/2
                 food = sum(self.pollen.values())
+                print('bee went home to leave pollen')
+                leave_home_ratio = 1/2
                 for key in self.pollen.keys(): # leave the same ratio of each pollen type
                     self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen
                 pollen_given = int(food * leave_home_ratio)
                 self.home.pollen += pollen_given
-                print('Pollen after',self.pollen)
-                print('Nest pollen level:',self.home.pollen)
+                print('Bee pollen after',sum(self.pollen.values()))
+                print('Nest pollen after:',self.home.pollen)
         
         W = np.random.uniform(-1/2, 1/2)
         direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])

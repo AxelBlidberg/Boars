@@ -125,12 +125,12 @@ class BeeSim(tk.Tk):
             
             # kill bee if starving
             food = sum(bee.pollen.values())
-            if food < 1 and bee_age > 100:  # make pollen non-empty for first bees?
+            if food < 1 and bee_age > 100:
                 print('RIP: bee died of starvation. Age:',bee_age,'. Pollen levels:',bee.pollen)
                 self.bees.pop(bee_number)
                 del bee
                 continue
-            full = 200
+            full = 500
             if food > full:
                 bee.ReturnHome() # return to home nest if full
             else:
@@ -144,8 +144,8 @@ class BeeSim(tk.Tk):
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
         
-        if self.timestep%20 == 1:
-            self.environment.InitializeFlowers(1, self.timestep)
+        if self.timestep%200 == 1: # temporary: add 10 flowers every 100th timestep
+            self.environment.InitializeFlowers(20, self.timestep)
       
         self.after(50, self.UpdateModel)
 
