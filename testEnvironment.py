@@ -69,4 +69,4 @@ AddNests(10)
 print(' > Procreation distribution:     ', env.FlowerDistribution())
 print(len(env.flowers))
 
-#PlotFunction(env.ExportContent(), size)
+PlotFunction(env.ExportContent(), size)
