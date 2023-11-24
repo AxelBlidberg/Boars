@@ -7,7 +7,6 @@ class Environment:
         # Environment variables
         self.xLimit = size
         self.yLimit = size
-        self.iterations = 0 #behövs eventuellt inte
 
         # Flowers
         self.newGeneration = []
