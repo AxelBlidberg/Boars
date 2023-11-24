@@ -58,7 +58,7 @@ class Environment:
             
         elif self.envType == 'urban':
             
-            clusters = np.random.randint(3, 20)
+            clusters = np.random.randint(5, 20)
 
             flowersPerCluster = int(n/clusters)  # alla cluster får samma antal blommor, men kanske göra en procentuell fördelning?
 
@@ -71,7 +71,7 @@ class Environment:
                     self.AddFlower(clusterCenterFlower.location, 25, time, clusterCenterFlower.type)
         
         elif self.envType == 'agriculture':
-            pass
+            pass #TODO på rad
 
         else:
             pass
