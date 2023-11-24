@@ -50,7 +50,13 @@ class Environment:
         else: 
             ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
 
+
         if self.envType == 'countryside':
+            for i in range(n):
+                center = [self.xLimit/2, self.yLimit/2]
+                self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i],self.seasonLength, t='random', environment=self.envType))   
+            
+        elif self.envType == 'urban':
             
             clusters = np.random.randint(3, 20)
 
@@ -62,12 +68,8 @@ class Environment:
                 self.flowers.append(clusterCenterFlower)
 
                 for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 50, time, clusterCenterFlower.type)
+                    self.AddFlower(clusterCenterFlower.location, 25, time, clusterCenterFlower.type)
         
-
-
-        elif self.envType == 'urban':
-            pass
         elif self.envType == 'agriculture':
             pass
 
