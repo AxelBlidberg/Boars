@@ -4,13 +4,22 @@ import numpy as np
 class Environment:
     def __init__(self, size, environmentType='countryside') -> None:
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
+        # Environment variables
         self.xLimit = size
         self.yLimit = size
+        self.iterations = 0 #behövs eventuellt inte
+
+        # Flowers
+        self.newGeneration = []
         self.envType = environmentType
         self.flowers = []
+        self.seasonLength = 1000
+
+        # Nests
         self.nests = []
+
+        # Hazards
         self.hazards = []
-        self.iterations = 0 #behövs eventuellt inte
 
     def GetSurroundings(self, position, radius) -> list:
         '''
@@ -42,7 +51,12 @@ class Environment:
         
         for i in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i], t='random', environment=self.envType))
+            self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i],self.seasonLength, t='random', environment=self.envType))
+
+    def CreateNewGeneration(self, time):
+        for individual in self.newGeneration:
+            self.AddFlower(individual[0], individual[1], time, individual[2])
+        self.newGeneration = []
 
     def AddFlower(self, center, radius, time, flowerType) -> None:
         '''
@@ -52,7 +66,7 @@ class Environment:
         radius = distance from center allowed
         flowerType = Which flower should be created
         '''
-        self.flowers.append(Flower(center, radius, time, flowerType))
+        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
 
     def InitializeBeeNest(self, n) -> None:
         '''
@@ -109,9 +123,13 @@ class Environment:
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
             if status[0] == 1:
+                self.newGeneration.append([status[1], 10, flower.type])
                 self.AddFlower(status[1], 10, time, flower.type)
             elif status[0] == 2:
                 del self.flowers[i]
+        if time % self.seasonLength == 0 and time != 0:
+            self.flowers = []
+            self.CreateNewGeneration(time)
 
     def GetObject(self, x, y):
         '''
@@ -128,7 +146,7 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, t='random', environment ='countryside'):
+    def __init__(self, center, radius, birth, seasonLength, t='random', environment ='countryside'):
 
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
@@ -159,22 +177,22 @@ class Flower:
             self.type = t
 
         # Characteristics of flowers
-        life = 500
+        life = seasonLength
         pollen = 100
         if self.type == 1: # Lavender
-            self.lifespan = 2*life
+            self.lifespan = life
             self.pollen = pollen
         elif self.type == 2: # Bee balm
-            self.lifespan = 2*life
+            self.lifespan = life
             self.pollen = pollen
         elif self.type == 3: # Sunflower
-            self.lifespan = life
+            self.lifespan = int(life/2)
             self.pollen = 4*pollen
         elif self.type == 4: # Coneflowers
-            self.lifespan = life
+            self.lifespan = int(life/2)
             self.pollen = pollen
         elif self.type == 5: # Blueberry
-            self.lifespan = life
+            self.lifespan = int(life/2)
             self.pollen = 4*pollen
         
         
