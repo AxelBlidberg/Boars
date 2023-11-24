@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 class Environment:
@@ -11,9 +10,9 @@ class Environment:
         self.flowers = []
         self.nests = []
         self.hazards = []
-        self.iterations = 1
+        self.iterations = 0 #behövs eventuellt inte
 
-    def GetSurroundings(self, position, radius):
+    def GetSurroundings(self, position, radius) -> list:
         '''
         Returns list sorted on distance on the format: [distance, type, x, y], ex: [1, flower: rose, x, y]
 
@@ -32,15 +31,20 @@ class Environment:
         nearby = sorted(nearby, key= lambda x: x[0])
         return nearby
 
-    def InitializeFlowers(self, n):
+    def InitializeFlowers(self, n, time) -> None:
         '''
         Initializes n number of flowers in the environment
         '''
-        for _ in range(n):
+        if time > 1:
+            ages_new_flowers = [time]*n
+        else: 
+            ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
+        
+        for i in range(n):
             center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, self.iterations, t='random', environment=self.envType))
+            self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i], t='random', environment=self.envType))
 
-    def AddFlower(self, center, radius, flowerType):
+    def AddFlower(self, center, radius, time, flowerType) -> None:
         '''
         Method to add one or several flowers to the environment
 
@@ -48,19 +52,20 @@ class Environment:
         radius = distance from center allowed
         flowerType = Which flower should be created
         '''
-        self.flowers.append(Flower(center, radius, self.iterations, t=flowerType))
+        self.flowers.append(Flower(center, radius, time, flowerType))
 
-    def InitializeBeeNest(self, n):
+    def InitializeBeeNest(self, n) -> None:
         '''
         Method to initialize n nests in the beginning of the simulation
         
         n = Number of nests to add
         '''
         center = [self.xLimit/2, self.yLimit/2]
+        
         for _ in range(n):
             self.nests.append(Nest(center, self.xLimit/2))
 
-    def AddBeeNest(self, center, radius):
+    def AddBeeNest(self, center, radius) -> None:
         '''
         Method to add one or several nests to the environment during the simulation
 
@@ -69,7 +74,7 @@ class Environment:
         '''
         self.nests.append(Nest(center, radius))
 
-    def ExportContent(self):
+    def ExportContent(self) -> list:
         '''
         Exports a list of the format [class, 'Type', x, y, object] ex: ['flower', 1, x, y, Flower]
         '''
@@ -83,7 +88,7 @@ class Environment:
         
         return content
 
-    def FlowerDistribution(self):
+    def FlowerDistribution(self) -> dict:
         distribution = {'Lavender': 0, 'Bee balm': 0, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}
         for flower in self.flowers:
             if flower.type == 1:
@@ -98,13 +103,13 @@ class Environment:
                 distribution['Blueberry'] += 1
         return distribution
 
-    def PushUpdate(self):
+    def PushUpdate(self, time):
         self.iterations += 1
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(self.iterations)
+            status = flower.UpdateFlower(time)
             if status[0] == 1:
-                self.AddFlower(status[1], 2)
+                self.AddFlower(status[1], 10, time, flower.type)
             elif status[0] == 2:
                 del self.flowers[i]
 
@@ -123,16 +128,17 @@ class Environment:
 
 
 class Flower:
-    def __init__(self, center, radius, birth, t='random', environment = 'countryside', color="#fffdff") -> None:
+    def __init__(self, center, radius, birth, t='random', environment ='countryside'):
 
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
-        self.color = color
         
         # Type of flower
-        types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflowers, Blueberry]
+        types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
+        possibleOuterColors = ['purple', 'red', 'orange', 'pink', 'blue']
+        
         if t == 'random':
             if environment == 'countryside':
                 probabilities = [2, 2, 3, 5, 4]
@@ -153,7 +159,7 @@ class Flower:
             self.type = t
 
         # Characteristics of flowers
-        life = 100
+        life = 500
         pollen = 100
         if self.type == 1: # Lavender
             self.lifespan = 2*life
@@ -170,13 +176,17 @@ class Flower:
         elif self.type == 5: # Blueberry
             self.lifespan = life
             self.pollen = 4*pollen
-            
+        
+        
+        #olika nyanser av gult i blomman för varje "100 pollen den har"
+        self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
+                
+        self.centerColor = self.possibleCenterColors[min(self.pollen//100, len(self.possibleCenterColors) - 1)]
+        
+        #self.centerColor = '#FFC107'
+        self.outerColor = possibleOuterColors[self.type - 1]
 
-        self.nectarAmount = np.random.randint(1,10)
-        self.collectedPollen = {f'{i}': 0 for i in range(1,6)}
-        self.lifespan = 100
         self.creation = birth
-
 
     def __str__(self) -> str:
         if self.type == 1:
@@ -190,29 +200,17 @@ class Flower:
         elif self.type == 5:
             return f'Blueberry ({self.type}) at ({self.x:3.1f}, {self.y:3.1f})'
 
-    def DecreaseNectar(self):
-        '''
-        Decreases the nectar in a flower
-        '''
-        if self.nectarAmount < 0:
-            self.nectarAmount -= 1
-    
-    def Pollination(self, beeInstance):
-        '''
-        Pollinates flowers depending on the pollen carried by a bee
-        '''
-        for pollenType, amount in beeInstance.pollenCarried.items():
-            self.pollen[pollenType] += amount
-
-    def UpdateFlower(self, time):
+    def UpdateFlower(self, time) -> list:
         '''
         Update rules for flowers, 
         '''
-        if self.collectedPollen[f'{self.type}'] >= 10:
-            self.pollen[self.type] -= 10
+        if self.pollen > 500:
+            self.pollen -= 500
             return [1, [self.x, self.y]]
-        elif time - self.creation < self.lifespan:
+        
+        elif (time - self.creation) > self.lifespan:
             return [2, []]
+        
         else:
             return [0, []]
 
@@ -223,6 +221,8 @@ class Nest:
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
+        self.color='#5C4033'
+        self.pollen = 0
     
     def GetLocation(self) -> list:
         '''
@@ -250,5 +250,4 @@ class Nest:
 class Hazards:
     def __init__(self) -> None:
         pass
-
 

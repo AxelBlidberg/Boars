@@ -11,13 +11,14 @@ class BeeSim(tk.Tk):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
-       
+        
+        self.timestep = 0
 
         self.title("Bee Simulation")
         
         self.canvas_frame = tk.Frame(self)
         self.canvas_frame.pack(side="left", padx=10)
-        self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#252526')
+        self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#355E3B')
         self.canvas.pack()
 
         # Frame for sliders
@@ -42,29 +43,34 @@ class BeeSim(tk.Tk):
         self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
         self.draw_vision_checkbox.pack(pady=5)
 
-        self.nearby = [[0.001, 'right', 0.5, 0.5], [0.003, 'left', -0.5, -0.5]]
-
         self.environment = Environment(size)
-        self.environment.InitializeFlowers(num_flowers)
-        self.environment.InitializeBeeNest(3)
+        self.environment.InitializeFlowers(num_flowers,self.timestep)
+        self.environment.InitializeBeeNest(num_bees)
         
-        self.timestep = 0
-        self.max_age = 500 # bees max age, in timesteps
 
-        self.bees = [Bee(np.random.uniform(10, size-10), np.random.uniform(10, size-10),self.timestep) for _ in range(num_bees)]
+        ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
+        pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
+        self.bees = [Bee(self.environment.nests[i], ages_first_bees[i],{1:pollen_first_bees[i]}) for i in range(num_bees)]
 
         self.after(50, self.UpdateModel)
 
     def DrawEnvironment(self):
-        flower_size = 4
+        
+        size = 3
+        outer_size = 8
+        
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - flower_size, y - flower_size, x + flower_size, y + flower_size, fill=flower.color)
-
-        nest_size = 10
+            self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outerColor)
+            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
+        
+        nest_size = 5
+        
         for nest in self.environment.nests:
             x, y = nest.x, nest.y
-            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill='black')
+            self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill=nest.color)
+        
+        self.environment.PushUpdate(self.timestep)
 
 
     def DrawBee(self, bee):
@@ -97,22 +103,40 @@ class BeeSim(tk.Tk):
         angular_noise = float(self.angular_noise_slider.get())
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
-         
-        # new bees
-        if self.timestep % 100==1: # change to pollen-related, and so new bees are born in nests?
-            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
-            self.bees.append(Bee(nest.x, nest.y, self.timestep))
+        
+        self.DrawEnvironment() 
 
-        for bee in self.bees:
+        # new bees
+        if self.timestep % 50==0: # change to pollen-related
+            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
+            self.bees.append(Bee(nest, self.timestep))
+        
+        for bee_number, bee in enumerate(self.bees):
+            
+            bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
 
             # kill bee if old
-            if self.timestep - bee.birth > self.max_age:
+            bee_age = self.timestep - bee.birth
+            if  bee_age > bee.max_age: 
+                print('RIP: bee died of age:',bee_age,'. Pollen levels:',bee.pollen)
+                self.bees.pop(bee_number)
                 del bee
                 continue
-
-            bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
             
-            bee.Update(self.environment. flowers)
+            # kill bee if starving
+            food = sum(bee.pollen.values())
+            if food < 1 and bee_age > 100:
+                print('RIP: bee died of starvation. Age:',bee_age,'. Pollen levels:',bee.pollen)
+                self.bees.pop(bee_number)
+                del bee
+                continue
+            full = 500
+            if food > full:
+                bee.ReturnHome() # return to home nest if full
+            else:
+                bee.Update(self.environment.flowers)
+            
+            
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
             self.DrawPath(bee)
@@ -120,12 +144,13 @@ class BeeSim(tk.Tk):
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
         
-        self.DrawEnvironment()
+        if self.timestep%200 == 1: # temporary: add 10 flowers every 100th timestep
+            self.environment.InitializeFlowers(20, self.timestep)
       
         self.after(50, self.UpdateModel)
 
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size= 800, num_bees=5, num_flowers=150)
+    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150)
     bee_sim.mainloop()
