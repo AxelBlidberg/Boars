@@ -12,6 +12,9 @@ class Environment:
         self.hazards = []
         self.iterations = 0 #behövs eventuellt inte
 
+    def __str__(self):
+        return f'A environment of type \'{self.envType}\' currently containing {len(self.flowers)} flowers and {len(self.nests)} bee nests.'
+
     def GetSurroundings(self, position, radius) -> list:
         '''
         Returns list sorted on distance on the format: [distance, type, x, y], ex: [1, flower: rose, x, y]
