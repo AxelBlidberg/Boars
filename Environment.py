@@ -44,6 +44,38 @@ class Environment:
         '''
         Initializes n number of flowers in the environment
         '''
+
+        if time > 1:
+            ages_new_flowers = [time]*n
+        else: 
+            ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
+
+        if self.envType == 'countryside':
+            
+            clusters = np.random.randint(3, 20)
+
+            flowersPerCluster = int(n/clusters)  # alla cluster får samma antal blommor, men kanske göra en procentuell fördelning?
+
+            for i in range(clusters):
+                center = [self.xLimit/2, self.yLimit/2]
+                clusterCenterFlower = Flower(center, self.xLimit/2, ages_new_flowers[i], self.seasonLength, t='random', environment=self.envType)
+                self.flowers.append(clusterCenterFlower)
+
+                for _ in range(flowersPerCluster):
+                    self.AddFlower(clusterCenterFlower.location, 50, time, clusterCenterFlower.type)
+        
+
+
+        elif self.envType == 'urban':
+            pass
+        elif self.envType == 'agriculture':
+            pass
+
+        else:
+            pass
+
+
+        '''
         if time > 1:
             ages_new_flowers = [time]*n
         else: 
@@ -52,6 +84,8 @@ class Environment:
         for i in range(n):
             center = [self.xLimit/2, self.yLimit/2]
             self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i],self.seasonLength, t='random', environment=self.envType))
+        '''
+
 
     def CreateNewGeneration(self, time):
         for individual in self.newGeneration:
