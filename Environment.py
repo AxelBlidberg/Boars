@@ -153,7 +153,7 @@ class Environment:
         return distribution
 
     def PushUpdate(self, time):
-        self.iterations += 1
+
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
