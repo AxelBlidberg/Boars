@@ -17,5 +17,3 @@ Start the simulation with:
 ```console
 python Simulation.py
 ```
-
-The simulation can be run from the simulation.py file
