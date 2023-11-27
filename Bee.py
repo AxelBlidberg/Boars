@@ -58,7 +58,7 @@ class Bee:
                 if flowerType in self.pollen.keys():
                     r = np.random.random() #NOTE: Probability can be added if needed
                     #NOTE: Prompt to pollinate
-                    if r < 0.2:
+                    if r < 0.9:
                         nearest_flower.reproduce = True
 
                     self.pollen[flowerType] += pollen_taken
