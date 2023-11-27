@@ -30,7 +30,6 @@ class BeeSim(tk.Tk):
         self.angular_noise_slider.set(0.45)
         self.angular_noise_slider.pack()
 
-
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
         self.vision_range_slider.set(30)
         self.vision_range_slider.pack()
@@ -47,9 +46,9 @@ class BeeSim(tk.Tk):
         self.environment.InitializeFlowers(num_flowers,self.timestep)
         self.environment.InitializeBeeNest(num_bees)
         
-
         ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
         pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
+        #NOTE: They should be initialized with the amount of food that is collected for them
         self.bees = [Bee(self.environment.nests[i], ages_first_bees[i],{1:pollen_first_bees[i]}) for i in range(num_bees)]
 
         self.after(50, self.UpdateModel)
