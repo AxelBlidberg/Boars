@@ -43,7 +43,7 @@ class BeeSim(tk.Tk):
         self.draw_vision_checkbox.pack(pady=5)
 
         self.environment = Environment(size, envType)
-        self.environment.InitializeFlowers(num_flowers,self.timestep)
+        self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
         
         #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees

@@ -1,8 +1,17 @@
 import numpy as np
+from Bee import *
 
 
 class Environment:
+    '''
+    The class acts as a framework for the environment and manages its content with initializing methods, adding methods and an update method.
+    size = Size of the environment, used for both x and y axis.
+    environmentType = Controlls the initialization of flowers to modell a specific environment type. Types available: 'countryside' (standard if not specified), 'urban', 'agriculture'
+    '''
     def __init__(self, size, environmentType='countryside') -> None:
+        '''
+        Stores the content of the environment.
+        '''
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
         # Environment variables
         self.xLimit = size
@@ -20,77 +29,29 @@ class Environment:
         # Hazards
         self.hazards = []
 
-
-    def GetSurroundings(self, position, radius) -> list:
+    def InitializeFlowers(self, n) -> None:
         '''
-        Returns list sorted on distance on the format: [distance, type, x, y], ex: [1, flower: rose, x, y]
-
-        position = position of the bee
-        radius = How far away to check
+        Initializes n number of flowers in the environment at time = 0
         '''
-        Euclidan = lambda x1, x2: np.sqrt(sum([(x1[i] - x2[i])**2 for i in range(len(x1))]))
-        nearby = []
-        for i in range(len(self.flowers)):
-            x = self.flowers[i].x
-            y = self.flowers[i].y
-            distance = Euclidan(position, [x, y])
-            if distance <= radius:
-                nearby.append([distance, 'flower', x, y])
-
-        nearby = sorted(nearby, key= lambda x: x[0])
-        return nearby
-
-    def InitializeFlowers(self, n, time) -> None:
-        '''
-        Initializes n number of flowers in the environment
-        '''
-
-        if time > 1:
-            ages_new_flowers = [time]*n
-        else: 
-            ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
-
 
         if self.envType == 'countryside':
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
-                self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i],self.seasonLength, t='random', environment=self.envType))   
-            
+                self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))   
         elif self.envType == 'urban':
-            
             clusters = np.random.randint(5, 20)
-
             flowersPerCluster = int(n/clusters)  # alla cluster får samma antal blommor, men kanske göra en procentuell fördelning?
-
             for i in range(clusters):
                 center = [self.xLimit/2, self.yLimit/2]
-                clusterCenterFlower = Flower(center, self.xLimit/2, ages_new_flowers[i], self.seasonLength, t='random', environment=self.envType)
+                clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
-
                 for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 25, time, clusterCenterFlower.type)
-        
+                    self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)
         elif self.envType == 'agriculture':
             pass #TODO på rad
-
         else:
             pass
-
-    def CreateNewGeneration(self, time):
-        for individual in self.newGeneration:
-            self.AddFlower(individual[0], individual[1], time, individual[2])
-        self.newGeneration = []
-
-    def AddFlower(self, center, radius, time, flowerType) -> None:
-        '''
-        Method to add one or several flowers to the environment
-
-        center = Around which coordinate the flower should be created
-        radius = distance from center allowed
-        flowerType = Which flower should be created
-        '''
-        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
-
+   
     def InitializeBeeNest(self, n) -> None:
         '''
         Method to initialize n nests in the beginning of the simulation
@@ -110,6 +71,24 @@ class Environment:
         radius = Allowed distance from center
         '''
         self.nests.append(Nest(center, radius))
+
+    def AddFlower(self, center, radius, time, flowerType) -> None:
+        '''
+        Method to add one or several flowers to the environment
+
+        center = Around which coordinate the flower should be created
+        radius = distance from center allowed
+        flowerType = Which flower should be created
+        '''
+        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
+
+    def CreateNewGeneration(self, time):
+        '''
+        Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
+        '''
+        for individual in self.newGeneration:
+            self.AddFlower(individual[0], individual[1], time, individual[2])
+        self.newGeneration = []
 
     def ExportContent(self) -> list:
         '''
@@ -141,7 +120,9 @@ class Environment:
         return distribution
 
     def PushUpdate(self, time):
-
+        '''
+        Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
+        '''
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
@@ -149,26 +130,16 @@ class Environment:
                 self.newGeneration.append([status[1], 10, flower.type])
             elif status[0] == 2:
                 del self.flowers[i]
+        # Creates the new generation of flowers
         if time % self.seasonLength + 5 == 0 and time != 0:
             self.flowers = []
             self.CreateNewGeneration(time)
 
-    def GetObject(self, x, y):
-        '''
-        Returns the object at the specified location for outside manipulation of object, like depositing/ taking pollen.
-
-        x = X coordinate
-        y = Y coordinate
-        type = Which type of object
-        '''
-        content = self.ExportContent()
-        for i in range(len(content)):
-            if content[i][2] == x and content[i][3] == y:
-                return content[i][-1]
-
-
 class Flower:
-    def __init__(self, center, radius, birth, seasonLength, t='random', environment ='countryside'):
+    '''
+    The class represents a single flower with its attributes. Contains methods for updating.
+    '''
+    def __init__(self, center, radius, creation, seasonLength, t='random', environment ='countryside'):
 
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
@@ -221,13 +192,10 @@ class Flower:
         
         #olika nyanser av gult i blomman för varje "100 pollen den har"
         self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
-                
         self.centerColor = self.possibleCenterColors[min(self.pollen//100, len(self.possibleCenterColors) - 1)]
-        
-        #self.centerColor = '#FFC107'
         self.outerColor = possibleOuterColors[self.type - 1]
 
-        self.creation = birth
+        self.creation = creation
 
     def __str__(self) -> str:
         if self.type == 1:
@@ -248,15 +216,16 @@ class Flower:
         if self.reproduce == True:
             self.reproduce = False
             return [1, [self.x, self.y]]
-        
         elif (time - self.creation) > self.lifespan:
             return [2, []]
-        
         else:
             return [0, []]
 
 
 class Nest:
+    '''
+    The class represents a single bee's nest in the environment and its attributes
+    '''
     def __init__(self, center, radius) -> None:
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
@@ -265,28 +234,11 @@ class Nest:
         self.color='#5C4033'
         self.pollen = 0
     
-    def GetLocation(self) -> list:
-        '''
-        Returns the coordinates of a nest
-        '''
-        return [self.x, self.y]
-    
     def __str__(self) -> str:
-        return f'Nest at ({self.x}, {self.y})'
-
-    def IsOccupied(self, nestInstance) -> bool:
         '''
-        Checks if a nest is occupied by a bee
+        Method that allows for printing the nest. Not used in the simulation but for potential troubleshooting.
         '''
-        pass
-
-    def AssignNest(self, nestInstance, beeInstance):
-        '''
-        Assign a nest to a bee
-        '''
-        if not self.IsOccupied(nestInstance):
-            pass        
-
+        return f'Nest at ({self.x}, {self.y})'    
 
 class Hazards:
     def __init__(self) -> None:
