@@ -1,5 +1,4 @@
 import numpy as np
-from Bee import *
 
 
 class Environment:
@@ -48,6 +47,25 @@ class Environment:
                 for _ in range(flowersPerCluster):
                     self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)
         elif self.envType == 'agriculture':
+            yRange = []
+            types = [1, 2, 3, 4, 5]
+            probabilities = [3, 1, 5, 1, 4]
+            pSum = sum(probabilities)
+            probabilities = [p/pSum for p in probabilities]
+            for p in probabilities:
+                if len(yRange) > 0:
+                    yRange.append([yRange[-1][1], (p*self.yLimit + yRange[-1][1])])
+                else:
+                    yRange.append([0, (p*self.yLimit)])
+            print(yRange)
+            dist = [int(np.round(n*p)) for p in probabilities]
+            for i,t in enumerate(types):
+                x = int(dist[i] / 5)
+                xLocations = np.linspace(0, self.xLimit, num=x)
+                yLocations = np.linspace(yRange[i][0], yRange[i][1], num=5)
+                for j in yLocations:
+                    for k in xLocations:
+                        self.AddFlower([k, j], 0, 0, t)
             pass #TODO på rad
         else:
             pass
@@ -134,6 +152,7 @@ class Environment:
         if time % self.seasonLength + 5 == 0 and time != 0:
             self.flowers = []
             self.CreateNewGeneration(time)
+
 
 class Flower:
     '''
@@ -239,6 +258,7 @@ class Nest:
         Method that allows for printing the nest. Not used in the simulation but for potential troubleshooting.
         '''
         return f'Nest at ({self.x}, {self.y})'    
+
 
 class Hazards:
     def __init__(self) -> None:
