@@ -46,13 +46,15 @@ class BeeSim(tk.Tk):
         self.environment.InitializeFlowers(num_flowers,self.timestep)
         self.environment.InitializeBeeNest(num_bees)
         
-        ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
-        pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
+        #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
+        #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
-        self.bees = [Bee(self.environment.nests[i], ages_first_bees[i],{1:pollen_first_bees[i]}) for i in range(num_bees)]
+        self.swarm = Swarm()
+        self.swarm.InitializeBees(num_bees, self.environment.nests)
 
-        self.after(50, self.UpdateModel)
-
+        
+        self.after(50, self.UpdateModel) #NOTE: Model updates after 50 milli seconds?
+        
     def DrawEnvironment(self):
         
         size = 3
@@ -70,6 +72,7 @@ class BeeSim(tk.Tk):
             self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill=nest.color)
         
         self.environment.PushUpdate(self.timestep)
+        
 
 
     def DrawBee(self, bee):
@@ -102,19 +105,27 @@ class BeeSim(tk.Tk):
         angular_noise = float(self.angular_noise_slider.get())
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
-        
+
+        #Just nu har alla bin samma angular noise, vision range, vision angle
+        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
+        #(self, flowers, time, angular_noise, vision_range, vision_angle):
         self.DrawEnvironment() 
 
         # new bees
+        """
         if self.timestep % 50==0: # change to pollen-related
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
             self.bees.append(Bee(nest, self.timestep))
-        
-        for bee_number, bee in enumerate(self.bees):
-            
-            bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
+        """
 
-            # kill bee if old
+        for bee in self.swarm.bees:
+            #This needs to be sent to push update
+
+            self.CheckBoundaryCollision(bee)
+            self.DrawBee(bee)
+            self.DrawPath(bee)
+
+            """
             bee_age = self.timestep - bee.birth
             if  bee_age > bee.max_age: 
                 print('RIP: bee died of age:',bee_age,'. Pollen levels:',bee.pollen)
@@ -134,11 +145,13 @@ class BeeSim(tk.Tk):
                 bee.ReturnHome() # return to home nest if full
             else:
                 bee.Update(self.environment.flowers)
+
+            """
             
             
-            self.CheckBoundaryCollision(bee)
-            self.DrawBee(bee)
-            self.DrawPath(bee)
+            #self.CheckBoundaryCollision(bee)
+            #self.DrawBee(bee)
+            #self.DrawPath(bee)
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  

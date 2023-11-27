@@ -1,5 +1,33 @@
 import numpy as np
 
+class Swarm:
+    def __init__(self):
+        self.bees = []
+    
+    def InitializeBees(self, n, nests, birth=0):
+        for i in range(n):
+            self.AddBee(nests[i], birth)
+
+
+    def AddBee(self, beenest, birth):
+        self.bees.append(Bee(beenest, birth))
+  
+    
+    def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
+        for bee in self.bees:
+            full = 500
+            bee.vision_angle = vision_angle
+            bee.vision_range = vision_range
+            bee.angular_noise = angular_noise
+            
+            if sum(bee.pollen.values()) > full:
+                 bee.ReturnHome() # return to home if cannot carry more pollen
+            else:
+                bee.Update(flowers)
+
+        #return self.bees
+
+
 class Bee:
     def __init__(self, nest, birth, pollen={},vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = nest.x
@@ -26,9 +54,8 @@ class Bee:
         self.color = color
         self.birth = birth
 
-        bee_age_mean = 500
-        self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
-
+        #bee_age_mean = 500
+        #self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
 
     def Update(self, flowers):
         # Angular noise to the direction
