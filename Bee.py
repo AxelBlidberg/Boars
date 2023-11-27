@@ -49,35 +49,24 @@ class Bee:
                 self.visited_flowers.append(nearest_flower)
                 flowerType = nearest_flower.type 
                 
-                pollen_taken = np.random.randint(1, nearest_flower.pollen) # changed to min=1 to avoid negative food later
+                #WARN: Is it realistic that it can collect half of the pollen in the flower
+                #This means that flower will never run out of pollen
+                #TODO: Find a suitable value
+                pollen_taken = np.random.randint(0, nearest_flower.pollen*0.5) 
 
+                #NOTE: Rimligt antagande om biet tar pollen och har pollen från samma blomma pollineras den
                 if flowerType in self.pollen.keys():
-                    
-                    r = np.random.random()
+                    r = np.random.random() #NOTE: Probability can be added if needed
+                    #NOTE: Prompt to pollinate
+                    if r < 0.2:
+                        nearest_flower.reproduce = True
 
-                    if r < 1: #dummy value TODO: Fixa varierande reproduktion för varje blomma
-                        pollen_given = 10
-                        nearest_flower.pollen += pollen_given #self.pollen[flowerType] #Allt pollen ges från biet till blomman om pollen sker just nu
-                        self.pollen[flowerType] -= pollen_given # bytte till 10 temporärt för att undvika problem med food / sonja
-                        if self.pollen[flowerType] < 1: # remove key if no pollen, so it cant get negative
-                            self.pollen.pop(flowerType)         
-                    else:
-                        self.pollen[flowerType] += pollen_taken #Biet tar en viss mängd pollen
-                        nearest_flower.pollen -= pollen_taken
-
-                        #Vill ta bort pollen från bieet om pollinering sker
-
-                    #Pollinera eventuellt blomman
-
-                else:
-                    self.pollen[flowerType] = pollen_taken
-                    
-                #nearest_flower.pollen = nearest_flower.pollen - pollen_taken
-
-                #color_scale = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
+                    self.pollen[flowerType] += pollen_taken
                 
-                #olika nyanser av gult i blomman för varje "100 pollen"
-                #index = min(nearest_flower.pollen // 100, len(color_scale) - 1)
+                else: 
+                    self.pollen[flowerType] = pollen_taken
+
+                nearest_flower.pollen -= pollen_taken
 
                 index = min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1)
 
@@ -87,8 +76,6 @@ class Bee:
                 
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
-                
-                          
                 
         else:
             self.orientation = self.orientation + self.angular_noise * W 

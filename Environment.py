@@ -11,6 +11,7 @@ class Environment:
         self.nests = []
         self.hazards = []
         self.iterations = 0 #behövs eventuellt inte
+        
 
     def GetSurroundings(self, position, radius) -> list:
         '''
@@ -134,6 +135,7 @@ class Flower:
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
+        self.reproduce = False
         
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
@@ -204,8 +206,8 @@ class Flower:
         '''
         Update rules for flowers, 
         '''
-        if self.pollen > 500:
-            self.pollen -= 500
+        if self.reproduce == True:
+            self.reproduce = False
             return [1, [self.x, self.y]]
         
         elif (time - self.creation) > self.lifespan:
