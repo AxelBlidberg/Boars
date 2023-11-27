@@ -75,19 +75,6 @@ class Environment:
         else:
             pass
 
-
-        '''
-        if time > 1:
-            ages_new_flowers = [time]*n
-        else: 
-            ages_new_flowers = np.random.randint(-200,0, size=n) # random birth-dates on first flowers
-        
-        for i in range(n):
-            center = [self.xLimit/2, self.yLimit/2]
-            self.flowers.append(Flower(center, self.xLimit/2, ages_new_flowers[i],self.seasonLength, t='random', environment=self.envType))
-        '''
-
-
     def CreateNewGeneration(self, time):
         for individual in self.newGeneration:
             self.AddFlower(individual[0], individual[1], time, individual[2])
@@ -159,10 +146,9 @@ class Environment:
             status = flower.UpdateFlower(time)
             if status[0] == 1:
                 self.newGeneration.append([status[1], 10, flower.type])
-                self.AddFlower(status[1], 10, time, flower.type)
             elif status[0] == 2:
                 del self.flowers[i]
-        if time % self.seasonLength == 0 and time != 0:
+        if time % self.seasonLength + 5 == 0 and time != 0:
             self.flowers = []
             self.CreateNewGeneration(time)
 

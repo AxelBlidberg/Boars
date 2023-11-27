@@ -144,9 +144,7 @@ class BeeSim(tk.Tk):
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
         
-        if self.timestep%200 == 1: # temporary: add 10 flowers every 100th timestep
-            self.environment.InitializeFlowers(20, self.timestep)
-      
+
         self.after(50, self.UpdateModel)
 
 
