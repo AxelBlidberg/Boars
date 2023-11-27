@@ -7,7 +7,7 @@ from Bee import *
 from Environment import *
 
 class BeeSim(tk.Tk):
-    def __init__(self, size=500, num_bees=1, num_flowers=1):
+    def __init__(self, size=500, num_bees=1, num_flowers=1, envType='countryside'):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
@@ -42,7 +42,7 @@ class BeeSim(tk.Tk):
         self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
         self.draw_vision_checkbox.pack(pady=5)
 
-        self.environment = Environment(size)
+        self.environment = Environment(size, envType)
         self.environment.InitializeFlowers(num_flowers,self.timestep)
         self.environment.InitializeBeeNest(num_bees)
         
@@ -143,13 +143,11 @@ class BeeSim(tk.Tk):
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
         
-        if self.timestep%200 == 1: # temporary: add 10 flowers every 100th timestep
-            self.environment.InitializeFlowers(20, self.timestep)
-      
+
         self.after(50, self.UpdateModel)
 
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150)
+    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='urban')
     bee_sim.mainloop()
