@@ -3,15 +3,25 @@ import numpy as np
 class Swarm:
     def __init__(self):
         self.bees = []
+        self.newGeneration = []
+        self.seasonLength = 1000
     
     def InitializeBees(self, n, nests, birth=0):
         for i in range(n):
             self.AddBee(nests[i], birth)
 
-
     def AddBee(self, beenest, birth):
         self.bees.append(Bee(beenest, birth))
-  
+
+    def CreateNewGeneration(self, time):
+        for bee in self.bees:
+            for newbee in bee.egg:
+                beenest = self.Environment.AddBeeNest(self, newbee[0], newbee[1])
+                birth = time
+                self.AddBee(beenest, birth)
+            
+            bee.egg = []
+        self.bees = []
     
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
         for bee in self.bees:
@@ -22,10 +32,18 @@ class Swarm:
             
             if sum(bee.pollen.values()) > full:
                  bee.ReturnHome() # return to home if cannot carry more pollen
+                 #print("Bee returning home!")
             else:
                 bee.Update(flowers)
+        
+        #Göra en funktion reproduction som när ett bi lämnar pollen genererar 0-X antal offspring med en viss sannolikhet?
+        #Där maximala antalet ägg beror på mängden pollen!!
 
-        #return self.bees
+        #print(time)
+
+        if time == self.seasonLength:
+            print("New Bee Generation")
+            self.CreateNewGeneration(time)
 
 
 class Bee:
@@ -42,7 +60,7 @@ class Bee:
         self.angular_noise = angular_noise
 
         self.visited_flowers = []
-        self.visit_radius = 4
+        self.visit_radius = 1
         self.short_memory = 10
         
         self.vision_angle = vision_angle
@@ -53,6 +71,8 @@ class Bee:
 
         self.color = color
         self.birth = birth
+
+        self.egg = []
 
         #bee_age_mean = 500
         #self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
@@ -108,13 +128,15 @@ class Bee:
             self.orientation = self.orientation + self.angular_noise * W 
         
         # eats x random pollen each timestep
+
+        """
         if len(self.pollen) > 0:
             eating_pase = 1          # pollen eaten per timestep
             random_pollen_key = list(self.pollen.keys())[np.random.randint(0,len(self.pollen))]
             self.pollen[random_pollen_key] -= eating_pase   
             if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
                 self.pollen.pop(random_pollen_key) 
-
+        """
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -124,25 +146,31 @@ class Bee:
             self.path.pop(0)
 
 
-    def ReturnHome(self):
+    def ReturnHome(self): #Återvänder endast hem om den ser sitt hem?
         nearby_home = self.home if self.InFieldOfView(self.home) else False
+        required_pollen = 600
         if nearby_home:
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
             if distance_to_home <= self.visit_radius:
                 food = sum(self.pollen.values())
                 print('bee went home to leave pollen')
-                leave_home_ratio = 1/2
+                leave_home_ratio = 1 #Leaving all pollen
                 for key in self.pollen.keys(): # leave the same ratio of each pollen type
                     self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen
                 pollen_given = int(food * leave_home_ratio)
                 self.home.pollen += pollen_given
                 print('Bee pollen after',sum(self.pollen.values()))
                 print('Nest pollen after:',self.home.pollen)
+
+                if self.home.pollen > required_pollen:
+                    self.Reproduction()
+                    self.home.pollen -= required_pollen
         
         W = np.random.uniform(-1/2, 1/2)
         direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])
         self.orientation = np.arctan2(direction_to_home[1], direction_to_home[0]) + self.angular_noise * W
 
+        """    
          # eats x random pollen each timestep
         if len(self.pollen) > 0:
             eating_pase = 1          # pollen eaten per timestep
@@ -150,7 +178,7 @@ class Bee:
             self.pollen[random_pollen_key] -= eating_pase   
             if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
                 self.pollen.pop(random_pollen_key) 
-
+        """  
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -158,6 +186,13 @@ class Bee:
 
         if len(self.path) > self.path_length:
             self.path.pop(0)
+    
+    def Reproduction(self):
+        center = [self.x/2, self.y/2]
+        radius = 2
+        
+        self.egg.append([center, radius])
+        print(self.egg)
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])

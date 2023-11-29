@@ -125,6 +125,8 @@ class BeeSim(tk.Tk):
             self.DrawBee(bee)
             self.DrawPath(bee)
 
+            #Vart vill vi initiera den nya generationen??
+
             """
             bee_age = self.timestep - bee.birth
             if  bee_age > bee.max_age: 
@@ -162,5 +164,5 @@ class BeeSim(tk.Tk):
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='urban')
+    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='countryside')
     bee_sim.mainloop()

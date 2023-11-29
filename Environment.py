@@ -86,7 +86,9 @@ class Environment:
         '''
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
+        #print("New Generation")
         for individual in self.newGeneration:
+            #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
         self.newGeneration = []
 
