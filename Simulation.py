@@ -27,7 +27,7 @@ class BeeSim(tk.Tk):
 
         # Sliders for controlling parameters
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
-        self.angular_noise_slider.set(0.45)
+        self.angular_noise_slider.set(0.1)
         self.angular_noise_slider.pack()
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
@@ -108,10 +108,10 @@ class BeeSim(tk.Tk):
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
 
-        #Just nu har alla bin samma angular noise, vision range, vision angle
-        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
         #(self, flowers, time, angular_noise, vision_range, vision_angle):
         self.DrawEnvironment() 
+
+        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
 
         for bee in self.swarm.bees:
             #This needs to be sent to push update
@@ -119,18 +119,10 @@ class BeeSim(tk.Tk):
             self.DrawBee(bee)
             self.DrawPath(bee)
 
-            """
-            # kill bee if old
-            bee_age = self.timestep - bee.birth
-            if  bee_age > bee.max_age: 
-                print('RIP: bee died of age:',bee_age,'. Pollen levels:',bee.pollen)
-                self.bees.pop(bee_number)
-                del bee
-                continue
-            """
-
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
+        
+        #Just nu har alla bin samma angular noise, vision range, vision angle
 
 
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
