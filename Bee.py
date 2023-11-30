@@ -36,7 +36,8 @@ class Swarm:
             
             if sum(bee.pollen.values()) > bee.pollen_capacity:
                  if bee.turningHome:
-                     print('turning home, bee nr:', bee_number)
+                     #print('turning home, bee nr:', bee_number)
+                     pass
                  bee.ReturnHome() # return to home if cannot carry more pollen
                  bee.Eat(time)
             
@@ -68,7 +69,7 @@ class Swarm:
 
 
 class Bee:
-    def __init__(self, nest, birth, pollen_capacity=500, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
@@ -100,7 +101,7 @@ class Bee:
         self.eating_frequency = 10
         self.turningHome =True #temporary
 
-        bee_age_mean = 2000
+        bee_age_mean = 700
         self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
 
     def Update(self, flowers):
@@ -170,7 +171,7 @@ class Bee:
 
     def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
         nearby_home = self.home if self.InFieldOfView(self.home) else False
-        required_pollen = 100
+        required_pollen = 200
         self.turningHome=False
         if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
@@ -211,10 +212,10 @@ class Bee:
                     self.pollen.pop(random_pollen_key) 
 
     def Reproduction(self):
-        max_eggs = self.home.pollen//100
+        max_eggs = min(self.home.pollen//100, 5) # max 5 siblings
         nEggs = np.random.randint(1,max_eggs)
         center = [self.x, self.y]
-        radius = 10
+        radius = 20
         
         self.egg.append([[center, radius],nEggs]) # egg= [[nest] nEggs]
 

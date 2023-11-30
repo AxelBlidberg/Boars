@@ -5,6 +5,7 @@ from tkinter import Scale
 
 from Bee import *
 from Environment import *
+import matplotlib.pyplot as plt
 
 class BeeSim(tk.Tk):
     def __init__(self, size=500, num_bees=1, num_flowers=1, envType='countryside'):
@@ -46,6 +47,9 @@ class BeeSim(tk.Tk):
         self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
         
+        #for plot
+        self.flowersPlot = []
+        self.beesPlot =[]
         #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
         #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
@@ -98,7 +102,7 @@ class BeeSim(tk.Tk):
     def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
             return
-        bee.orientation += np.pi
+        bee.orientation += np.pi/3
 
     def UpdateModel(self):
         self.canvas.delete('all')
@@ -123,7 +127,13 @@ class BeeSim(tk.Tk):
                 self.DrawVisionField(bee)  
         
         #Just nu har alla bin samma angular noise, vision range, vision angle
-
+        if self.timestep % 2000==0:
+            self.flowersPlot.append(len(self.environment.flowers))
+            self.flowersPlot.append(len(self.swarm.bees))
+            plt.figure()
+            plt.plot(self.flowersPlot,label='flowers',c='pink')
+            plt.plot(self.beesPlot,label='bees',c='yellow')
+            plt.show()
 
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
             newBorn = {}
@@ -133,14 +143,11 @@ class BeeSim(tk.Tk):
                     newBorn[bee_number] = bee.egg # egg = [[nest],nEggs]
                     for egg in bee.egg:
                         newNests.append(egg[0])
-            
-            print("Newborn:", newBorn)
 
-            self.environment.CreateNewGeneration(0, newNests)
+            self.environment.CreateNewGeneration(self.timestep, newNests)
             self.swarm.CreateNewGeneration(newBorn, self.environment.nests, self.timestep)
-            
-            
-            
+            print('n.o. bees:',len(self.swarm.bees))
+            print('n.o. flowers:',len(self.environment.flowers))
             
             #Vi vill ha koordninaterna för de nya bina :)
             """
@@ -161,3 +168,4 @@ class BeeSim(tk.Tk):
 if __name__ == "__main__":
     bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
+
