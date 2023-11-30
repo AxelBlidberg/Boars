@@ -57,7 +57,7 @@ class Bee:
         self.angular_noise = angular_noise
 
         self.visited_flowers = []
-        self.visit_radius = 1
+        self.visit_radius = 2
         self.short_memory = 10
         
         self.vision_angle = vision_angle
@@ -187,10 +187,9 @@ class Bee:
     
     def Reproduction(self):
         center = [self.x, self.y]
-        radius = 2
+        radius = 10
         
         self.egg.append([center, radius])
-        print(self.egg)
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])

@@ -138,8 +138,8 @@ class BeeSim(tk.Tk):
                             newnests.append(egg)
                 
                 print("New Nest List:", newnests)
-                self.environment.CreateNewGeneration(0,newnests)
-                self.swarm.CreateNewGeneration(self.environment.nests,0)
+                self.environment.CreateNewGeneration(0, newnests)
+                self.swarm.CreateNewGeneration(self.environment.nests, 0)
     
                 self.timestep = 0 
 
@@ -180,5 +180,5 @@ class BeeSim(tk.Tk):
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='urban')
     bee_sim.mainloop()

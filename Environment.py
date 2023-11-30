@@ -116,7 +116,6 @@ class Environment:
             self.AddFlower(individual[0], individual[1], time, individual[2])
 
         for nest in newnests:
-            print("Center:", nest[0], "Radius:", nest[1])
             self.AddBeeNest(nest[0], nest[1])
         
         self.newGeneration = []
@@ -224,7 +223,7 @@ class Flower:
         
         #olika nyanser av gult i blomman för varje "100 pollen den har"
         self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
-        self.centerColor = self.possibleCenterColors[min(self.pollen//100, len(self.possibleCenterColors) - 1)]
+        self.centerColor = self.possibleCenterColors[min(self.pollen//50, len(self.possibleCenterColors) - 1)]
         self.outerColor = possibleOuterColors[self.type - 1]
 
         self.creation = creation
