@@ -47,26 +47,30 @@ class Environment:
                 for _ in range(flowersPerCluster):
                     self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)
         elif self.envType == 'agriculture':
-            yRange = []
+            # Flower distribution
             types = [1, 2, 3, 4, 5]
-            probabilities = [3, 1, 5, 1, 4]
-            pSum = sum(probabilities)
-            probabilities = [p/pSum for p in probabilities]
-            for p in probabilities:
-                if len(yRange) > 0:
-                    yRange.append([yRange[-1][1], (p*self.yLimit + yRange[-1][1])])
-                else:
-                    yRange.append([0, (p*self.yLimit)])
-            print(yRange)
-            dist = [int(np.round(n*p)) for p in probabilities]
-            for i,t in enumerate(types):
-                x = int(dist[i] / 5)
-                xLocations = np.linspace(0, self.xLimit, num=x)
-                yLocations = np.linspace(yRange[i][0], yRange[i][1], num=5)
-                for j in yLocations:
-                    for k in xLocations:
-                        self.AddFlower([k, j], 0, 0, t)
-            pass #TODO på rad
+            distribution = [3, 1, 5, 1, 4]
+            dSum = sum(distribution)
+            distribution = [d/dSum for d in distribution]
+            iRange = [np.linspace(0, int(distribution[0]*n), num=int(distribution[0]*n)+1, dtype=int).tolist()]
+            for i in range(1,len(distribution)):
+                low = iRange[i-1][-1] + 1
+                high = int(low + distribution[i]*n)
+                tempRange = np.linspace(low, high, num=((high-low)+1), dtype=int).tolist()
+                iRange.append(np.copy(tempRange).tolist())
+
+            # Generate locations
+            nRows = int(np.sqrt(n))
+            nCols = int(np.sqrt(n))
+            x = np.linspace(self.xLimit*0.05, self.xLimit*0.95, num=nRows)
+            y = np.linspace(self.yLimit*0.05, self.yLimit*0.95, num=nCols)
+            locations = [[i, j] for i in x for j in y]
+            print(locations)
+
+            for i in range(len(locations)):
+                for j in range(len(iRange)):
+                    if i in iRange[j]:
+                        self.AddFlower(locations[i], 0, 0, types[j])
         else:
             pass
    
