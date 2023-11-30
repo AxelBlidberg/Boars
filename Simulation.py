@@ -50,7 +50,9 @@ class BeeSim(tk.Tk):
         #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
         self.swarm = Swarm()
+        #Skapa en lista av nests 
         self.swarm.InitializeBees(num_bees, self.environment.nests)
+        #Skicka 
 
         
         self.after(50, self.UpdateModel) #NOTE: Model updates after 50 milli seconds?
@@ -126,6 +128,20 @@ class BeeSim(tk.Tk):
             self.DrawPath(bee)
 
             #Vart vill vi initiera den nya generationen??
+
+            if self.timestep > self.environment.seasonLength:
+                #Vi vill ha koordninaterna för de nya bina :)
+                newnests = []
+                for bee in self.swarm.bees:
+                    if len(bee.egg) != 0:
+                        for egg in bee.egg:  
+                            newnests.append(egg)
+                
+                print("New Nest List:", newnests)
+                self.environment.CreateNewGeneration(0,newnests)
+                self.swarm.CreateNewGeneration(self.environment.nests,0)
+    
+                self.timestep = 0 
 
             """
             bee_age = self.timestep - bee.birth

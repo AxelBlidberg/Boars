@@ -82,14 +82,21 @@ class Environment:
         '''
         self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
 
-    def CreateNewGeneration(self, time):
+    def CreateNewGeneration(self, time, newnests):
         '''
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
         #print("New Generation")
+        self.nests = []
+        self.flowers = []
         for individual in self.newGeneration:
             #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
+
+        for nest in newnests:
+            print("Center:", nest[0], "Radius:", nest[1])
+            self.AddBeeNest(nest[0], nest[1])
+        
         self.newGeneration = []
 
     def ExportContent(self) -> list:
@@ -133,9 +140,9 @@ class Environment:
             elif status[0] == 2:
                 del self.flowers[i]
         # Creates the new generation of flowers
-        if time % self.seasonLength + 5 == 0 and time != 0:
-            self.flowers = []
-            self.CreateNewGeneration(time)
+        #if time % self.seasonLength + 5 == 0 and time != 0:
+        #    self.flowers = []
+        #    self.CreateNewGeneration(time)
 
 class Flower:
     '''

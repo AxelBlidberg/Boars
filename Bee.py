@@ -13,15 +13,12 @@ class Swarm:
     def AddBee(self, beenest, birth):
         self.bees.append(Bee(beenest, birth))
 
-    def CreateNewGeneration(self, time):
-        for bee in self.bees:
-            for newbee in bee.egg:
-                beenest = self.Environment.AddBeeNest(self, newbee[0], newbee[1])
-                birth = time
-                self.AddBee(beenest, birth)
-            
-            bee.egg = []
+    def CreateNewGeneration(self, beenest, time):
         self.bees = []
+        for nest in beenest:
+            self.AddBee(nest, time)
+            
+        #self.bees.egg = []
     
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
         for bee in self.bees:
@@ -41,9 +38,9 @@ class Swarm:
 
         #print(time)
 
-        if time == self.seasonLength:
-            print("New Bee Generation")
-            self.CreateNewGeneration(time)
+        #if time == self.seasonLength:
+        #    print("New Bee Generation")
+        #    self.CreateNewGeneration(time)
 
 
 class Bee:
@@ -73,6 +70,7 @@ class Bee:
         self.birth = birth
 
         self.egg = []
+        self.newhomes = []
 
         #bee_age_mean = 500
         #self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
@@ -178,7 +176,7 @@ class Bee:
             self.pollen[random_pollen_key] -= eating_pase   
             if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
                 self.pollen.pop(random_pollen_key) 
-        """  
+        """
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -188,7 +186,7 @@ class Bee:
             self.path.pop(0)
     
     def Reproduction(self):
-        center = [self.x/2, self.y/2]
+        center = [self.x, self.y]
         radius = 2
         
         self.egg.append([center, radius])
