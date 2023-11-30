@@ -5,6 +5,7 @@ from tkinter import Scale
 
 from Bee import *
 from Environment import *
+import matplotlib.pyplot as plt
 
 class BeeSim(tk.Tk):
     def __init__(self, size=500, num_bees=1, num_flowers=1, envType='countryside'):
@@ -27,7 +28,7 @@ class BeeSim(tk.Tk):
 
         # Sliders for controlling parameters
         self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
-        self.angular_noise_slider.set(0.45)
+        self.angular_noise_slider.set(0.1)
         self.angular_noise_slider.pack()
 
         self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
@@ -46,6 +47,9 @@ class BeeSim(tk.Tk):
         self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
         
+        #for plot
+        self.flowersPlot = []
+        self.beesPlot =[]
         #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
         #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
@@ -95,10 +99,10 @@ class BeeSim(tk.Tk):
         if bee.path:
             self.canvas.create_line(bee.path, fill='#ffea61', width=1)
     
-    def CheckBoundaryCollision(self, bee): # fastnar på blommor utanför canvas fixas nog bäst i Environment
+    def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
             return
-        bee.orientation += np.pi/2
+        bee.orientation += np.pi/3
 
     def UpdateModel(self):
         self.canvas.delete('all')
@@ -108,72 +112,55 @@ class BeeSim(tk.Tk):
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
 
-        #Just nu har alla bin samma angular noise, vision range, vision angle
-        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
         #(self, flowers, time, angular_noise, vision_range, vision_angle):
         self.DrawEnvironment() 
 
-        # new bees
-        """
-        if self.timestep % 50==0: # change to pollen-related
-            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
-            self.bees.append(Bee(nest, self.timestep))
-        """
+        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
 
         for bee in self.swarm.bees:
             #This needs to be sent to push update
-
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
             self.DrawPath(bee)
 
-            #Vart vill vi initiera den nya generationen??
-
-            if self.timestep > self.environment.seasonLength:
-                #Vi vill ha koordninaterna för de nya bina :)
-                newnests = []
-                for bee in self.swarm.bees:
-                    if len(bee.egg) != 0:
-                        for egg in bee.egg:  
-                            newnests.append(egg)
-                
-                print("New Nest List:", newnests)
-                self.environment.CreateNewGeneration(0, newnests)
-                self.swarm.CreateNewGeneration(self.environment.nests, 0)
-    
-                self.timestep = 0 
-
-            """
-            bee_age = self.timestep - bee.birth
-            if  bee_age > bee.max_age: 
-                print('RIP: bee died of age:',bee_age,'. Pollen levels:',bee.pollen)
-                self.bees.pop(bee_number)
-                del bee
-                continue
-            
-            # kill bee if starving
-            food = sum(bee.pollen.values())
-            if food < 1 and bee_age > 100:
-                print('RIP: bee died of starvation. Age:',bee_age,'. Pollen levels:',bee.pollen)
-                self.bees.pop(bee_number)
-                del bee
-                continue
-            full = 500
-            if food > full:
-                bee.ReturnHome() # return to home nest if full
-            else:
-                bee.Update(self.environment.flowers)
-
-            """
-            
-            
-            #self.CheckBoundaryCollision(bee)
-            #self.DrawBee(bee)
-            #self.DrawPath(bee)
-
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
         
+        #Just nu har alla bin samma angular noise, vision range, vision angle
+        if self.timestep % 2000==0:
+            self.flowersPlot.append(len(self.environment.flowers))
+            self.flowersPlot.append(len(self.swarm.bees))
+            plt.figure()
+            plt.plot(self.flowersPlot,label='flowers',c='pink')
+            plt.plot(self.beesPlot,label='bees',c='yellow')
+            plt.show()
+
+        if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+            newBorn = {}
+            newNests = []
+            for bee_number, bee in enumerate(self.swarm.bees):
+                if len(bee.egg) != 0:
+                    newBorn[bee_number] = bee.egg # egg = [[nest],nEggs]
+                    for egg in bee.egg:
+                        newNests.append(egg[0])
+
+            self.environment.CreateNewGeneration(self.timestep, newNests)
+            self.swarm.CreateNewGeneration(newBorn, self.environment.nests, self.timestep)
+            print('n.o. bees:',len(self.swarm.bees))
+            print('n.o. flowers:',len(self.environment.flowers))
+            
+            #Vi vill ha koordninaterna för de nya bina :)
+            """
+            newnests = []
+            for bee in self.swarm.bees:
+                if len(bee.egg) != 0:
+                    for egg in bee.egg:  
+                        newnests.append(egg)
+            
+            print("New Nest List:", newnests)
+            self.environment.CreateNewGeneration(0, newnests)
+            self.swarm.CreateNewGeneration(self.environment.nests, 0)
+            """
 
         self.after(50, self.UpdateModel)
 
@@ -181,3 +168,4 @@ class BeeSim(tk.Tk):
 if __name__ == "__main__":
     bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
+

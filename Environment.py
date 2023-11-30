@@ -20,13 +20,14 @@ class Environment:
         self.newGeneration = []
         self.envType = environmentType
         self.flowers = []
-        self.seasonLength = 1000
+        self.seasonLength = 500
 
         # Nests
         self.nests = []
 
         # Hazards
         self.hazards = []
+        self.max_flowers = 3  # max "siblings" among flowers
 
     def InitializeFlowers(self, n) -> None:
         '''
@@ -109,8 +110,8 @@ class Environment:
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
         #print("New Generation")
-        self.nests = []
-        self.flowers = []
+        #self.nests = []
+        #self.flowers = []
         for individual in self.newGeneration:
             #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
@@ -155,11 +156,15 @@ class Environment:
         '''
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(time)
-            if status[0] == 1: # 1 = reproduce, 2 = dead
-                self.newGeneration.append([status[1], 10, flower.type])
-            elif status[0] == 2:
+            status, center = flower.UpdateFlower(time) 
+            if status == 1: # 1 = reproduce
+                nFlowers = np.random.randint(1,self.max_flowers) # how many "siblings"
+                for _ in range(nFlowers): 
+                    self.newGeneration.append([center, 70, flower.type]) #center, radius, type
+            elif status == 2: # 2 = dead
                 del self.flowers[i]
+
+
         # Creates the new generation of flowers
         #if time % self.seasonLength + 5 == 0 and time != 0:
         #    self.flowers = []
@@ -205,19 +210,19 @@ class Flower:
         life = seasonLength
         pollen = 100
         if self.type == 1: # Lavender
-            self.lifespan = life
+            self.lifespan = life*2
             self.pollen = pollen
         elif self.type == 2: # Bee balm
-            self.lifespan = life
+            self.lifespan = life*2
             self.pollen = pollen
         elif self.type == 3: # Sunflower
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = 4*pollen
         elif self.type == 4: # Coneflowers
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = pollen
         elif self.type == 5: # Blueberry
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = 4*pollen
         
         
