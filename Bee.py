@@ -13,25 +13,32 @@ class Swarm:
     def AddBee(self, beenest, birth):
         self.bees.append(Bee(beenest, birth))
 
-    def CreateNewGeneration(self, beenest, time):
-        #self.bees = []
-        for nest in beenest:
+    def CreateNewGeneration(self, newBorn, nests, time): 
+        for egg in newBorn.values():
+            nest = egg[0][0]
+            nEggs = egg[0][1]
+            for _ in range(nEggs):
+                nest=nests[np.random.randint(0,len(nests))] # right now in random nests
+                self.AddBee(nest, time)
+    """             
+    def CreateNewGeneration(self, newnests, time): 
+        self.bees = []
+        for nest in newnests:
             self.AddBee(nest, time)
             
         #self.bees.egg = []
-    
+    """ 
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
         for bee_number, bee in enumerate(self.bees):
             bee.vision_angle = vision_angle
             bee.vision_range = vision_range
             bee.angular_noise = angular_noise
-            #before = bee.orientation
             
             if sum(bee.pollen.values()) > bee.pollen_capacity:
                  if bee.turningHome:
                      print('turning home, bee nr:', bee_number)
                  bee.ReturnHome() # return to home if cannot carry more pollen
-                 #bee.Eat(time)
+                 bee.Eat(time)
             
             elif sum(bee.pollen.values()) < 1:  # Kill bee if starving
                 print('RIP: bee died of starvation.') #Age:',bee_age)
@@ -48,15 +55,7 @@ class Swarm:
             else:
                 bee.turningHome=True
                 bee.Update(flowers)
-                #bee.Eat(time)
-            
-            if time%50==0:
-                print(bee.pollen,bee_number,len(bee.visited_flowers))
-            #after = bee.orientation
-
-            #if abs(after-before)>np.pi:
-                #print('bee turned more than 90°, nr:',bee_number)
-
+                bee.Eat(time)
 
         #Göra en funktion reproduction som när ett bi lämnar pollen genererar 0-X antal offspring med en viss sannolikhet?
         #Där maximala antalet ägg beror på mängden pollen!!
@@ -69,7 +68,7 @@ class Swarm:
 
 
 class Bee:
-    def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    def __init__(self, nest, birth, pollen_capacity=500, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
@@ -171,7 +170,7 @@ class Bee:
 
     def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
         nearby_home = self.home if self.InFieldOfView(self.home) else False
-        required_pollen = 600
+        required_pollen = 100
         self.turningHome=False
         if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
@@ -212,10 +211,12 @@ class Bee:
                     self.pollen.pop(random_pollen_key) 
 
     def Reproduction(self):
+        max_eggs = self.home.pollen//100
+        nEggs = np.random.randint(1,max_eggs)
         center = [self.x, self.y]
         radius = 10
         
-        self.egg.append([center, radius]) # Coordinates for new nest
+        self.egg.append([[center, radius],nEggs]) # egg= [[nest] nEggs]
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])

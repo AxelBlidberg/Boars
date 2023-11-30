@@ -98,7 +98,7 @@ class BeeSim(tk.Tk):
     def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
             return
-        bee.orientation += np.pi/2
+        bee.orientation += np.pi
 
     def UpdateModel(self):
         self.canvas.delete('all')
@@ -126,7 +126,24 @@ class BeeSim(tk.Tk):
 
 
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+            newBorn = {}
+            newNests = []
+            for bee_number, bee in enumerate(self.swarm.bees):
+                if len(bee.egg) != 0:
+                    newBorn[bee_number] = bee.egg # egg = [[nest],nEggs]
+                    for egg in bee.egg:
+                        newNests.append(egg[0])
+            
+            print("Newborn:", newBorn)
+
+            self.environment.CreateNewGeneration(0, newNests)
+            self.swarm.CreateNewGeneration(newBorn, self.environment.nests, self.timestep)
+            
+            
+            
+            
             #Vi vill ha koordninaterna för de nya bina :)
+            """
             newnests = []
             for bee in self.swarm.bees:
                 if len(bee.egg) != 0:
@@ -136,6 +153,7 @@ class BeeSim(tk.Tk):
             print("New Nest List:", newnests)
             self.environment.CreateNewGeneration(0, newnests)
             self.swarm.CreateNewGeneration(self.environment.nests, 0)
+            """
 
         self.after(50, self.UpdateModel)
 
