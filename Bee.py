@@ -21,17 +21,24 @@ class Swarm:
         #self.bees.egg = []
     
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
-        for bee in self.bees:
-            full = 500
+        for bee_number, bee in enumerate(self.bees):
             bee.vision_angle = vision_angle
             bee.vision_range = vision_range
             bee.angular_noise = angular_noise
-            
-            if sum(bee.pollen.values()) > full:
+
+            if sum(bee.pollen.values()) > bee.pollen_capacity:
                  bee.ReturnHome() # return to home if cannot carry more pollen
-                 #print("Bee returning home!")
+                 bee.Eat(time)
+            
+            elif sum(bee.pollen.values()) < 1:  # Kill bee if starving
+                print('RIP: bee died of starvation.') #Age:',bee_age)
+                self.bees.pop(bee_number)
+                del bee
+                continue
+
             else:
                 bee.Update(flowers)
+                bee.Eat(time)
         
         #Göra en funktion reproduction som när ett bi lämnar pollen genererar 0-X antal offspring med en viss sannolikhet?
         #Där maximala antalet ägg beror på mängden pollen!!
@@ -44,7 +51,7 @@ class Swarm:
 
 
 class Bee:
-    def __init__(self, nest, birth, pollen={},vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    def __init__(self, nest, birth, pollen={1:100}, pollen_capacity=500, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
@@ -65,12 +72,15 @@ class Bee:
 
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = pollen        # how much pollen and what kind
+        self.pollen_capacity = pollen_capacity
 
         self.color = color
         self.birth = birth
 
         self.egg = []
         self.newhomes = []
+
+        self.eating_frequency = 10
 
         #bee_age_mean = 500
         #self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
@@ -103,7 +113,8 @@ class Bee:
                 if flowerType in self.pollen.keys():
                     r = np.random.random() #NOTE: Probability can be added if needed
                     #NOTE: Prompt to pollinate
-                    if r < 0.9:
+                    chancePollination = 0.9
+                    if r < chancePollination:
                         nearest_flower.reproduce = True
 
                     self.pollen[flowerType] += pollen_taken
@@ -125,15 +136,6 @@ class Bee:
         else:
             self.orientation = self.orientation + self.angular_noise * W 
         
-        # eats x random pollen each timestep
-        """
-        if len(self.pollen) > 0:
-            eating_pase = 1          # pollen eaten per timestep
-            random_pollen_key = list(self.pollen.keys())[np.random.randint(0,len(self.pollen))]
-            self.pollen[random_pollen_key] -= eating_pase   
-            if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
-                self.pollen.pop(random_pollen_key) 
-        """
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -152,7 +154,7 @@ class Bee:
             if distance_to_home <= self.visit_radius: # If bee visits home
                 food = sum(self.pollen.values())
                 print('bee went home to leave pollen')
-                leave_home_ratio = 1 # Leaving all pollen
+                leave_home_ratio = 0.5 
                 for key in self.pollen.keys(): # leave the same ratio of each pollen type
                     self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen
                 pollen_given = int(food * leave_home_ratio)
@@ -164,7 +166,7 @@ class Bee:
                     self.Reproduction()
                     self.home.pollen -= required_pollen
         
-        # Bee returns to home:
+        # Bee flies towards home:
         W = np.random.uniform(-1/2, 1/2)  
         direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])
         self.orientation = np.arctan2(direction_to_home[1], direction_to_home[0]) + self.angular_noise * W
@@ -173,19 +175,18 @@ class Bee:
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
         self.path.append([self.x, self.y])
 
-        """    
-         # eats x random pollen each timestep
-        if len(self.pollen) > 0:
-            eating_pase = 1          # pollen eaten per timestep
-            random_pollen_key = list(self.pollen.keys())[np.random.randint(0,len(self.pollen))]
-            self.pollen[random_pollen_key] -= eating_pase   
-            if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
-                self.pollen.pop(random_pollen_key) 
-        """
-
         if len(self.path) > self.path_length:
             self.path.pop(0)
-    
+            
+    def Eat(self,time):
+        # eats 1 random pollen every "self.eating_frequency"  timestep  
+        if time % self.eating_frequency == 0:
+            if len(self.pollen) > 0:
+                random_pollen_key = list(self.pollen.keys())[np.random.randint(0,len(self.pollen))]
+                self.pollen[random_pollen_key] -= 1
+                if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
+                    self.pollen.pop(random_pollen_key) 
+
     def Reproduction(self):
         center = [self.x, self.y]
         radius = 10
@@ -196,7 +197,6 @@ class Bee:
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
         distance = np.linalg.norm(direction_vector)
         
-
         if distance > 0:
 
             cos_angle = np.dot(self.velocity, direction_vector) / (np.linalg.norm(self.velocity) * distance)

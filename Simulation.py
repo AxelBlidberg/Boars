@@ -95,7 +95,7 @@ class BeeSim(tk.Tk):
         if bee.path:
             self.canvas.create_line(bee.path, fill='#ffea61', width=1)
     
-    def CheckBoundaryCollision(self, bee): # fastnar på blommor utanför canvas fixas nog bäst i Environment
+    def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
             return
         bee.orientation += np.pi/2
@@ -113,51 +113,21 @@ class BeeSim(tk.Tk):
         #(self, flowers, time, angular_noise, vision_range, vision_angle):
         self.DrawEnvironment() 
 
-        # new bees
-        """
-        if self.timestep % 50==0: # change to pollen-related
-            nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
-            self.bees.append(Bee(nest, self.timestep))
-        """
-        #Vart vill vi initiera den nya generationen??
-        
-
-            #self.timestep = 0 
-
         for bee in self.swarm.bees:
             #This needs to be sent to push update
-
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
             self.DrawPath(bee)
 
             """
+            # kill bee if old
             bee_age = self.timestep - bee.birth
             if  bee_age > bee.max_age: 
                 print('RIP: bee died of age:',bee_age,'. Pollen levels:',bee.pollen)
                 self.bees.pop(bee_number)
                 del bee
                 continue
-            
-            # kill bee if starving
-            food = sum(bee.pollen.values())
-            if food < 1 and bee_age > 100:
-                print('RIP: bee died of starvation. Age:',bee_age,'. Pollen levels:',bee.pollen)
-                self.bees.pop(bee_number)
-                del bee
-                continue
-            full = 500
-            if food > full:
-                bee.ReturnHome() # return to home nest if full
-            else:
-                bee.Update(self.environment.flowers)
-
             """
-            
-            
-            #self.CheckBoundaryCollision(bee)
-            #self.DrawBee(bee)
-            #self.DrawPath(bee)
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
