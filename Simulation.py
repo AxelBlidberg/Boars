@@ -119,6 +119,10 @@ class BeeSim(tk.Tk):
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
             self.bees.append(Bee(nest, self.timestep))
         """
+        #Vart vill vi initiera den nya generationen??
+        
+
+            #self.timestep = 0 
 
         for bee in self.swarm.bees:
             #This needs to be sent to push update
@@ -126,22 +130,6 @@ class BeeSim(tk.Tk):
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
             self.DrawPath(bee)
-
-            #Vart vill vi initiera den nya generationen??
-
-            if self.timestep > self.environment.seasonLength:
-                #Vi vill ha koordninaterna för de nya bina :)
-                newnests = []
-                for bee in self.swarm.bees:
-                    if len(bee.egg) != 0:
-                        for egg in bee.egg:  
-                            newnests.append(egg)
-                
-                print("New Nest List:", newnests)
-                self.environment.CreateNewGeneration(0, newnests)
-                self.swarm.CreateNewGeneration(self.environment.nests, 0)
-    
-                self.timestep = 0 
 
             """
             bee_age = self.timestep - bee.birth
@@ -173,7 +161,19 @@ class BeeSim(tk.Tk):
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
-        
+
+
+        if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+            #Vi vill ha koordninaterna för de nya bina :)
+            newnests = []
+            for bee in self.swarm.bees:
+                if len(bee.egg) != 0:
+                    for egg in bee.egg:  
+                        newnests.append(egg)
+            
+            print("New Nest List:", newnests)
+            self.environment.CreateNewGeneration(0, newnests)
+            self.swarm.CreateNewGeneration(self.environment.nests, 0)
 
         self.after(50, self.UpdateModel)
 

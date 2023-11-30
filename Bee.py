@@ -190,7 +190,7 @@ class Bee:
         center = [self.x, self.y]
         radius = 10
         
-        self.egg.append([center, radius])
+        self.egg.append([center, radius]) # Coordinates for new nest
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
