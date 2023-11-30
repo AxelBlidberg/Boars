@@ -126,7 +126,6 @@ class Bee:
             self.orientation = self.orientation + self.angular_noise * W 
         
         # eats x random pollen each timestep
-
         """
         if len(self.pollen) > 0:
             eating_pase = 1          # pollen eaten per timestep
@@ -144,15 +143,16 @@ class Bee:
             self.path.pop(0)
 
 
-    def ReturnHome(self): #Återvänder endast hem om den ser sitt hem?
+    def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
         nearby_home = self.home if self.InFieldOfView(self.home) else False
         required_pollen = 600
-        if nearby_home:
+
+        if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
-            if distance_to_home <= self.visit_radius:
+            if distance_to_home <= self.visit_radius: # If bee visits home
                 food = sum(self.pollen.values())
                 print('bee went home to leave pollen')
-                leave_home_ratio = 1 #Leaving all pollen
+                leave_home_ratio = 1 # Leaving all pollen
                 for key in self.pollen.keys(): # leave the same ratio of each pollen type
                     self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen
                 pollen_given = int(food * leave_home_ratio)
@@ -164,9 +164,14 @@ class Bee:
                     self.Reproduction()
                     self.home.pollen -= required_pollen
         
-        W = np.random.uniform(-1/2, 1/2)
+        # Bee returns to home:
+        W = np.random.uniform(-1/2, 1/2)  
         direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])
         self.orientation = np.arctan2(direction_to_home[1], direction_to_home[0]) + self.angular_noise * W
+        self.x += self.speed * np.cos(self.orientation)
+        self.y += self.speed * np.sin(self.orientation)
+        self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
+        self.path.append([self.x, self.y])
 
         """    
          # eats x random pollen each timestep
@@ -177,10 +182,6 @@ class Bee:
             if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
                 self.pollen.pop(random_pollen_key) 
         """
-        self.x += self.speed * np.cos(self.orientation)
-        self.y += self.speed * np.sin(self.orientation)
-        self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
-        self.path.append([self.x, self.y])
 
         if len(self.path) > self.path_length:
             self.path.pop(0)

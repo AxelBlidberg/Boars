@@ -156,7 +156,7 @@ class Environment:
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status = flower.UpdateFlower(time)
-            if status[0] == 1:
+            if status[0] == 1: # 1 = reproduce, 2 = dead
                 self.newGeneration.append([status[1], 10, flower.type])
             elif status[0] == 2:
                 del self.flowers[i]
