@@ -1,5 +1,6 @@
 from Environment import *
 from Result import *
+from Bee import *
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -25,14 +26,14 @@ def PlotFunction(data):
         axs[i].set_title(f'Flowers version: {i}')
     plt.show()
 
-def RunSimulation(environment):
+def RunSimulationFlowers(environment):
     data = []
     time = 0
     environment.InitializeFlowers(100)
 
     for i in range(55):
         time += 101
-        repro = int(0.1*len(environment.flowers))
+        repro = int(0.15*len(environment.flowers))
 
         for i in range(repro):
             j = np.random.randint(0, len(environment.flowers))
@@ -53,19 +54,65 @@ def RunSimulation(environment):
 
     print('Fake simulation finnished')
     MergePlots(data)
+    
+def RunSimulation():
+    env = Environment(1000)
+    env.InitializeFlowers(200)
+    env.InitializeBeeNest(15)
+
+    colony = Swarm()
+    colony.InitializeBees(15, env.nests)
+
+    fData = []
+    bData = []
+    time = 0
+
+    for i in range(55):
+        time += 101
+
+        # Update flowers:
+        repro = int(0.15*len(env.flowers))
+
+        for i in range(repro):
+            j = np.random.randint(0, len(env.flowers))
+            env.flowers[j].reproduce = True
+        env.PushUpdate(time)
+
+        if time %505 == 0:
+            fData.append(env.FlowerDistribution())
+            bData.append(len(colony.bees))
+        
+        if time > 1000 and time < 1100:
+            env.CreateNewGeneration(time, [])
+            env.AddBeeNest([100,100], 50)
+            colony.AddBee(env.nests[-1], time)
+        elif time > 2000 and time < 2100:
+            env.CreateNewGeneration(time, [])
+            env.AddBeeNest([200,100], 50)
+            colony.AddBee(env.nests[-1], time)
+        elif time > 3000 and time < 3100:
+            env.CreateNewGeneration(time, [])
+            env.AddBeeNest([300,100], 50)
+            colony.AddBee(env.nests[-1], time)
+        elif time > 4000 and time < 4100:
+            env.CreateNewGeneration(time, [])
+            env.AddBeeNest([400,100], 50)
+            colony.AddBee(env.nests[-1], time)
+
+    MergePlots(fData, bData)
+
 
 def AgricultureTest():
     env1 = Environment(100, 'agriculture')
     env1.InitializeFlowers(100)
-    print(len(env1.flowers))
     env2 = Environment(1000, 'agriculture')
     env2.InitializeFlowers(500)
     data = [env1.ExportContent(), env2.ExportContent()]
     PlotFunction(data)
 
 
-env = Environment(1000, 'countryside')
-RunSimulation(env)
+env = Environment(1000, 'agriculture')
+RunSimulationFlowers(env)
 
 
 
