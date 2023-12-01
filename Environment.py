@@ -20,7 +20,7 @@ class Environment:
         self.newGeneration = []
         self.envType = environmentType
         self.flowers = []
-        self.seasonLength = 1000
+        self.seasonLength = 500
 
         # Nests
         self.nests = []
@@ -83,7 +83,7 @@ class Environment:
         center = [self.xLimit/2, self.yLimit/2]
         
         for _ in range(n):
-            self.nests.append(Nest(center, self.xLimit/2))
+            self.nests.append(Nest(center, self.xLimit/8))
 
     def AddBeeNest(self, center, radius) -> None:
         '''
@@ -104,12 +104,20 @@ class Environment:
         '''
         self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
 
-    def CreateNewGeneration(self, time):
+    def CreateNewGeneration(self, time, newnests):
         '''
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
+        #print("New Generation")
+        #self.nests = []
+        #self.flowers = []
         for individual in self.newGeneration:
+            #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
+
+        for nest in newnests:
+            self.AddBeeNest(nest[0], nest[1])
+        
         self.newGeneration = []
 
     def ExportContent(self) -> list:
@@ -147,15 +155,19 @@ class Environment:
         '''
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status = flower.UpdateFlower(time)
-            if status[0] == 1:
-                self.newGeneration.append([status[1], 10, flower.type])
-            elif status[0] == 2:
+            status, center = flower.UpdateFlower(time) 
+            if status == 1: # 1 = reproduce
+                nFlowers = np.random.randint(1,flower.max_siblings) # how many "siblings"
+                for _ in range(nFlowers): 
+                    self.newGeneration.append([center, 70, flower.type]) #center, radius, type
+            elif status == 2: # 2 = dead
                 del self.flowers[i]
+
+
         # Creates the new generation of flowers
-        if time % self.seasonLength + 5 == 0 and time != 0:
-            self.flowers = []
-            self.CreateNewGeneration(time)
+        #if time % self.seasonLength + 5 == 0 and time != 0:
+        #    self.flowers = []
+        #    self.CreateNewGeneration(time)
 
 
 class Flower:
@@ -169,6 +181,9 @@ class Flower:
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.reproduce = False
+        
+        self.max_siblings = 3  # max "siblings" among flowers
+
         
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
@@ -197,25 +212,25 @@ class Flower:
         life = seasonLength
         pollen = 100
         if self.type == 1: # Lavender
-            self.lifespan = life
+            self.lifespan = life*2
             self.pollen = pollen
         elif self.type == 2: # Bee balm
-            self.lifespan = life
+            self.lifespan = life*2
             self.pollen = pollen
         elif self.type == 3: # Sunflower
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = 4*pollen
         elif self.type == 4: # Coneflowers
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = pollen
         elif self.type == 5: # Blueberry
-            self.lifespan = int(life/2)
+            self.lifespan = life
             self.pollen = 4*pollen
         
         
         #olika nyanser av gult i blomman för varje "100 pollen den har"
         self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
-        self.centerColor = self.possibleCenterColors[min(self.pollen//100, len(self.possibleCenterColors) - 1)]
+        self.centerColor = self.possibleCenterColors[min(self.pollen//50, len(self.possibleCenterColors) - 1)]
         self.outerColor = possibleOuterColors[self.type - 1]
 
         self.creation = creation
