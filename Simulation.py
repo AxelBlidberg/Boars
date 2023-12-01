@@ -31,11 +31,16 @@ class BeeSim(tk.Tk):
         self.plot_canvas_frame = tk.Frame(self)
         self.plot_canvas_frame.pack(padx=10)
         self.figure = Figure(figsize=(6, 4), dpi=100)
-        self.axes = self.figure.add_subplot()
         self.plot_canvas = FigureCanvasTkAgg(self.figure, self.plot_canvas_frame)
         self.plot_canvas.get_tk_widget().pack()
         self.figure.suptitle('Population count')
         self.figure.legend()
+        self.axes = self.figure.subplot_mosaic(
+            """
+            AAA
+            BBB
+            """
+        )
         self.ani = None
         self.bee_population_count = []
         self.flower_population_count = []
@@ -120,12 +125,12 @@ class BeeSim(tk.Tk):
         self.canvas.delete('all')
         self.timestep += 1
 
-        angular_noise = float(self.angular_noise_slider.get())
-        vision_range = int(self.vision_range_slider.get())
-        vision_angle = float(self.vision_angle_slider.get())
+       # angular_noise = float(self.angular_noise_slider.get())
+       # vision_range = int(self.vision_range_slider.get())
+       # vision_angle = float(self.vision_angle_slider.get())
         
         self.DrawEnvironment() 
-    
+        wealth = []
         # new bees
         if self.timestep % 50==0: # change to pollen-related
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
@@ -133,7 +138,7 @@ class BeeSim(tk.Tk):
         
         for bee_number, bee in enumerate(self.bees):
             
-            bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
+           # bee.angular_noise, bee.vision_range, bee.vision_angle = angular_noise, vision_range, vision_angle
 
             # kill bee if old
             bee_age = self.timestep - bee.birth
@@ -163,14 +168,21 @@ class BeeSim(tk.Tk):
 
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
-            
+            wealth.append(sum(bee.pollen.values()))
+
         self.bee_population_count.append(len(self.bees))
         self.flower_population_count.append(len(self.environment.flowers))
 
-        self.axes.clear()
-        self.axes.plot(self.bee_population_count, label='Bees')
-        self.axes.plot(self.flower_population_count, label='Flowers')
-        self.axes.legend()
+        self.axes['A'].clear()
+        self.axes['B'].clear()
+
+        self.axes['A'].plot(self.bee_population_count, label='Bees')
+        self.axes['A'].plot(self.flower_population_count, label='Flowers')
+        self.axes['A'].legend()
+
+        self.axes['B'].hist(wealth)
+        self.axes['B'].set_label('Wealth distribution')
+
         #self.after(50, self.UpdateModel)
 
 
