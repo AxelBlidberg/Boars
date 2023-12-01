@@ -26,6 +26,7 @@ def PlotFlowerAmount(ax, data):
     ax.set_title('Flower population and distribution')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('n Flowers')
+<<<<<<< Updated upstream
     ax.legend(labels=labels)
     #help(ax.legend(labels=labels))
 =======
@@ -47,6 +48,7 @@ def PlotAvgLifespan(ax):
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
+<<<<<<< Updated upstream
 def MergePlots(data):
     print('Enter')
     fig, axs = plt.subplots(2, 2)
@@ -59,5 +61,5 @@ def MergePlots(flowerData, beeData):
     PlotBeePopulation(axs[0, 1, beeData])  # Pass individual subplot
 >>>>>>> Stashed changes
     PlotAvgLifespan(axs[1, 1])    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[1, 0])  # Pass individual subplot
+    PlotFlowerBeeDensity(axs[1, 0], beeData)  # Pass individual subplot
     plt.show()
