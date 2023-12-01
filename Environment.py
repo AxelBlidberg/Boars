@@ -83,7 +83,7 @@ class Environment:
         center = [self.xLimit/2, self.yLimit/2]
         
         for _ in range(n):
-            self.nests.append(Nest(center, self.xLimit/2))
+            self.nests.append(Nest(center, self.xLimit/8))
 
     def AddBeeNest(self, center, radius) -> None:
         '''
