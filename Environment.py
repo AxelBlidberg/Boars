@@ -237,7 +237,6 @@ class Flower:
         Update rules for flowers, 
         '''
         if self.reproduce == True:
-            print('Reproducing')
             self.reproduce = False
             return [1, [self.x, self.y]]
         elif (time - self.creation) > self.lifespan:

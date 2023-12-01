@@ -40,7 +40,7 @@ def RunSimulation(environment):
         environment.PushUpdate(time)
 
         if time %505 == 0:
-            data.append(np.copy(environment.ExportContent()))
+            data.append(environment.FlowerDistribution())
         
         if time > 1000 and time < 1100:
             environment.CreateNewGeneration(time)

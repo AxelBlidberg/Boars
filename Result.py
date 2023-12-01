@@ -6,25 +6,29 @@ def PlotFlowerAmount(ax, data):
     labels = ['Lavender', 'Bee balm', 'Sunflower', 'Coneflower', 'Blueberry']
     colors = ['purple', 'red', 'orange', 'pink', 'blue']
     encoding = [1, 2, 3, 4, 5]
+    oldSum = -1
 
-    for i, generation in enumerate(data):
-        counter = [[c+1, 0] for c in encoding]
-        types = [flower[1] for flower in generation]
+    for i, line in enumerate(data):
+        values = []
+        print(line)
+        for j,l in enumerate(labels):
+            values.append(line[l])
+            ax.plot([i, i+1], [line[l], line[l]], color=colors[j])
 
-        for c in range(len(counter)):
-            for j in range(len(types)):
-                if types[c] == counter[c][0]:
-                    counter[c][1] += 1
-        print(counter)
-        
-        for c in range(len(counter)):
-            ax.plot([i, i+1], [counter[c][1], counter[c][1]], color=colors[c])
+        oldValues = np.copy(values)
 
-        ax.plot([i, i+1], [len(types), len(types)], color='gray')
+        ax.plot([i, i+1], [np.sum(values), np.sum(values)], color='gray', linewidth=2, marker='o')
+        if oldSum != -1:
+            ax.plot([i, i], [oldSum, np.sum(values)], '--', linewidth=1, color='gray')
+        oldSum = np.sum(values)
+    
 
+    labels.append('Total amount')
     ax.set_title('Flower population and distribution')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('n Flowers')
+    ax.legend(labels=labels)
+    #help(ax.legend(labels=labels))
 
 def PlotBeePopulation(ax):
     ax.set_title('Bee population')
