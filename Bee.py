@@ -10,8 +10,8 @@ class Swarm:
         for i in range(n):
             self.AddBee(nests[i], birth)
 
-    def AddBee(self, beenest, birth):
-        self.bees.append(Bee(beenest, birth))
+    def AddBee(self, nest, birth):
+        self.bees.append(Bee(nest, birth))
 
     """""
     def CreateNewGeneration(self, nests, time): 
@@ -23,9 +23,9 @@ class Swarm:
                 self.AddBee(nest, time)
     """    
     
-    def CreateNewGeneration(self, newnests, time): 
+    def CreateNewGeneration(self, time, newNests): 
         self.bees = []
-        for nest in newnests:
+        for nest in newNests:
             self.AddBee(nest, time)
             
 
@@ -146,7 +146,7 @@ class Bee:
 
                 nearest_flower.pollen -= pollen_taken
 
-                index = min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1)
+                index = int(min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1))
 
                 nearest_flower.centerColor = nearest_flower.possibleCenterColors[index]
 
@@ -174,7 +174,7 @@ class Bee:
         """
 
         nearby_home = self.home if self.InFieldOfView(self.home) else False
-        required_pollen = 100 # To reproduce
+        required_pollen = 1000 # To reproduce
         self.turningHome=False # temporary to print when bee wants to go home
         if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
