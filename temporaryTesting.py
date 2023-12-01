@@ -1,9 +1,6 @@
 from Environment import *
 from Result import *
-<<<<<<< Updated upstream
-=======
 from Bee import *
->>>>>>> Stashed changes
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -29,22 +26,14 @@ def PlotFunction(data):
         axs[i].set_title(f'Flowers version: {i}')
     plt.show()
 
-<<<<<<< Updated upstream
-def RunSimulation(environment):
-=======
 def RunSimulationFlowers(environment):
->>>>>>> Stashed changes
     data = []
     time = 0
     environment.InitializeFlowers(100)
 
     for i in range(55):
         time += 101
-<<<<<<< Updated upstream
-        repro = int(0.1*len(environment.flowers))
-=======
         repro = int(0.15*len(environment.flowers))
->>>>>>> Stashed changes
 
         for i in range(repro):
             j = np.random.randint(0, len(environment.flowers))
@@ -55,7 +44,6 @@ def RunSimulationFlowers(environment):
             data.append(environment.FlowerDistribution())
         
         if time > 1000 and time < 1100:
-<<<<<<< Updated upstream
             environment.CreateNewGeneration(time)
         elif time > 2000 and time < 2100:
             environment.CreateNewGeneration(time)
@@ -66,22 +54,7 @@ def RunSimulationFlowers(environment):
 
     print('Fake simulation finnished')
     MergePlots(data)
-
-def AgricultureTest():
-    env1 = Environment(100, 'agriculture')
-    env1.InitializeFlowers(100)
-    print(len(env1.flowers))
-=======
-            environment.CreateNewGeneration(time, [])
-        elif time > 2000 and time < 2100:
-            environment.CreateNewGeneration(time, [])
-        elif time > 3000 and time < 3100:
-            environment.CreateNewGeneration(time, [])
-        elif time > 4000 and time < 4100:
-            environment.CreateNewGeneration(time, [])
-
-    MergePlots(data)
-
+    
 def RunSimulation():
     env = Environment(1000)
     env.InitializeFlowers(200)
@@ -132,20 +105,14 @@ def RunSimulation():
 def AgricultureTest():
     env1 = Environment(100, 'agriculture')
     env1.InitializeFlowers(100)
->>>>>>> Stashed changes
     env2 = Environment(1000, 'agriculture')
     env2.InitializeFlowers(500)
     data = [env1.ExportContent(), env2.ExportContent()]
     PlotFunction(data)
 
 
-<<<<<<< Updated upstream
-env = Environment(1000, 'countryside')
-RunSimulation(env)
-=======
 env = Environment(1000, 'agriculture')
 RunSimulationFlowers(env)
->>>>>>> Stashed changes
 
 
 
