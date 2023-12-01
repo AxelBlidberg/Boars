@@ -5,7 +5,6 @@ from collections import Counter
 def PlotFlowerAmount(ax, data):
     labels = ['Lavender', 'Bee balm', 'Sunflower', 'Coneflower', 'Blueberry']
     colors = ['purple', 'red', 'orange', 'pink', 'blue']
-    encoding = [1, 2, 3, 4, 5]
     oldSum = -1
 
     for i, line in enumerate(data):
@@ -14,8 +13,6 @@ def PlotFlowerAmount(ax, data):
         for j,l in enumerate(labels):
             values.append(line[l])
             ax.plot([i, i+1], [line[l], line[l]], color=colors[j])
-
-        oldValues = np.copy(values)
 
         ax.plot([i, i+1], [np.sum(values), np.sum(values)], color='gray', linewidth=2, marker='o')
         if oldSum != -1:
@@ -27,7 +24,7 @@ def PlotFlowerAmount(ax, data):
     ax.set_title('Flower population and distribution')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('n Flowers')
-    ax.legend(labels=labels)
+    ax.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
     #help(ax.legend(labels=labels))
 
 def PlotBeePopulation(ax):
@@ -47,7 +44,7 @@ def PlotAvgLifespan(ax):
 
 def MergePlots(data):
     print('Enter')
-    fig, axs = plt.subplots(2, 2)
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
     PlotFlowerAmount(axs[0, 0], data)  # Pass individual subplot
     PlotBeePopulation(axs[0, 1])  # Pass individual subplot
     PlotAvgLifespan(axs[1, 1])    # Pass individual subplot

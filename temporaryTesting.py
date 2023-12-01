@@ -32,7 +32,7 @@ def RunSimulation(environment):
 
     for i in range(55):
         time += 101
-        repro = int(0.1*len(environment.flowers))
+        repro = int(0.15*len(environment.flowers))
 
         for i in range(repro):
             j = np.random.randint(0, len(environment.flowers))
@@ -64,7 +64,7 @@ def AgricultureTest():
     PlotFunction(data)
 
 
-env = Environment(1000, 'countryside')
+env = Environment(1000, 'agriculture')
 RunSimulation(env)
 
 
