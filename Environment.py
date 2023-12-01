@@ -27,7 +27,6 @@ class Environment:
 
         # Hazards
         self.hazards = []
-        self.max_flowers = 3  # max "siblings" among flowers
 
     def InitializeFlowers(self, n) -> None:
         '''
@@ -158,7 +157,7 @@ class Environment:
         for i, flower in enumerate(self.flowers):
             status, center = flower.UpdateFlower(time) 
             if status == 1: # 1 = reproduce
-                nFlowers = np.random.randint(1,self.max_flowers) # how many "siblings"
+                nFlowers = np.random.randint(1,flower.max_siblings) # how many "siblings"
                 for _ in range(nFlowers): 
                     self.newGeneration.append([center, 70, flower.type]) #center, radius, type
             elif status == 2: # 2 = dead
@@ -182,6 +181,9 @@ class Flower:
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.reproduce = False
+        
+        self.max_siblings = 3  # max "siblings" among flowers
+
         
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
