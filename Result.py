@@ -10,7 +10,6 @@ def PlotFlowerAmount(ax, data):
 
     for i, line in enumerate(data):
         values = []
-        print(line)
         for j,l in enumerate(labels):
             values.append(line[l])
             ax.plot([i, i+1], [line[l], line[l]], color=colors[j])
@@ -29,6 +28,9 @@ def PlotFlowerAmount(ax, data):
     ax.set_ylabel('n Flowers')
     ax.legend(labels=labels)
     #help(ax.legend(labels=labels))
+=======
+    ax.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
+>>>>>>> Stashed changes
 
 def PlotBeePopulation(ax):
     ax.set_title('Bee population')
@@ -50,6 +52,12 @@ def MergePlots(data):
     fig, axs = plt.subplots(2, 2)
     PlotFlowerAmount(axs[0, 0], data)  # Pass individual subplot
     PlotBeePopulation(axs[0, 1])  # Pass individual subplot
+=======
+def MergePlots(flowerData, beeData):
+    fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
+    PlotFlowerAmount(axs[0, 0], flowerData)  # Pass individual subplot
+    PlotBeePopulation(axs[0, 1, beeData])  # Pass individual subplot
+>>>>>>> Stashed changes
     PlotAvgLifespan(axs[1, 1])    # Pass individual subplot
     PlotFlowerBeeDensity(axs[1, 0])  # Pass individual subplot
     plt.show()

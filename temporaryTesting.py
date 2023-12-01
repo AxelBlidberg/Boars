@@ -25,6 +25,7 @@ def PlotFunction(data):
         axs[i].set_title(f'Flowers version: {i}')
     plt.show()
 
+<<<<<<< Updated upstream
 def RunSimulation(environment):
     data = []
     time = 0
@@ -32,6 +33,7 @@ def RunSimulation(environment):
 
     for i in range(55):
         time += 101
+<<<<<<< Updated upstream
         repro = int(0.1*len(environment.flowers))
 
         for i in range(repro):
@@ -43,6 +45,7 @@ def RunSimulation(environment):
             data.append(environment.FlowerDistribution())
         
         if time > 1000 and time < 1100:
+<<<<<<< Updated upstream
             environment.CreateNewGeneration(time)
         elif time > 2000 and time < 2100:
             environment.CreateNewGeneration(time)
@@ -64,6 +67,7 @@ def AgricultureTest():
     PlotFunction(data)
 
 
+<<<<<<< Updated upstream
 env = Environment(1000, 'countryside')
 RunSimulation(env)
 

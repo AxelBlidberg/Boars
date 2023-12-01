@@ -65,8 +65,6 @@ class Environment:
             x = np.linspace(self.xLimit*0.05, self.xLimit*0.95, num=nRows)
             y = np.linspace(self.yLimit*0.05, self.yLimit*0.95, num=nCols)
             locations = [[i, j] for i in x for j in y]
-            print(locations)
-
             for i in range(len(locations)):
                 for j in range(len(iRange)):
                     if i in iRange[j]:
