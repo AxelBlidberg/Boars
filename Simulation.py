@@ -27,13 +27,20 @@ class BeeSim(tk.Tk):
         self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#355E3B')
         self.canvas.pack()
 
+        # Plotting 
         self.plot_canvas_frame = tk.Frame(self)
         self.plot_canvas_frame.pack(padx=10)
         self.figure = Figure(figsize=(6, 4), dpi=100)
         self.axes = self.figure.add_subplot()
         self.plot_canvas = FigureCanvasTkAgg(self.figure, self.plot_canvas_frame)
         self.plot_canvas.get_tk_widget().pack()
-
+        self.figure.suptitle('Population count')
+        self.figure.legend()
+        self.ani = None
+        self.bee_population_count = []
+        self.flower_population_count = []
+        
+        
         # Frame for sliders
         self.slider_frame = tk.Frame(self)
         self.slider_frame.pack(padx=10)
@@ -51,7 +58,7 @@ class BeeSim(tk.Tk):
         self.vision_angle_slider.set(280)
         self.vision_angle_slider.pack()
 
-        self.show_vision_var = tk.BooleanVar(value=True)
+        self.show_vision_var = tk.BooleanVar(value=False)
         self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
         self.draw_vision_checkbox.pack(pady=5)
 
@@ -64,7 +71,6 @@ class BeeSim(tk.Tk):
         #NOTE: They should be initialized with the amount of food that is collected for them
         self.bees = [Bee(self.environment.nests[i], ages_first_bees[i],{1:pollen_first_bees[i]}) for i in range(num_bees)]
 
-        self.ani = None
 
         #self.after(50, self.UpdateModel)
 
@@ -119,7 +125,7 @@ class BeeSim(tk.Tk):
         vision_angle = float(self.vision_angle_slider.get())
         
         self.DrawEnvironment() 
-        lifespans = []
+    
         # new bees
         if self.timestep % 50==0: # change to pollen-related
             nest = self.environment.nests[np.random.randint(len(self.environment.nests))] # born in random nest
@@ -158,16 +164,18 @@ class BeeSim(tk.Tk):
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
             
-            lifespans.append(bee.max_age)
+        self.bee_population_count.append(len(self.bees))
+        self.flower_population_count.append(len(self.environment.flowers))
 
         self.axes.clear()
-        self.axes.hist(lifespans)
-
+        self.axes.plot(self.bee_population_count, label='Bees')
+        self.axes.plot(self.flower_population_count, label='Flowers')
+        self.axes.legend()
         #self.after(50, self.UpdateModel)
 
 
     
 if __name__ == "__main__":
     bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='urban')
-    bee_sim.ani =  animation.FuncAnimation(bee_sim.figure, bee_sim.UpdateModel, interval=10)
+    bee_sim.ani =  animation.FuncAnimation(bee_sim.figure, bee_sim.UpdateModel, interval=1)
     bee_sim.mainloop()
