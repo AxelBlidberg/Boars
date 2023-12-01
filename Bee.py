@@ -13,22 +13,26 @@ class Swarm:
     def AddBee(self, beenest, birth):
         self.bees.append(Bee(beenest, birth))
 
-    def CreateNewGeneration(self, newBorn, nests, time): 
+    """""
+    def CreateNewGeneration(self, nests, time): 
         for egg in newBorn.values():
-            nest = egg[0][0]
-            nEggs = egg[0][1]
+            center = egg[0]
+            radis = egg[1]
             for _ in range(nEggs):
-                nest=nests[np.random.randint(0,len(nests))] # right now in random nests
+                nest = nests[np.random.randint(0,len(nests))] # right now in random nests
                 self.AddBee(nest, time)
-    """             
+    """    
+    
     def CreateNewGeneration(self, newnests, time): 
         self.bees = []
         for nest in newnests:
             self.AddBee(nest, time)
             
-        #self.bees.egg = []
-    """ 
+
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
+        """
+        Calls Update() and Eat(), and check if bee is full, starving or old for every bee
+        """
         for bee_number, bee in enumerate(self.bees):
             bee.vision_angle = vision_angle
             bee.vision_range = vision_range
@@ -57,15 +61,6 @@ class Swarm:
                 bee.turningHome=True
                 bee.Update(flowers)
                 bee.Eat(time)
-
-        #Göra en funktion reproduction som när ett bi lämnar pollen genererar 0-X antal offspring med en viss sannolikhet?
-        #Där maximala antalet ägg beror på mängden pollen!!
-
-        #print(time)
-
-        #if time == self.seasonLength:
-        #    print("New Bee Generation")
-        #    self.CreateNewGeneration(time)
 
 
 class Bee:
@@ -105,6 +100,9 @@ class Bee:
         self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
 
     def Update(self, flowers):
+        """
+        Bee movement, check for flowers, pollination
+        """
         # Angular noise to the direction
         W = np.random.uniform(-1/2, 1/2)
 
@@ -160,6 +158,7 @@ class Bee:
         else:
             self.orientation = self.orientation + self.angular_noise * W 
         
+        # Bee moves
         self.x += self.speed * np.cos(self.orientation)
         self.y += self.speed * np.sin(self.orientation)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -170,9 +169,13 @@ class Bee:
 
 
     def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
+        """
+        Bee movement aims for home. Checks if bee is home yet. If nest.pollen > 200 > new egg. Called each timestep when bee is full. 
+        """
+
         nearby_home = self.home if self.InFieldOfView(self.home) else False
-        required_pollen = 200
-        self.turningHome=False
+        required_pollen = 100 # To reproduce
+        self.turningHome=False # temporary to print when bee wants to go home
         if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
             if distance_to_home <= self.visit_radius: # If bee visits home
@@ -186,9 +189,10 @@ class Bee:
                 #print('Bee pollen after',sum(self.pollen.values()))
                 #print('Nest pollen after:',self.home.pollen)
 
-                if self.home.pollen > required_pollen:
+                while self.home.pollen > required_pollen:
                     self.Reproduction()
                     self.home.pollen -= required_pollen
+                    print('bee laid egg')
         
         # Bee flies towards home:
         W = np.random.uniform(-1/2, 1/2)  
@@ -212,12 +216,10 @@ class Bee:
                     self.pollen.pop(random_pollen_key) 
 
     def Reproduction(self):
-        max_eggs = min(self.home.pollen//100, 5) # max 5 siblings
-        nEggs = np.random.randint(1,max_eggs)
         center = [self.x, self.y]
         radius = 20
         
-        self.egg.append([[center, radius],nEggs]) # egg= [[nest] nEggs]
+        self.egg.append([center, radius]) # egg = [nest]
 
     def InFieldOfView(self, obj):
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])

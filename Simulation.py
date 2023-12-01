@@ -58,7 +58,6 @@ class BeeSim(tk.Tk):
         self.swarm.InitializeBees(num_bees, self.environment.nests)
         #Skicka 
 
-        
         self.after(50, self.UpdateModel) #NOTE: Model updates after 50 milli seconds?
         
     def DrawEnvironment(self):
@@ -79,8 +78,6 @@ class BeeSim(tk.Tk):
         
         self.environment.PushUpdate(self.timestep)
         
-
-
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
         self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill=bee.color)
@@ -134,8 +131,7 @@ class BeeSim(tk.Tk):
             plt.plot(self.flowersPlot,label='flowers',c='pink')
             plt.plot(self.beesPlot,label='bees',c='yellow')
             plt.show()
-
-        if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+        """
             newBorn = {}
             newNests = []
             for bee_number, bee in enumerate(self.swarm.bees):
@@ -148,9 +144,9 @@ class BeeSim(tk.Tk):
             self.swarm.CreateNewGeneration(newBorn, self.environment.nests, self.timestep)
             print('n.o. bees:',len(self.swarm.bees))
             print('n.o. flowers:',len(self.environment.flowers))
-            
-            #Vi vill ha koordninaterna för de nya bina :)
             """
+            #Vi vill ha koordninaterna för de nya bina :)
+        if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
             newnests = []
             for bee in self.swarm.bees:
                 if len(bee.egg) != 0:
@@ -160,7 +156,7 @@ class BeeSim(tk.Tk):
             print("New Nest List:", newnests)
             self.environment.CreateNewGeneration(0, newnests)
             self.swarm.CreateNewGeneration(self.environment.nests, 0)
-            """
+            
 
         self.after(50, self.UpdateModel)
 
