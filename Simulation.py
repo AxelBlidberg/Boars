@@ -14,6 +14,7 @@ class BeeSim(tk.Tk):
         self.num_flowers = num_flowers
         
         self.timestep = 0
+        self.season = 1
 
         self.title("Bee Simulation")
         
@@ -105,6 +106,8 @@ class BeeSim(tk.Tk):
         self.canvas.delete('all')
         self.timestep += 1
 
+        self.title(f"Bee Simulation - time: {self.timestep} | season: {self.season}")
+
         angular_noise = float(self.angular_noise_slider.get())
         vision_range = int(self.vision_range_slider.get())
         vision_angle = float(self.vision_angle_slider.get())
@@ -147,6 +150,7 @@ class BeeSim(tk.Tk):
             """
             #Vi vill ha koordninaterna för de nya bina :)
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+            self.season += 1
             newnests = []
             for bee in self.swarm.bees:
                 if len(bee.egg) != 0:
