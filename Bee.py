@@ -7,26 +7,36 @@ class Swarm:
         self.seasonLength = 1000
     
     def InitializeBees(self, n, nests, birth=0):
+        #color="#ffd662"
+        #Skapa ett betype object??
+        #people = {1: {'name': 'John', 'age': '27', 'sex': 'Male'},  2: {'name': 'Marie', 'age': '22', 'sex': 'Female'}}
+        
+        #Defining Beetype! Should this be moved to Simulation.py?
+        beetype = {'Small Bee': {'speed': 1, 'pollen_capacity': 300,'vision_angle': 180 , 'vision_range':40, 'angular_noise': 0.01, 'color': "#ffd662" },
+                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 500,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffd662" },
+                    'Large Bee': {'speed': 3, 'pollen_capacity': 1000,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffd662" }} 
         for i in range(n):
-            self.AddBee(nests[i], birth)
+            beetype = 1
+            self.AddBee(nests[i], birth, beetype)
 
     def AddBee(self, beenest, birth):
-        self.bees.append(Bee(beenest, birth))
-
-    """""
-    def CreateNewGeneration(self, nests, time): 
-        for egg in newBorn.values():
-            center = egg[0]
-            radis = egg[1]
-            for _ in range(nEggs):
-                nest = nests[np.random.randint(0,len(nests))] # right now in random nests
-                self.AddBee(nest, time)
-    """    
+        self.bees.append(Bee(beenest, birth)) 
     
     def CreateNewGeneration(self, newnests, time): 
         self.bees = []
         for nest in newnests:
             self.AddBee(nest, time)
+
+    def BeeDistribution(self) -> dict:
+        distribution = {'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0}
+        for bee in self.bees:
+            if bee.type == 1:
+                distribution['Small Bee'] += 1
+            elif bee.type == 2:
+                distribution['Intermediate Bee'] += 1
+            elif bee.type == 3:
+                distribution['Large Bee'] += 1
+        return distribution
             
 
     def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
@@ -64,7 +74,8 @@ class Swarm:
 
 
 class Bee:
-    def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    #def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
+    def __init__(self, nest, birth, beetype):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
@@ -85,9 +96,9 @@ class Bee:
 
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {1:100}        # how much pollen and what kind
-        self.pollen_capacity = pollen_capacity
+        self.pollen_capacity = beetype.pollen_capacity
 
-        self.color = color
+        self.color = beetype.color
         self.birth = birth
 
         self.egg = []
