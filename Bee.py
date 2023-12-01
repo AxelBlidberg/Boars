@@ -1,10 +1,14 @@
 import numpy as np
+import random
 
 class Swarm:
     def __init__(self):
         self.bees = []
         self.newGeneration = []
         self.seasonLength = 1000
+        self.Beetypes = {'Small Bee': {'speed': 1, 'pollen_capacity': 300,'vision_angle': 180 , 'vision_range':40, 'angular_noise': 0.01, 'color': "#ffd662" },
+                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 500,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#FF6600" },
+                    'Large Bee': {'speed': 3, 'pollen_capacity': 1000,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffbc62" }} 
     
     def InitializeBees(self, n, nests, birth=0):
         #color="#ffd662"
@@ -12,15 +16,15 @@ class Swarm:
         #people = {1: {'name': 'John', 'age': '27', 'sex': 'Male'},  2: {'name': 'Marie', 'age': '22', 'sex': 'Female'}}
         
         #Defining Beetype! Should this be moved to Simulation.py?
-        beetype = {'Small Bee': {'speed': 1, 'pollen_capacity': 300,'vision_angle': 180 , 'vision_range':40, 'angular_noise': 0.01, 'color': "#ffd662" },
-                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 500,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffd662" },
-                    'Large Bee': {'speed': 3, 'pollen_capacity': 1000,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffd662" }} 
-        for i in range(n):
-            beetype = 1
-            self.AddBee(nests[i], birth, beetype)
 
-    def AddBee(self, beenest, birth):
-        self.bees.append(Bee(beenest, birth)) 
+        bee_types = ['Small Bee', 'Intermediate Bee', 'Large Bee']
+        
+        for i in range(n):
+            beetype = random.choice(bee_types)
+            self.AddBee(nests[i], birth, beetype,self.Beetypes)
+
+    def AddBee(self, beenest, birth,beetype, Beetypes):
+        self.bees.append(Bee(beenest, birth,beetype,Beetypes)) 
     
     def CreateNewGeneration(self, newnests, time): 
         self.bees = []
@@ -75,30 +79,32 @@ class Swarm:
 
 class Bee:
     #def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
-    def __init__(self, nest, birth, beetype):
+    def __init__(self, nest, birth, beetype,Beetypes):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
         self.path = [[self.x, self.y]]
         self.path_length = 100
 
-        self.speed = speed
+        self.Beetype = Beetypes[beetype]
+
+        self.speed = self.Beetype["speed"]
         self.orientation = np.random.uniform(0, 2 * np.pi)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
-        self.angular_noise = angular_noise
+        self.angular_noise = self.Beetype["angular_noise"]
 
         self.visited_flowers = []
         self.visit_radius = 2
         self.short_memory = 10
         
-        self.vision_angle = vision_angle
-        self.vision_range = vision_range
+        self.vision_angle = self.Beetype["vision_angle"]
+        self.vision_range = self.Beetype["vision_range"]
 
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {1:100}        # how much pollen and what kind
-        self.pollen_capacity = beetype.pollen_capacity
+        self.pollen_capacity = self.Beetype["pollen_capacity"]
 
-        self.color = beetype.color
+        self.color = self.Beetype["color"]
         self.birth = birth
 
         self.egg = []

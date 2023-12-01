@@ -161,7 +161,6 @@ class BeeSim(tk.Tk):
             self.environment.CreateNewGeneration(0, newnests)
             self.swarm.CreateNewGeneration(self.environment.nests, 0)
             
-
         self.after(50, self.UpdateModel)
 
     
