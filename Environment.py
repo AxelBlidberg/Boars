@@ -114,11 +114,11 @@ class Environment:
         for individual in self.newGeneration:
             #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
-
-        for nest in newnests:
-            self.AddBeeNest(nest[0], nest[1])
         
         self.newGeneration = []
+        self.nests = []
+        for nest in newnests:
+            self.AddBeeNest(nest[0], nest[1])
 
     def ExportContent(self) -> list:
         '''
