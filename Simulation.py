@@ -152,14 +152,20 @@ class BeeSim(tk.Tk):
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
             self.season += 1
             newnests = []
+            parent_traits = []
             for bee in self.swarm.bees:
+                #Lägg till typ!
                 if len(bee.egg) != 0:
                     for egg in bee.egg:  
                         newnests.append(egg)
+                        parent_traits.append(bee.Beetraits)
             
-            print("New Nest List:", newnests)
+            print(len(newnests))
+            #print(len(parent_traits))
+            #print("New Nest List:", newnests)
             self.environment.CreateNewGeneration(0, newnests)
-            self.swarm.CreateNewGeneration(self.environment.nests, 0)
+            print(len(self.environment.nests))
+            self.swarm.CreateNewGeneration(self.environment.nests,parent_traits, 0)
             
         self.after(50, self.UpdateModel)
 

@@ -21,15 +21,17 @@ class Swarm:
         
         for i in range(n):
             beetype = random.choice(bee_types)
-            self.AddBee(nests[i], birth, beetype,self.Beetypes)
+            beetraits = self.Beetypes[beetype]
+            self.AddBee(nests[i], birth,beetraits)
 
-    def AddBee(self, beenest, birth,beetype, Beetypes):
-        self.bees.append(Bee(beenest, birth,beetype,Beetypes)) 
+    def AddBee(self, beenest, birth,beetraits):
+        self.bees.append(Bee(beenest, birth,beetraits)) 
     
-    def CreateNewGeneration(self, newnests, time): 
+    def CreateNewGeneration(self, newnests,parent_traits, time): #CreateNewGeneration(self.environment.nests,parent_type, 0)
         self.bees = []
-        for nest in newnests:
-            self.AddBee(nest, time)
+        for i, nest in enumerate(newnests):
+            #print(i)
+            self.AddBee(nest, time,parent_traits[i])
 
     def BeeDistribution(self) -> dict:
         distribution = {'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0}
@@ -79,32 +81,32 @@ class Swarm:
 
 class Bee:
     #def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
-    def __init__(self, nest, birth, beetype,Beetypes):
+    def __init__(self, nest, birth, beetraits):
         self.x = nest.x
         self.y = nest.y
         self.home = nest    # (object)
         self.path = [[self.x, self.y]]
         self.path_length = 100
 
-        self.Beetype = Beetypes[beetype]
+        self.Beetraits = beetraits
 
-        self.speed = self.Beetype["speed"]
+        self.speed = self.Beetraits["speed"]
         self.orientation = np.random.uniform(0, 2 * np.pi)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
-        self.angular_noise = self.Beetype["angular_noise"]
+        self.angular_noise = self.Beetraits["angular_noise"]
 
         self.visited_flowers = []
         self.visit_radius = 2
         self.short_memory = 10
         
-        self.vision_angle = self.Beetype["vision_angle"]
-        self.vision_range = self.Beetype["vision_range"]
+        self.vision_angle = self.Beetraits["vision_angle"]
+        self.vision_range = self.Beetraits["vision_range"]
 
         self.nectar = 0         # 0=hungry, 1 = fed?
         self.pollen = {1:100}        # how much pollen and what kind
-        self.pollen_capacity = self.Beetype["pollen_capacity"]
+        self.pollen_capacity = self.Beetraits["pollen_capacity"]
 
-        self.color = self.Beetype["color"]
+        self.color = self.Beetraits["color"]
         self.birth = birth
 
         self.egg = []
