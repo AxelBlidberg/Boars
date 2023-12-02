@@ -6,17 +6,15 @@ class Swarm:
         self.bees = []
         self.newGeneration = []
         self.seasonLength = 1000
-        self.Beetypes = {'Small Bee': {'speed': 1, 'pollen_capacity': 300,'vision_angle': 180 , 'vision_range':40, 'angular_noise': 0.01, 'color': "#ffd662" },
-                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 500,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#FF6600" },
-                    'Large Bee': {'speed': 3, 'pollen_capacity': 1000,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,'color': "#ffbc62" }} 
+        self.Beetypes = {'Small Bee': {'speed': 2, 'pollen_capacity': 300,'vision_angle': 180 , 'vision_range':40, 'angular_noise': 0.01, 
+                                       'color': "#ffd662", 'maxFlight': 120, 'offspringPollen' : 400},
+                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 500,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,
+                                        'color': "#FF6600",'maxFlight': 180 , 'offspringPollen' : 500},
+                    'Large Bee': {'speed': 6, 'pollen_capacity': 1000,'vision_angle': 180,'vision_range':40, 'angular_noise': 0.01,
+                                        'color': "#ffbc62",'maxFlight': 240, 'offspringPollen' : 800 }} 
     
     def InitializeBees(self, n, nests, birth=0):
-        #color="#ffd662"
-        #Skapa ett betype object??
-        #people = {1: {'name': 'John', 'age': '27', 'sex': 'Male'},  2: {'name': 'Marie', 'age': '22', 'sex': 'Female'}}
-        
         #Defining Beetype! Should this be moved to Simulation.py?
-
         bee_types = ['Small Bee', 'Intermediate Bee', 'Large Bee']
         
         for i in range(n):
@@ -67,16 +65,18 @@ class Swarm:
                 del bee
                 continue
             
+            else:
+                bee.turningHome=True
+                bee.Update(flowers)
+                bee.Eat(time)
+            
+            """
             elif  time - bee.birth > bee.max_age:  # Kill bee if old
                 print('RIP: bee died of age:',time-bee.birth,'. Pollen levels:',bee.pollen)
                 self.bees.pop(bee_number)
                 del bee
                 continue
-
-            else:
-                bee.turningHome=True
-                bee.Update(flowers)
-                bee.Eat(time)
+            """
 
 
 class Bee:
@@ -86,7 +86,7 @@ class Bee:
         self.y = nest.y
         self.home = nest    # (object)
         self.path = [[self.x, self.y]]
-        self.path_length = 100
+        self.path_length = 40
 
         self.Beetraits = beetraits
 
@@ -94,9 +94,11 @@ class Bee:
         self.orientation = np.random.uniform(0, 2 * np.pi)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
         self.angular_noise = self.Beetraits["angular_noise"]
+        self.max_flight = self.Beetraits["maxFlight"]
+        self.required_pollen = self.Beetraits["offspringPollen"]
 
         self.visited_flowers = []
-        self.visit_radius = 2
+        self.visit_radius = 4
         self.short_memory = 10
         
         self.vision_angle = self.Beetraits["vision_angle"]
@@ -186,6 +188,11 @@ class Bee:
         if len(self.path) > self.path_length:
             self.path.pop(0)
 
+        distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
+
+        if distance_to_home > self.max_flight:
+            #print("Should return home!!")
+            self.ReturnHome()
 
     def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
         """
@@ -193,10 +200,10 @@ class Bee:
         """
 
         nearby_home = self.home if self.InFieldOfView(self.home) else False
-        required_pollen = 100 # To reproduce
         self.turningHome=False # temporary to print when bee wants to go home
         if nearby_home: # If bee sees home
             distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
+    
             if distance_to_home <= self.visit_radius: # If bee visits home
                 food = sum(self.pollen.values())
                 #print('bee went home to leave pollen')
@@ -208,10 +215,10 @@ class Bee:
                 #print('Bee pollen after',sum(self.pollen.values()))
                 #print('Nest pollen after:',self.home.pollen)
 
-                while self.home.pollen > required_pollen:
+                while self.home.pollen > self.required_pollen:
                     self.Reproduction()
-                    self.home.pollen -= required_pollen
-                    print('bee laid egg')
+                    self.home.pollen -= self.required_pollen
+                    print('bee laid egg and pollen required was:',self.required_pollen)
         
         # Bee flies towards home:
         W = np.random.uniform(-1/2, 1/2)  
