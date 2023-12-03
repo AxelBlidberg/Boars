@@ -135,7 +135,7 @@ class Bee:
         self.vision_angle = self.Beetraits["vision_angle"]
         self.vision_range = self.Beetraits["vision_range"]
 
-        self.nectar = 0         # 0=hungry, 1 = fed?
+        self.nectar = 0              # 0=hungry, 1 = fed?
         self.pollen = {1:100}        # how much pollen and what kind
         self.pollen_capacity = self.Beetraits["pollen_capacity"]
 
@@ -230,7 +230,7 @@ class Bee:
         self.turningHome=False # temporary to print when bee wants to go home
         #if nearby_home: # If bee sees home
         distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
-        
+
         if distance_to_home <= self.visit_radius: # If bee visits home
             food = sum(self.pollen.values())
             print('bee went home')
@@ -246,19 +246,6 @@ class Bee:
                 self.Reproduction()
                 self.home.pollen -= self.required_pollen
                 print('bee laid egg and pollen required was:',self.required_pollen)
-        
-        # Bee flies towards home:
-        W = np.random.uniform(-1/2, 1/2)  
-        direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])
-        self.orientation = np.arctan2(direction_to_home[1], direction_to_home[0]) + self.angular_noise * W
-        self.x += self.speed * np.cos(self.orientation)
-        self.y += self.speed * np.sin(self.orientation)
-        self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
-        self.path.append([self.x, self.y])
-
-        if len(self.path) > self.path_length:
-            self.path.pop(0)
-
         
         # Bee flies towards home:
         W = np.random.uniform(-1/2, 1/2)  
