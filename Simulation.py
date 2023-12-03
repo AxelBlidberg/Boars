@@ -117,7 +117,7 @@ class BeeSim(tk.Tk):
 
         self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
 
-        for bee in self.swarm.bees:
+        for bee in self.swarm.activeBees:
             #This needs to be sent to push update
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
@@ -129,7 +129,7 @@ class BeeSim(tk.Tk):
         #Just nu har alla bin samma angular noise, vision range, vision angle
         if self.timestep % 2000==0:
             self.flowersPlot.append(len(self.environment.flowers))
-            self.flowersPlot.append(len(self.swarm.bees))
+            self.beesPlot.append(len(self.swarm.bees))
             plt.figure()
             plt.plot(self.flowersPlot,label='flowers',c='pink')
             plt.plot(self.beesPlot,label='bees',c='yellow')
@@ -171,6 +171,6 @@ class BeeSim(tk.Tk):
 
     
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=5, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=600, num_bees=9, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
 
