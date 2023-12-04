@@ -20,7 +20,7 @@ class Environment:
         self.newGeneration = []
         self.envType = environmentType
         self.flowers = []
-        self.seasonLength = 500
+        self.seasonLength = 1200
 
         # Nests
         self.nests = []
@@ -116,11 +116,13 @@ class Environment:
             #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
 
+
         for nest in self.newNests:
             self.AddBeeNest(nest[0], nest[1])
         
         self.newGeneration = []
         self.newNests = []
+
 
     def ExportContent(self) -> list:
         '''
