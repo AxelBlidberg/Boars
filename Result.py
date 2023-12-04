@@ -2,12 +2,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 
-def PlotFlowerAmount(ax, data):
+def PlotFlowerAmount(ax, fData):
     labels = ['Lavender', 'Bee balm', 'Sunflower', 'Coneflower', 'Blueberry']
     colors = ['purple', 'red', 'orange', 'pink', 'blue']
     oldSum = -1
 
-    for i, line in enumerate(data):
+    for i, line in enumerate(fData):
         values = []
         print(line)
         for j,l in enumerate(labels):
@@ -27,26 +27,33 @@ def PlotFlowerAmount(ax, data):
     ax.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
     #help(ax.legend(labels=labels))
 
-def PlotBeePopulation(ax):
+def PlotBeePopulation(ax, bData):
+    labels = ['Small Bee', 'Intermediate Bee']
+    colors = ['blue', 'red']
+
+    for i, season in enumerate(bData):
+        for j, quarter in enumerate(season):
+            pass
+
     ax.set_title('Bee population')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('n Bees')
 
-def PlotFlowerBeeDensity(ax):
+def PlotFlowerBeeDensity(ax, fData, bData):
     ax.set_title('Flowers / Bee')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Flowers / Bee')
 
-def PlotAvgLifespan(ax):
+def PlotAvgLifespan(ax, lData):
     ax.set_title('Average Lifespan (Bees)')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
-def MergePlots(data):
+def MergePlots(flowerData, beeData, lifespanData):
     print('Enter')
     fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
-    PlotFlowerAmount(axs[0, 0], data)  # Pass individual subplot
-    PlotBeePopulation(axs[0, 1])  # Pass individual subplot
-    PlotAvgLifespan(axs[1, 1])    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[1, 0])  # Pass individual subplot
+    PlotFlowerAmount(axs[0, 0], flowerData)  # Pass individual subplot
+    PlotBeePopulation(axs[0, 1], beeData)  # Pass individual subplot
+    PlotAvgLifespan(axs[1, 1], lifespanData)    # Pass individual subplot
+    PlotFlowerBeeDensity(axs[1, 0], flowerData, beeData)  # Pass individual subplot
     plt.show()
