@@ -7,27 +7,27 @@ class Environment:
     size = Size of the environment, used for both x and y axis.
     environmentType = Controlls the initialization of flowers to modell a specific environment type. Types available: 'countryside' (standard if not specified), 'urban', 'agriculture'
     '''
-    def __init__(self, size, environmentType='countryside') -> None:
+    def __init__(self, size, seasonLength, environmentType='countryside') -> None:
         '''
         Stores the content of the environment.
         '''
+        
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
+        
         # Environment variables
         self.xLimit = size
         self.yLimit = size
+        
+        self.envType = environmentType
+        self.seasonLength = seasonLength
 
         # Flowers
-        self.newGeneration = []
-        self.envType = environmentType
         self.flowers = []
-        self.seasonLength = 900
+        self.newGeneration = []
 
         # Nests
         self.nests = []
         self.newNests = []
-
-        # Hazards
-        self.hazards = []
 
     def InitializeFlowers(self, n) -> None:
         '''
@@ -38,15 +38,17 @@ class Environment:
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
                 self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
+        
         elif self.envType == 'urban':
             clusters = np.random.randint(5, 20)
-            flowersPerCluster = int(n/clusters)  # alla cluster får samma antal blommor, men kanske göra en procentuell fördelning?
+            flowersPerCluster = int(n/clusters)  # all clusters have same amount of flowers, perhaps it should be percental?
             for i in range(clusters):
                 center = [self.xLimit/2, self.yLimit/2]
                 clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
                 for _ in range(flowersPerCluster):
                     self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)        
+        
         elif self.envType == 'agriculture':
             # Flower distribution
             types = [1, 2, 3, 4, 5]
@@ -73,28 +75,8 @@ class Environment:
                     if i in iRange[j]:
                         self.AddFlower(locations[i], 0, 0, types[j])
         else:
-            pass
-   
-    def InitializeBeeNest(self, n) -> None:
-        '''
-        Method to initialize n nests in the beginning of the simulation
-        
-        n = Number of nests to add
-        '''
-        center = [self.xLimit/2, self.yLimit/2]
-        
-        for _ in range(n):
-            self.nests.append(Nest(center, self.xLimit/8))
-
-    def AddBeeNest(self, center, radius) -> None:
-        '''
-        Method to add one or several nests to the environment during the simulation
-
-        center = Around which coordinate the nest should be created
-        radius = Allowed distance from center
-        '''
-        self.nests.append(Nest(center, radius))
-
+            self.envType = 'countryside'
+    
     def AddFlower(self, center, radius, time, flowerType) -> None:
         '''
         Method to add one or several flowers to the environment
@@ -103,26 +85,45 @@ class Environment:
         radius = distance from center allowed
         flowerType = Which flower should be created
         '''
-        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
 
-    def CreateNewGeneration(self, time):
+        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
+   
+    def InitializeBeeNest(self, n) -> None:
+        '''
+        Initializes n number of nests in the environment at time = 0
+        '''
+
+        center = [self.xLimit/2, self.yLimit/2]
+        
+        for _ in range(n):
+            self.nests.append(Nest(center, self.xLimit/6))
+
+    def AddBeeNest(self, center, radius) -> None:
+        '''
+        Method to add one or several nests to the environment during the simulation
+
+        center = Around which coordinate the nest should be created
+        radius = Allowed distance from center
+        '''
+        
+        self.nests.append(Nest(center, radius))
+
+    def CreateNewGeneration(self, time) -> None:
         '''
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
-        #print("New Generation")
-        self.nests = []
-        #self.flowers = []
-        for individual in self.newGeneration:
-            #print("New Generation")
-            self.AddFlower(individual[0], individual[1], time, individual[2])
 
+        self.nests = []
+        self.flowers = []
+
+        for individual in self.newGeneration:
+            self.AddFlower(individual[0], individual[1], time, individual[2])
 
         for nest in self.newNests:
             self.AddBeeNest(nest[0], nest[1])
         
         self.newGeneration = []
         self.newNests = []
-
 
     def ExportContent(self) -> list:
         '''
@@ -157,6 +158,7 @@ class Environment:
         '''
         Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
         '''
+        
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status, center = flower.UpdateFlower(time)
@@ -169,17 +171,13 @@ class Environment:
 
             if time % 100 == 0: #regenerate pollen every 100 timesteps
                 flower.pollen += flower.pollenRegeneration*100
-            
-        # Creates the new generation of flowers
-        #if time % self.seasonLength + 5 == 0 and time != 0:
-        #    self.flowers = []
-        #    self.CreateNewGeneration(time)
 
 
 class Flower:
     '''
     The class represents a single flower with its attributes. Contains methods for updating.
     '''
+
     def __init__(self, center, radius, creation, seasonLength, t='random', environment ='countryside'):
 
         # Location
@@ -193,7 +191,7 @@ class Flower:
         
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
-        possibleOuterColors = ['purple', 'red', 'orange', 'pink', 'blue']
+        typeColors = ['purple', 'red', 'orange', 'pink', 'blue']
         
         if t == 'random':
             if environment == 'countryside':
@@ -201,11 +199,13 @@ class Flower:
                 pSum = sum(probabilities)
                 probabilities = [p/pSum for p in probabilities]
                 self.type = np.random.choice(types, p=probabilities)
+
             elif environment == 'urban':
                 probabilities = [5, 4, 3, 2, 1]
                 pSum = sum(probabilities)
                 probabilities = [p/pSum for p in probabilities]
                 self.type = np.random.choice(types, p=probabilities)
+
             elif environment == 'agriculture':
                 probabilities = [3, 1, 5, 1, 4]
                 pSum = sum(probabilities)
@@ -223,18 +223,22 @@ class Flower:
             self.lifespan = life*2
             self.pollen = pollen
             self.pollenRegeneration = pollenRegeneration
+
         elif self.type == 2: # Bee balm
             self.lifespan = life*2
             self.pollen = pollen
             self.pollenRegeneration = pollenRegeneration
+
         elif self.type == 3: # Sunflower
             self.lifespan = life
             self.pollen = 4*pollen
             self.pollenRegeneration = pollenRegeneration
+
         elif self.type == 4: # Coneflowers
             self.lifespan = life
             self.pollen = pollen
             self.pollenRegeneration = pollenRegeneration
+
         elif self.type == 5: # Blueberry
             self.lifespan = life
             self.pollen = 4*pollen
@@ -242,9 +246,9 @@ class Flower:
         
         
         #olika nyanser av gult i blomman för varje "100 pollen den har"
-        self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
-        self.centerColor = self.possibleCenterColors[min(self.pollen//50, len(self.possibleCenterColors) - 1)]
-        self.outerColor = possibleOuterColors[self.type - 1]
+        #self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
+        #self.centerColor = self.possibleCenterColors[min(self.pollen//50, len(self.possibleCenterColors) - 1)]
+        self.color = typeColors[self.type - 1]
 
         self.creation = creation
 
