@@ -222,7 +222,7 @@ class Flower:
         if self.type == 1: # Lavender
             self.lifespan = life*2
             self.pollen = pollen
-            self.pollenRegeneration = pollenRegeneration
+            self.pollenRegeneration = 2*pollenRegeneration
 
         elif self.type == 2: # Bee balm
             self.lifespan = life*2
@@ -244,10 +244,6 @@ class Flower:
             self.pollen = 4*pollen
             self.pollenRegeneration = pollenRegeneration
         
-        
-        #olika nyanser av gult i blomman för varje "100 pollen den har"
-        #self.possibleCenterColors = ["#FFFFCC", "#FFFF99", "#FFFF66", "#FFCC33", "#FFD700", "#B8860B", "#FAFAD2", "#EEE8AA", "#FFEB3B", "#FFC107"]
-        #self.centerColor = self.possibleCenterColors[min(self.pollen//50, len(self.possibleCenterColors) - 1)]
         self.color = typeColors[self.type - 1]
 
         self.creation = creation
