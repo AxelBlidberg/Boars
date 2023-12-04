@@ -198,7 +198,7 @@ class Bee:
 
                 nearest_flower.pollen -= pollen_taken
 
-                index = min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1)
+                index = int(min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1))
 
                 nearest_flower.centerColor = nearest_flower.possibleCenterColors[index]
 
@@ -226,7 +226,9 @@ class Bee:
         Bee movement aims for home. Checks if bee is home yet. If nest.pollen > 200 > new egg. Called each timestep when bee is full. 
         """
 
+
         #nearby_home = self.home if self.InFieldOfView(self.home) else False
+
         self.turningHome=False # temporary to print when bee wants to go home
         #if nearby_home: # If bee sees home
         distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])

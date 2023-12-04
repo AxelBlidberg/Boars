@@ -24,6 +24,7 @@ class Environment:
 
         # Nests
         self.nests = []
+        self.newNests = []
 
         # Hazards
         self.hazards = []
@@ -36,7 +37,7 @@ class Environment:
         if self.envType == 'countryside':
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
-                self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))   
+                self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
         elif self.envType == 'urban':
             clusters = np.random.randint(5, 20)
             flowersPerCluster = int(n/clusters)  # alla cluster får samma antal blommor, men kanske göra en procentuell fördelning?
@@ -45,7 +46,7 @@ class Environment:
                 clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
                 for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)
+                    self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)        
         elif self.envType == 'agriculture':
             # Flower distribution
             types = [1, 2, 3, 4, 5]
@@ -104,21 +105,24 @@ class Environment:
         '''
         self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
 
-    def CreateNewGeneration(self, time, newnests):
+    def CreateNewGeneration(self, time):
         '''
         Method for creating the new generation of flowers. The method is called in the beginning of the new season in PushUpdate
         '''
         #print("New Generation")
-        #self.nests = []
+        self.nests = []
         #self.flowers = []
         for individual in self.newGeneration:
             #print("New Generation")
             self.AddFlower(individual[0], individual[1], time, individual[2])
+
+
+        for nest in self.newNests:
+            self.AddBeeNest(nest[0], nest[1])
         
         self.newGeneration = []
-        self.nests = []
-        for nest in newnests:
-            self.AddBeeNest(nest[0], nest[1])
+        self.newNests = []
+
 
     def ExportContent(self) -> list:
         '''
@@ -155,7 +159,7 @@ class Environment:
         '''
         # Update flowers
         for i, flower in enumerate(self.flowers):
-            status, center = flower.UpdateFlower(time) 
+            status, center = flower.UpdateFlower(time)
             if status == 1: # 1 = reproduce
                 nFlowers = np.random.randint(1,flower.max_siblings) # how many "siblings"
                 for _ in range(nFlowers): 
@@ -163,7 +167,9 @@ class Environment:
             elif status == 2: # 2 = dead
                 del self.flowers[i]
 
-
+            if time % 100 == 0: #regenerate pollen every 100 timesteps
+                flower.pollen += flower.pollenRegeneration*100
+            
         # Creates the new generation of flowers
         #if time % self.seasonLength + 5 == 0 and time != 0:
         #    self.flowers = []
@@ -211,21 +217,28 @@ class Flower:
         # Characteristics of flowers
         life = seasonLength
         pollen = 100
+        pollenRegeneration = 0.1
+
         if self.type == 1: # Lavender
             self.lifespan = life*2
             self.pollen = pollen
+            self.pollenRegeneration = pollenRegeneration
         elif self.type == 2: # Bee balm
             self.lifespan = life*2
             self.pollen = pollen
+            self.pollenRegeneration = pollenRegeneration
         elif self.type == 3: # Sunflower
             self.lifespan = life
             self.pollen = 4*pollen
+            self.pollenRegeneration = pollenRegeneration
         elif self.type == 4: # Coneflowers
             self.lifespan = life
             self.pollen = pollen
+            self.pollenRegeneration = pollenRegeneration
         elif self.type == 5: # Blueberry
             self.lifespan = life
             self.pollen = 4*pollen
+            self.pollenRegeneration = pollenRegeneration
         
         
         #olika nyanser av gult i blomman för varje "100 pollen den har"
@@ -269,14 +282,14 @@ class Nest:
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
-        self.color='#5C4033'
+        self.color = '#5C4033'
         self.pollen = 0
     
     def __str__(self) -> str:
         '''
         Method that allows for printing the nest. Not used in the simulation but for potential troubleshooting.
         '''
-        return f'Nest at ({self.x}, {self.y})'    
+        return f'Nest at ({self.x}, {self.y})' 
 
 
 class Hazards:

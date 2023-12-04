@@ -149,6 +149,8 @@ class BeeSim(tk.Tk):
             print('n.o. flowers:',len(self.environment.flowers))
             """
             #Vi vill ha koordninaterna för de nya bina :)
+        
+        #NOTE: Denna delen borde typ vara i bee.py :/
         if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
             self.season += 1
             newnests = []
@@ -157,15 +159,12 @@ class BeeSim(tk.Tk):
                 #Lägg till typ!
                 if len(bee.egg) != 0:
                     for egg in bee.egg:  
-                        newnests.append(egg)
+                        self.environment.newNests.append(egg)
                         parent_traits.append(bee.Beetraits)
-            
-            print(len(newnests))
-            #print(len(parent_traits))
-            #print("New Nest List:", newnests)
-            self.environment.CreateNewGeneration(0, newnests)
-            print(len(self.environment.nests))
+
+            self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.environment.nests,parent_traits, 0)
+
             
         self.after(50, self.UpdateModel)
 
