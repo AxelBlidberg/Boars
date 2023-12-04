@@ -25,6 +25,9 @@ class Swarm:
             self.AddBee(nests[i], birth, beetraits)
 
     def AddBee(self, beenest, birth,beetraits):
+        for month in beetraits['when_active']:
+            if month==0:
+                birth+=self.monthLength
         self.bees.append(Bee(beenest, birth,beetraits)) 
     
     def CreateNewGeneration(self, newnests,parent_traits, time): #CreateNewGeneration(self.environment.nests,parent_type, 0)
@@ -81,10 +84,6 @@ class Swarm:
                  if bee.turningHome:
                      #print('bee turns home')
                      pass
-                 if time%10==1:
-                     reason = 'full' if sum(bee.pollen.values()) > bee.pollen_capacity else ''
-                     reason2 = 'far away' if distance_to_home > bee.max_flight else ''
-                     print('going home because',reason,reason2)
                  bee.ReturnHome() 
                  bee.Eat(time)
             
@@ -235,7 +234,6 @@ class Bee:
 
         if distance_to_home <= self.visit_radius: # If bee visits home
             food = sum(self.pollen.values())
-            print('bee went home')
             leave_home_ratio = 0.5 
             for key in self.pollen.keys(): # leave the same ratio of each pollen type
                 self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen

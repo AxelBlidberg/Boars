@@ -63,13 +63,13 @@ class BeeSim(tk.Tk):
         
     def DrawEnvironment(self):
         
-        size = 3
-        outer_size = 8
+        #size = 3
+        outer_size = 3
         
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
             self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outerColor)
-            self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
+            #self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
         
         nest_size = 5
         
@@ -81,7 +81,8 @@ class BeeSim(tk.Tk):
         
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
-        self.canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill=bee.color)
+        bee_size = 4
+        self.canvas.create_oval(x - bee_size, y - bee_size, x + bee_size, y + bee_size, fill=bee.color)
 
     def DrawVisionField(self, bee):
         start_angle = (np.degrees(bee.orientation) - bee.vision_angle / 2) % 360
@@ -127,13 +128,7 @@ class BeeSim(tk.Tk):
                 self.DrawVisionField(bee)  
         
         #Just nu har alla bin samma angular noise, vision range, vision angle
-        if self.timestep % 2000==0:
-            self.flowersPlot.append(len(self.environment.flowers))
-            self.beesPlot.append(len(self.swarm.bees))
-            plt.figure()
-            plt.plot(self.flowersPlot,label='flowers',c='pink')
-            plt.plot(self.beesPlot,label='bees',c='yellow')
-            plt.show()
+       
         """
             newBorn = {}
             newNests = []
@@ -164,11 +159,9 @@ class BeeSim(tk.Tk):
 
             self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.environment.nests,parent_traits, 0)
-
             
         self.after(50, self.UpdateModel)
 
-    
 if __name__ == "__main__":
     bee_sim = BeeSim(size=600, num_bees=9, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
