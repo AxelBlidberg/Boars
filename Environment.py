@@ -11,7 +11,6 @@ class Environment:
         '''
         Stores the content of the environment.
         '''
-        
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
         
         # Environment variables

@@ -144,6 +144,6 @@ class BeeSim(tk.Tk):
         self.after(50, self.UpdateModel)
 
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=1, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=600, num_bees=3, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
 

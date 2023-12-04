@@ -4,6 +4,7 @@ import random
 class Swarm:
     def __init__(self, seasonLength):
         self.bees = []
+        self.RIP = [] # ages of dead bees
         self.newNests = []
         self.newTraits  = []
         self.seasonLength = seasonLength 
@@ -26,13 +27,13 @@ class Swarm:
             self.AddBee(nests[i], birth, beetraits)
 
     def AddBee(self, beenest, birth,beetraits):
-        for month in beetraits['when_active']: #aging starts when egg hatches NOTE: Possible to add reproduction after specific age if we want to
+        for month in beetraits['when_active']: # aging starts when egg hatches NOTE: Possible to add reproduction after specific age if we want to
             if month==0:
                 birth+=self.monthLength
         self.bees.append(Bee(beenest, birth,beetraits)) 
     
     def CreateNewGeneration(self, time, nests):
-        self.bees = []
+        # self.bees = []
 
         for i in range(len(self.newNests)):
             self.AddBee(nests[i], time,self.newTraits[i])
