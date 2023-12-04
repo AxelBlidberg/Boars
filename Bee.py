@@ -5,15 +5,15 @@ class Swarm:
     def __init__(self):
         self.bees = []
         self.newGeneration = []
-        self.seasonLength = 1200
-        self.monthLength = self.seasonLength//12
+        self.seasonLength = 900
+        self.monthLength = self.seasonLength//9
         self.activeBees = []
         self.Beetypes = {'Small Bee': {'speed': 2, 'pollen_capacity': 300,'vision_angle': 280 , 'vision_range':40, 'angular_noise': 0.01, 
-                                       'color': "#ffd662", 'maxFlight': 120, 'offspringPollen' : 400, 'when_active' : [0,0,0,0,0,1,1,1,1,0,0,0]}, # [jan, feb, mar, apr, may, jun, jul, sep, oct, nov, dec]
+                                       'color': "#ffd662", 'maxFlight': 120, 'offspringPollen' : 400, 'when_active' : [0,0,0,1,1,1,1,0,0,0]}, # [mar, apr, may, jun, jul, sep, oct, nov]
                     'Intermediate Bee': {'speed': 4, 'pollen_capacity': 500,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.01,
-                                        'color': "#FF6600",'maxFlight': 180 , 'offspringPollen' : 500, 'when_active' : [0,0,1,1,1,1,0,0,0,0,0,0]},
+                                        'color': "#FF6600",'maxFlight': 180 , 'offspringPollen' : 500, 'when_active' : [1,1,1,1,0,0,0,0,0]},
                     'Large Bee': {'speed': 6, 'pollen_capacity': 1000,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.01,
-                                        'color': "#ffbc62",'maxFlight': 240, 'offspringPollen' : 800, 'when_active' : [0,0,0,1,1,1,0,1,1,1,0,0] }} 
+                                        'color': "#ffbc62",'maxFlight': 240, 'offspringPollen' : 800, 'when_active' : [0,1,1,1,0,1,1,1,0] }} 
     
     def InitializeBees(self, n, nests, birth=0):
         #Defining Beetype! Should this be moved to Simulation.py?
@@ -52,10 +52,12 @@ class Swarm:
         Different types are active during different times of the season.
         """
         self.activeBees = []
-        current_month = time // self.monthLength % 12
+        current_month = time // self.monthLength % 9 # = n.o. simulated months
 
-        year = ['january','february','mars','april','may','june','july','august','september','october','november','december']
+        year = ['mars','april','may','june','july','august','september','october','november']
         print('Month:',year[current_month])
+        if current_month == 0 and time>self.seasonLength:
+            print('Happy new year!')
 
         for bee in self.bees:
             active_months = bee.Beetraits['when_active']

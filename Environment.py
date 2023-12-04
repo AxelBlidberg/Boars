@@ -20,7 +20,7 @@ class Environment:
         self.newGeneration = []
         self.envType = environmentType
         self.flowers = []
-        self.seasonLength = 1200
+        self.seasonLength = 900
 
         # Nests
         self.nests = []
