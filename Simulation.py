@@ -12,7 +12,7 @@ class BeeSim(tk.Tk):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
-        self.seasonLength = 275000
+        self.seasonLength = 1000
         self.timestep = 0
         self.season = 1
 
@@ -137,12 +137,13 @@ class BeeSim(tk.Tk):
                         self.environment.newNests.append(egg)
                         parent_traits.append(bee.Beetraits)
             """
+            self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
-            self.swarm.CreateNewGeneration(self.timestep)
+            self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
             
         self.after(50, self.UpdateModel)
 
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=9, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=600, num_bees=1, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
 

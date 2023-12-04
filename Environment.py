@@ -20,9 +20,11 @@ class Environment:
         
         self.envType = environmentType
         self.seasonLength = seasonLength
+        self.monthLength = seasonLength//9 # = n.o. months/year
 
         # Flowers
         self.flowers = []
+        #self.activeFlowers = []
         self.newGeneration = []
 
         # Nests
@@ -154,6 +156,20 @@ class Environment:
                 distribution['Blueberry'] += 1
         return distribution
 
+    '''
+    def ActivateFlowers(self,time):
+        """
+        Different types are active during different times of the season.
+        """
+        self.activeFlowers = []
+        current_month = time // self.monthLength % 9 # = n.o. simulated months
+
+        for flower in self.flowers:
+            active_months = flower.active_months
+            if active_months[current_month] == 1:
+                self.activeFlowers.append(flower)
+    '''
+
     def PushUpdate(self, time):
         '''
         Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
@@ -186,6 +202,7 @@ class Flower:
         self.location = [self.x, self.y]
         self.reproduce = False
         
+
         self.max_siblings = 3  # max "siblings" among flowers
 
         
@@ -216,33 +233,43 @@ class Flower:
 
         # Characteristics of flowers
         life = seasonLength
-        pollen = 100
+        pollenUnit = 10
         pollenRegeneration = 0.1
 
         if self.type == 1: # Lavender
-            self.lifespan = life*2
-            self.pollen = pollen
+            self.lifespan = life
+            self.flowersPerStem = np.random.randint(7, 15)
+            self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = 2*pollenRegeneration
+            #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
 
         elif self.type == 2: # Bee balm
-            self.lifespan = life*2
-            self.pollen = pollen
-            self.pollenRegeneration = pollenRegeneration
-
-        elif self.type == 3: # Sunflower
             self.lifespan = life
-            self.pollen = 4*pollen
+            self.flowersPerStem = np.random.randint(1, 3)
+            self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = pollenRegeneration
+            #self.active_months = [0,0,0,0,1,1,1,0,0] 
+
+        elif self.type == 3: # Sunflower #NOTE: agriculture exclusive?
+            self.lifespan = life//2
+            self.flowersPerStem = 1
+            self.pollen = (5) * pollenUnit * self.flowersPerStem
+            self.pollenRegeneration = pollenRegeneration
+            #self.active_months = [0,0,0,1,1,1,1,0,0] 
 
         elif self.type == 4: # Coneflowers
-            self.lifespan = life
-            self.pollen = pollen
+            self.lifespan = life//2
+            self.flowersPerStem = np.random.randint(1, 5)
+            self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = pollenRegeneration
+            #self.active_months = [0,0,1,1,1,1,1,1,0] 
 
         elif self.type == 5: # Blueberry
-            self.lifespan = life
-            self.pollen = 4*pollen
+            self.lifespan = life //2
+            self.flowersPerStem = np.random.randint(5, 10)
+            self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = pollenRegeneration
+            #self.active_months = [0,1,1,1,0,0,0,0,0] 
         
         self.color = typeColors[self.type - 1]
 
