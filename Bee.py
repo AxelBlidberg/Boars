@@ -2,62 +2,73 @@ import numpy as np
 import random
 
 class Swarm:
-    def __init__(self):
+    '''
+    The class acts as a framework for the swarm of bees and manages its content with initializing methods, adding methods and an update method.
+    seasonLength = Duration of a season for when the bees are active
+    '''
+    def __init__(self, seasonLength) -> None:
+
         self.bees = []
-        self.newGeneration = []
-        self.seasonLength = 900
-        self.monthLength = self.seasonLength//9
-        self.activeBees = []
-        self.Beetypes = {'Small Bee': {'speed': 2, 'pollen_capacity': 300,'vision_angle': 280 , 'vision_range':40, 'angular_noise': 0.01, 
-                                       'color': "#ffd662", 'maxFlight': 120, 'offspringPollen' : 400, 'when_active' : [0,0,0,1,1,1,1,0,0,0]}, # [mar, apr, may, jun, jul, sep, oct, nov]
-                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 500,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.01,
-                                        'color': "#FF6600",'maxFlight': 180 , 'offspringPollen' : 500, 'when_active' : [1,1,1,1,0,0,0,0,0]},
-                    'Large Bee': {'speed': 6, 'pollen_capacity': 1000,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.01,
-                                        'color': "#ffbc62",'maxFlight': 240, 'offspringPollen' : 800, 'when_active' : [0,1,1,1,0,1,1,1,0] }} 
+        self.RIP = [] # ages of dead bees
+        self.newNests = []
+        self.newTraits  = []
+        self.seasonLength = seasonLength 
+        self.monthLength = self.seasonLength//3 
+        self.weekLength = self.seasonLength //13 # = n.o. weeks in 3 months
+        self.dayLength = self.seasonLength//90 #   
+        self.activeBees = []     #     offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500   
+        self.Beetypes = { 'Small Bee': {'speed': 1, 'pollen_capacity': 30,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
+                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 120, 'when_active' : [1,1,1], 'mean_age': self.weekLength*5.5,
+                                        'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':10, 'pollen_taken_perStem':10}, 
+                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 40,'vision_angle': 280,'vision_range':20, 'angular_noise': 0.45,
+                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' : 200, 'when_active' : [1,0,0],  'mean_age': self.dayLength*22 ,
+                                        'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':15, 'pollen_taken_perStem':15}} # eat_pase = how often bee eats
+        
+        self.total_egg = [0,0]  # For data collection
+        self.distribution = [0,0] # For data collection
     
-    def InitializeBees(self, n, nests, birth=0):
-        #Defining Beetype! Should this be moved to Simulation.py?
-        bee_types = ['Small Bee', 'Intermediate Bee', 'Large Bee']
+    def InitializeBees(self, n, nests, birth=0) -> None:
+        bee_types = ['Small Bee', 'Intermediate Bee']
         
         for i in range(n):
             beetype = random.choice(bee_types)
-            beetraits = self.Beetypes[beetype]
-            self.AddBee(nests[i], birth, beetraits)
+            beeTraits = self.Beetypes[beetype]
+            self.AddBee(nests[i], birth, beeTraits)
 
-    def AddBee(self, beenest, birth,beetraits):
-        for month in beetraits['when_active']:
-            if month==0:
-                birth+=self.monthLength
-        self.bees.append(Bee(beenest, birth,beetraits)) 
+        self.distribution = self.BeeDistribution()
+
+    def AddBee(self, beenest, birth, beeTraits) -> None:
+        self.bees.append(Bee(beenest, birth, beeTraits)) 
+     
     
-    def CreateNewGeneration(self, newnests,parent_traits, time): #CreateNewGeneration(self.environment.nests,parent_type, 0)
-        self.bees = []
-        for i, nest in enumerate(newnests):
-            #print(i)
-            self.AddBee(nest, time,parent_traits[i])
+    def CreateNewGeneration(self, time, nests) -> None:
+        for i in range(len(self.newNests)):
+            self.AddBee(nests[i], time,self.newTraits[i])
+        
+        self.distribution = self.BeeDistribution()
+        self.ActivateBees(time)
+    
 
-    def BeeDistribution(self) -> dict:
-        distribution = {'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0}
+    def BeeDistribution(self) -> list:
         for bee in self.bees:
-            if bee.type == 1:
-                distribution['Small Bee'] += 1
-            elif bee.type == 2:
-                distribution['Intermediate Bee'] += 1
-            elif bee.type == 3:
-                distribution['Large Bee'] += 1
-        return distribution
+            if bee.type == 0:
+                self.distribution[0] += 1
+            elif bee.type == 1:
+                self.distribution[1] += 1
+        
+        return self.distribution
     
-    def ActivateBees(self,time):
-        """
+    def ActivateBees(self, time) -> None:
+        '''
         Different types are active during different times of the season.
-        """
+        '''
         self.activeBees = []
-        current_month = time // self.monthLength % 9 # = n.o. simulated months
+        current_month = time // self.monthLength % 3 # = n.o. simulated months
 
-        year = ['mars','april','may','june','july','august','september','october','november']
-        print('Month:',year[current_month])
-        if current_month == 0 and time>self.seasonLength:
-            print('Happy new year!')
+        #year = ['june','july','august']
+        #print('Month:',year[current_month])
+        #if current_month == 0 and time>self.seasonLength:
+            #print('Happy new year!')
 
         for bee in self.bees:
             active_months = bee.Beetraits['when_active']
@@ -65,63 +76,63 @@ class Swarm:
             if active_months[current_month] == 1:
                 self.activeBees.append(bee)
                 
-
-    def PushUpdate(self, flowers, time, angular_noise, vision_range, vision_angle):
+    def PushUpdate(self, flowers, time) -> None:
         """
         Calls Update() or ReturnHome() and Eat(), and check if bee is full, starving or old for every active bee
         """
         if time % self.monthLength == 1: # every change of month
             self.ActivateBees(time)
 
-        for bee_number, bee in enumerate(self.activeBees):
-
-            bee.vision_angle = vision_angle
-            bee.vision_range = vision_range
-            bee.angular_noise = angular_noise
+        for i, bee in enumerate(self.activeBees):
             
             distance_to_home = np.linalg.norm([bee.home.x - bee.x, bee.home.y - bee.y])
+            bee.Eat(time)
 
-            # if full or flight distance too long
             if sum(bee.pollen.values()) > bee.pollen_capacity or distance_to_home > bee.max_flight:
-                 if bee.turningHome:
-                     #print('bee turns home')
-                     pass
-                 bee.ReturnHome() 
-                 bee.Eat(time)
+                #if bee.turningHome:
+                #     print('bee turns home')
+                reproduce_true = bee.ReturnHome()
+
+                if reproduce_true:
+                    nest = bee.Reproduction()
+                    self.newNests.append(nest)
+                    self.newTraits.append(bee.Beetraits)
+                    self.total_egg[bee.Beetraits["type"]] += 1
             
-            elif sum(bee.pollen.values()) < 1:  # Kill bee if starving
+            elif sum(bee.pollen.values()) < 1:  #Kill bee if starving
                 print('RIP: bee died of starvation.') #Age:',bee_age)
-                self.bees.pop(bee_number)
-                self.activeBees.pop(bee_number)
+                self.bees.pop(i)
+                self.activeBees.pop(i)
+                del bee
+                continue
+
+            elif  time - bee.birth > bee.max_age:  # Kill bee if old
+                print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
+                self.bees.pop(i)
+                self.activeBees.pop(i)
                 del bee
                 continue
             
             else:
                 bee.turningHome=True
                 bee.Update(flowers)
-                bee.Eat(time)
-            
-            """
-            elif  time - bee.birth > bee.max_age:  # Kill bee if old
-                print('RIP: bee died of age:',time-bee.birth,'. Pollen levels:',bee.pollen)
-                self.bees.pop(bee_number)
-                self.activeBees.pop(bee_number)
-                del bee
-                continue
-            """
 
 
 class Bee:
-    #def __init__(self, nest, birth, pollen_capacity=1000, vision_angle=180, vision_range=40, angular_noise=0.01, speed=2, color="#ffd662"):
-    def __init__(self, nest, birth, beetraits):
+    '''
+    The class represents a single bee with its attributes.
+    '''
+
+    def __init__(self, nest, birth, beeTraits) -> None:
         self.x = nest.x
         self.y = nest.y
-        self.home = nest    # (object)
-        self.path = [[self.x, self.y]]
+        self.home = nest
+        self.path = [[self.x-0.2,self.y-0.2],[self.x, self.y]]
         self.path_length = 40
 
-        self.Beetraits = beetraits
+        self.Beetraits = beeTraits
 
+        self.type = self.Beetraits["type"]
         self.speed = self.Beetraits["speed"]
         self.orientation = np.random.uniform(0, 2 * np.pi)
         self.velocity = [self.speed * np.cos(self.orientation), self.speed * np.sin(self.orientation)]
@@ -132,30 +143,38 @@ class Bee:
         self.visited_flowers = []
         self.visit_radius = 4
         self.short_memory = 10
+        self.wait_counter = 0 #Initialize
         
         self.vision_angle = self.Beetraits["vision_angle"]
         self.vision_range = self.Beetraits["vision_range"]
 
         self.nectar = 0              # 0=hungry, 1 = fed?
-        self.pollen = {1:100}        # how much pollen and what kind
+        self.pollen = {1:10}        # how much pollen and what kind
         self.pollen_capacity = self.Beetraits["pollen_capacity"]
 
         self.color = self.Beetraits["color"]
         self.birth = birth
+        self.waiting_constant = 0.5 # how long bees wait at flower depending on pollen #NOTE: Change to a reasonable value 
+        self.chancePollination = 0.9 #NOTE: Change to a reasonable value 
+        self.reproductionNestRadius = 40
 
-        self.egg = []
-        self.newhomes = []
 
-        self.eating_frequency = 10
+        self.eating_frequency = self.Beetraits["eat_pase"]
         self.turningHome =True #temporary
+        self.pollen_taken_perStem = self.Beetraits['pollen_taken_perStem'] # How much pollen will bee take from one flower
 
-        bee_age_mean = 700
-        self.max_age = np.random.normal(loc=bee_age_mean, scale=50,size=1)[0] # each individual has "random" life-length
+        bee_age_mean = self.Beetraits['mean_age']
+        age_variation = self.Beetraits['age_variation']
+        self.max_age = np.random.normal(loc=bee_age_mean, scale=age_variation,size=1)[0] # each individual has "random" life-length
 
-    def Update(self, flowers):
+    def Update(self, flowers) -> None:
         """
         Bee movement, check for flowers, pollination
         """
+        if self.wait_counter > 0:
+            self.wait_counter -= 1
+            return
+            
         # Angular noise to the direction
         W = np.random.uniform(-1/2, 1/2)
 
@@ -171,40 +190,28 @@ class Bee:
             distance_to_nearest = np.linalg.norm([nearest_flower.x - self.x, nearest_flower.y - self.y])
 
             if distance_to_nearest <= self.visit_radius:
-                self.visited_flowers.append(nearest_flower)
+                
                 flowerType = nearest_flower.type 
                 
-                #WARN: Is it realistic that it can collect half of the pollen in the flower
-                #This means that flower will never run out of pollen
-                # Caused bees to starve quickly, changed to: min(can_take, previous)
-                #TODO: Find a suitable value
+                mean_take_pollen = self.pollen_taken_perStem * nearest_flower.flowersPerStem
+                can_take = np.random.normal(loc=mean_take_pollen,scale=mean_take_pollen/3) # flat normal curve
+                pollen_taken = int(min(nearest_flower.pollen, can_take))
 
-                can_take = np.random.normal(loc=100,scale=10)
-                pollen_taken = int(min(nearest_flower.pollen*0.5, can_take))
-
-                #pollen_taken = np.random.randint(0, nearest_flower.pollen*0.5) 
+                self.wait_counter = int(pollen_taken * self.waiting_constant) # adjust to fit timescale 
+                self.visited_flowers.append(nearest_flower)
 
                 #NOTE: Rimligt antagande om biet tar pollen och har pollen från samma blomma pollineras den
                 if flowerType in self.pollen.keys():
-                    r = np.random.random() #NOTE: Probability can be added if needed
-                    #NOTE: Prompt to pollinate
-                    chancePollination = 0.9
-                    if r < chancePollination:
+                    r = np.random.random() 
+                    if r < self.chancePollination:
                         nearest_flower.reproduce = True
 
                     self.pollen[flowerType] += pollen_taken
-                
                 else: 
                     self.pollen[flowerType] = pollen_taken
 
                 nearest_flower.pollen -= pollen_taken
 
-                index = int(min(nearest_flower.pollen//100, len(nearest_flower.possibleCenterColors) - 1))
-
-                nearest_flower.centerColor = nearest_flower.possibleCenterColors[index]
-
-                #nearest_flower.color= color_scale[nearest_flower.pollenAmount]   
-                
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
                 
@@ -222,16 +229,12 @@ class Bee:
 
 
 
-    def ReturnHome(self): # Återvänder endast hem om den ser sitt hem? svar: nej, det va lite otydlilgt men nu la jag till kommentarer så man nog fattar
+    def ReturnHome(self) -> bool:
         """
         Bee movement aims for home. Checks if bee is home yet. If nest.pollen > 200 > new egg. Called each timestep when bee is full. 
         """
 
-
-        #nearby_home = self.home if self.InFieldOfView(self.home) else False
-
-        self.turningHome=False # temporary to print when bee wants to go home
-        #if nearby_home: # If bee sees home
+        # self.turningHome = False # temporary to print when bee wants to go home
         distance_to_home = np.linalg.norm([self.home.x - self.x, self.home.y - self.y])
 
         if distance_to_home <= self.visit_radius: # If bee visits home
@@ -241,14 +244,15 @@ class Bee:
                 self.pollen[key] = int(self.pollen[key] * (1-leave_home_ratio)) # bee loses pollen
             pollen_given = int(food * leave_home_ratio)
             self.home.pollen += pollen_given
+            #print(self.home.pollen)
             #print('Bee pollen after',sum(self.pollen.values()))
             #print('Nest pollen after:',self.home.pollen)
 
             while self.home.pollen > self.required_pollen:
-                self.Reproduction()
                 self.home.pollen -= self.required_pollen
-                print('bee laid egg and pollen required was:',self.required_pollen)
-        
+                #print('bee laid egg and pollen required was:',self.required_pollen)
+                return True # reproduce
+
         # Bee flies towards home:
         W = np.random.uniform(-1/2, 1/2)  
         direction_to_home = np.array([self.home.x - self.x, self.home.y - self.y])
@@ -260,9 +264,9 @@ class Bee:
 
         if len(self.path) > self.path_length:
             self.path.pop(0)
-    
+            return False # reproduce
 
-    def Eat(self,time):
+    def Eat(self,time) -> None:
         # eats 1 random pollen every "self.eating_frequency" timestep  
         if time % self.eating_frequency == 0:
             if len(self.pollen) > 0:
@@ -271,13 +275,13 @@ class Bee:
                 if self.pollen[random_pollen_key] < 1: # remove key if no pollen, so it cant get negative
                     self.pollen.pop(random_pollen_key) 
 
-    def Reproduction(self):
+    def Reproduction(self) -> list:
         center = [self.x, self.y]
-        radius = 20
-        
-        self.egg.append([center, radius]) # egg = [nest]
+        nest = [center, self.reproductionNestRadius]
+        #self.egg.append([center, radius]) # egg = [nest]
+        return nest
 
-    def InFieldOfView(self, obj):
+    def InFieldOfView(self, obj) -> bool:
         direction_vector = np.array([obj.x - self.x, obj.y - self.y])
         distance = np.linalg.norm(direction_vector)
         

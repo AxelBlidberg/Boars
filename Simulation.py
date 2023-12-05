@@ -5,14 +5,15 @@ from tkinter import Scale
 
 from Bee import *
 from Environment import *
+from Result import *
 import matplotlib.pyplot as plt
 
 class BeeSim(tk.Tk):
-    def __init__(self, size=500, num_bees=1, num_flowers=1, envType='countryside'):
+    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside'):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
-        
+        self.seasonLength = 1000
         self.timestep = 0
         self.season = 1
 
@@ -27,34 +28,28 @@ class BeeSim(tk.Tk):
         self.slider_frame = tk.Frame(self)
         self.slider_frame.pack(side="right", padx=10)
 
-        # Sliders for controlling parameters
-        self.angular_noise_slider = Scale(self.slider_frame, label="Angular Noise", from_=0.0, to=1.0, resolution=0.01, orient="horizontal", length=200)
-        self.angular_noise_slider.set(0.1)
-        self.angular_noise_slider.pack()
-
-        self.vision_range_slider = Scale(self.slider_frame, label="Vision Range", from_=10, to=100, orient="horizontal", length=200)
-        self.vision_range_slider.set(30)
-        self.vision_range_slider.pack()
-
-        self.vision_angle_slider = Scale(self.slider_frame, label="Vision Angle", from_=0, to=359, resolution=1, orient="horizontal", length=200)
-        self.vision_angle_slider.set(280)
-        self.vision_angle_slider.pack()
-
         self.show_vision_var = tk.BooleanVar(value=True)
         self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
         self.draw_vision_checkbox.pack(pady=5)
 
-        self.environment = Environment(size, envType)
+        self.environment = Environment(size, self.seasonLength, envType)
         self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
         
         #for plot
         self.flowersPlot = []
         self.beesPlot =[]
+        # Plot data
+        self.currentFData = []
+        self.flowerData = []
+        self.currentBData = []
+        self.beeData = []
+        self.currentLData = []
+        self.lifespanData = []
         #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
         #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
-        self.swarm = Swarm()
+        self.swarm = Swarm(self.seasonLength)
         #Skapa en lista av nests 
         self.swarm.InitializeBees(num_bees, self.environment.nests)
         #Skicka 
@@ -63,15 +58,13 @@ class BeeSim(tk.Tk):
         
     def DrawEnvironment(self):
         
-        #size = 3
-        outer_size = 3
+        flower_size = 3
         
         for flower in self.environment.flowers:
             x, y = flower.x, flower.y
-            self.canvas.create_oval(x - outer_size, y - outer_size, x + outer_size, y + outer_size, fill=flower.outerColor)
-            #self.canvas.create_oval(x - size, y - size, x + size, y + size, fill=flower.centerColor)
+            self.canvas.create_oval(x - flower_size, y - flower_size, x + flower_size, y + flower_size, fill=flower.color)
         
-        nest_size = 5
+        nest_size = 3
         
         for nest in self.environment.nests:
             x, y = nest.x, nest.y
@@ -109,60 +102,51 @@ class BeeSim(tk.Tk):
 
         self.title(f"Bee Simulation - time: {self.timestep} | season: {self.season}")
 
-        angular_noise = float(self.angular_noise_slider.get())
-        vision_range = int(self.vision_range_slider.get())
-        vision_angle = float(self.vision_angle_slider.get())
-
-        #(self, flowers, time, angular_noise, vision_range, vision_angle):
         self.DrawEnvironment() 
 
-        self.swarm.PushUpdate(self.environment.flowers,self.timestep,angular_noise,vision_range,vision_angle)
-
+        self.swarm.PushUpdate(self.environment.flowers,self.timestep)
+        
+        if len(self.swarm.bees) == 0: # Jump in time if no bees
+            #print('No bees left, Next generation')
+            self.timestep = (self.season+1) * self.seasonLength  
+        
         for bee in self.swarm.activeBees:
             #This needs to be sent to push update
             self.CheckBoundaryCollision(bee)
             self.DrawBee(bee)
             self.DrawPath(bee)
-
+            
             if self.show_vision_var.get():
                 self.DrawVisionField(bee)  
-        
+            
         #Just nu har alla bin samma angular noise, vision range, vision angle
-       
-        """
-            newBorn = {}
-            newNests = []
-            for bee_number, bee in enumerate(self.swarm.bees):
-                if len(bee.egg) != 0:
-                    newBorn[bee_number] = bee.egg # egg = [[nest],nEggs]
-                    for egg in bee.egg:
-                        newNests.append(egg[0])
-
-            self.environment.CreateNewGeneration(self.timestep, newNests)
-            self.swarm.CreateNewGeneration(newBorn, self.environment.nests, self.timestep)
-            print('n.o. bees:',len(self.swarm.bees))
-            print('n.o. flowers:',len(self.environment.flowers))
-            """
-            #Vi vill ha koordninaterna för de nya bina :)
         
-        #NOTE: Denna delen borde typ vara i bee.py :/
-        if self.timestep % self.environment.seasonLength==0 and self.timestep>0:
+        if self.timestep % self.seasonLength ==0 and self.timestep>0:
             self.season += 1
-            newnests = []
-            parent_traits = []
-            for bee in self.swarm.bees:
-                #Lägg till typ!
-                if len(bee.egg) != 0:
-                    for egg in bee.egg:  
-                        self.environment.newNests.append(egg)
-                        parent_traits.append(bee.Beetraits)
-
+      
+            self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
-            self.swarm.CreateNewGeneration(self.environment.nests,parent_traits, 0)
+            self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
+        
+        if self.timestep % (0.25*self.seasonLength) == 0:
+                self.currentFData.append(self.environment.FlowerDistribution())
+                self.currentBData.append(self.swarm.BeeDistribution())
+        if self.timestep % self.seasonLength == 0:
+                self.flowerData.append(np.copy(self.currentFData))
+                self.currentFData = []
+                self.beeData.append(np.copy(self.currentBData))
+                self.currentBData = []
+                print(self.timestep, self.seasonLength)
+
+        if self.timestep % (4*self.seasonLength) == 0:
+                print(self.timestep, self.seasonLength)
+                print(self.flowerData)
+                print(self.beeData)
+                MergePlots(self.flowerData, self.beeData, self.lifespanData)
             
         self.after(50, self.UpdateModel)
 
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=9, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=1000, num_bees=20, num_flowers=2000, envType='countryside')
     bee_sim.mainloop()
 
