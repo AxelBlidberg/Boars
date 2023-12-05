@@ -11,6 +11,7 @@ class Environment:
         '''
         Stores the content of the environment.
         '''
+
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
         
         # Environment variables
@@ -19,11 +20,10 @@ class Environment:
         
         self.envType = environmentType
         self.seasonLength = seasonLength
-        self.monthLength = seasonLength//9 # = n.o. months/year
+        #self.monthLength = seasonLength//9
 
         # Flowers
         self.flowers = []
-        #self.activeFlowers = []
         self.newGeneration = []
 
         # Nests
@@ -48,12 +48,12 @@ class Environment:
                 clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
                 for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 25, 0, clusterCenterFlower.type)        
+                    self.AddFlower(clusterCenterFlower.location, 25, clusterCenterFlower.type, 0)        
         
         elif self.envType == 'agriculture':
             # Flower distribution
             types = [1, 2, 3, 4, 5]
-            distribution = [3, 1, 5, 1, 4]
+            distribution = [3, 1, 5, 1, 4] # relation between flower
             dSum = sum(distribution)
             distribution = [d/dSum for d in distribution]
             iRange = [np.linspace(0, int(distribution[0]*n), num=int(distribution[0]*n)+1, dtype=int).tolist()]
@@ -69,16 +69,17 @@ class Environment:
             x = np.linspace(self.xLimit*0.05, self.xLimit*0.95, num=nRows)
             y = np.linspace(self.yLimit*0.05, self.yLimit*0.95, num=nCols)
             locations = [[i, j] for i in x for j in y]
-            print(locations)
+            #print(locations)
 
             for i in range(len(locations)):
                 for j in range(len(iRange)):
                     if i in iRange[j]:
-                        self.AddFlower(locations[i], 0, 0, types[j])
+                        self.AddFlower(locations[i], 0, types[j], 0)
+        
         else:
             self.envType = 'countryside'
     
-    def AddFlower(self, center, radius, time, flowerType) -> None:
+    def AddFlower(self, center, radius, flowerType, time) -> None:
         '''
         Method to add one or several flowers to the environment
 
@@ -87,7 +88,7 @@ class Environment:
         flowerType = Which flower should be created
         '''
 
-        self.flowers.append(Flower(center, radius, time, self.seasonLength,flowerType))
+        self.flowers.append(Flower(center, radius, time, self.seasonLength, flowerType))
    
     def InitializeBeeNest(self, n) -> None:
         '''
@@ -97,7 +98,7 @@ class Environment:
         center = [self.xLimit/2, self.yLimit/2]
         
         for _ in range(n):
-            self.nests.append(Nest(center, self.xLimit/6))
+            self.nests.append(Nest(center, self.xLimit/4))
 
     def AddBeeNest(self, center, radius) -> None:
         '''
@@ -118,7 +119,7 @@ class Environment:
         self.flowers = []
 
         for individual in self.newGeneration:
-            self.AddFlower(individual[0], individual[1], time, individual[2])
+            self.AddFlower(individual[0], individual[1], individual[2], time)
 
         for nest in self.newNests:
             self.AddBeeNest(nest[0], nest[1])
@@ -155,25 +156,11 @@ class Environment:
                 distribution['Blueberry'] += 1
         return distribution
 
-    '''
-    def ActivateFlowers(self,time):
-        """
-        Different types are active during different times of the season.
-        """
-        self.activeFlowers = []
-        current_month = time // self.monthLength % 9 # = n.o. simulated months
-
-        for flower in self.flowers:
-            active_months = flower.active_months
-            if active_months[current_month] == 1:
-                self.activeFlowers.append(flower)
-    '''
-
-    def PushUpdate(self, time):
+    def PushUpdate(self, time) -> None:
         '''
         Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
         '''
-        
+
         # Update flowers
         for i, flower in enumerate(self.flowers):
             status, center = flower.UpdateFlower(time)
@@ -184,27 +171,24 @@ class Environment:
             elif status == 2: # 2 = dead
                 del self.flowers[i]
 
-            if time % 100 == 0: #regenerate pollen every 100 timesteps
-                flower.pollen += flower.pollenRegeneration*100
-
+            if time % 2000 == 0: #regenerate pollen every 2000 timesteps so every day should this be less
+                flower.pollen += flower.pollenRegeneration*2000
 
 class Flower:
     '''
     The class represents a single flower with its attributes. Contains methods for updating.
     '''
 
-    def __init__(self, center, radius, creation, seasonLength, t='random', environment ='countryside'):
+    def __init__(self, center, radius, creation, seasonLength, t='random', environment ='countryside') -> None:
 
         # Location
-        self.x = center[0] + radius*np.random.uniform(-1, 1)
-        self.y = center[1] + radius*np.random.uniform(-1, 1)
+        self.x = center[0] + radius * np.random.uniform(-1, 1)
+        self.y = center[1] + radius * np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.reproduce = False
         
-
         self.max_siblings = 3  # max "siblings" among flowers
 
-        
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
         typeColors = ['purple', 'red', 'orange', 'pink', 'blue']
@@ -232,42 +216,42 @@ class Flower:
 
         # Characteristics of flowers
         life = seasonLength
-        pollenUnit = 10
-        pollenRegeneration = 0.1
+        pollenUnit = 20
+        pollenRegenerationUnit = 0.1
 
         if self.type == 1: # Lavender
             self.lifespan = life
             self.flowersPerStem = np.random.randint(7, 15)
             self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = 2*pollenRegeneration
+            self.pollenRegeneration = 2 * pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
 
         elif self.type == 2: # Bee balm
             self.lifespan = life
             self.flowersPerStem = np.random.randint(1, 3)
             self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegeneration
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,0,0,0,1,1,1,0,0] 
 
         elif self.type == 3: # Sunflower #NOTE: agriculture exclusive?
             self.lifespan = life//2
             self.flowersPerStem = 1
             self.pollen = (5) * pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegeneration
+            self.pollenRegeneration = (5) * pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,0,0,1,1,1,1,0,0] 
 
         elif self.type == 4: # Coneflowers
             self.lifespan = life//2
             self.flowersPerStem = np.random.randint(1, 5)
             self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegeneration
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,0,1,1,1,1,1,1,0] 
 
         elif self.type == 5: # Blueberry
             self.lifespan = life //2
             self.flowersPerStem = np.random.randint(5, 10)
             self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegeneration
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,1,1,1,0,0,0,0,0] 
         
         self.color = typeColors[self.type - 1]
@@ -303,7 +287,9 @@ class Nest:
     '''
     The class represents a single bee's nest in the environment and its attributes
     '''
+    
     def __init__(self, center, radius) -> None:
+
         # Location
         self.x = center[0] + radius*np.random.uniform(-1, 1)
         self.y = center[1] + radius*np.random.uniform(-1, 1)
@@ -315,9 +301,5 @@ class Nest:
         '''
         Method that allows for printing the nest. Not used in the simulation but for potential troubleshooting.
         '''
+
         return f'Nest at ({self.x}, {self.y})' 
-
-
-class Hazards:
-    def __init__(self) -> None:
-        pass

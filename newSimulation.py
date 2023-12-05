@@ -4,11 +4,11 @@ from Environment import *
 from Result import *
 
 class BeeSimulation():
-    def __init__(self, size, numStartingBees, numStartingFlowers, envType='countryside') -> None:
+    def __init__(self, size, numStartingBees, numStartingFlowers, seasonLength, envType='countryside') -> None:
         self.size = size
         self.numStartingBees = numStartingBees
         self.numStartingFlowers = numStartingFlowers
-        self.seasonLength = 275000
+        self.seasonLength = seasonLength
         self.timestep = 0
 
         self.environment = Environment(size,self.seasonLength, envType)
@@ -35,6 +35,10 @@ class BeeSimulation():
     def Update(self):
         self.timestep += 1 
         self.swarm.PushUpdate(self.environment.flowers, self.timestep)
+
+        if len(self.swarm.bees) == 0: # Jump in time if no bees
+            self.timestep = (self.season+1) * self.seasonLength 
+             
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
     
