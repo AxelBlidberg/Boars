@@ -11,11 +11,11 @@ class Swarm:
         self.monthLength = self.seasonLength//9  
         self.weekLength = self.seasonLength //39 # = n.o. weeks in 9 months
         self.activeBees = []     #     offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500
-        self.Beetypes = { 'Small Bee': {'speed': 2, 'pollen_capacity': 180,'vision_angle': 280 , 'vision_range':40, 'angular_noise': 0.45, 
+        self.Beetypes = { 'Small Bee': {'type':'Small Bee', 'speed': 2, 'pollen_capacity': 180,'vision_angle': 280 , 'vision_range':40, 'angular_noise': 0.45, 
                                         'color': "#ffd662", 'maxFlight': 120, 'offspringPollen' : 1800, 'when_active' : [0,0,0,1,1,1,1,0,0,0], 'mean_age': self.weekLength*5.5}, 
-                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 200,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.45,
+                    'Intermediate Bee': {'type':'Intermediate Bee', 'speed': 4, 'pollen_capacity': 200,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.45,
                                         'color': "#FF6600",'maxFlight': 180 , 'offspringPollen' : 2000, 'when_active' : [1,1,1,1,0,0,0,0,0],  'mean_age': self.weekLength*4},
-                    'Large Bee': {'speed': 6, 'pollen_capacity': 220,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.45,
+                    'Large Bee': {'type':'Large Bee', 'speed': 6, 'pollen_capacity': 220,'vision_angle': 280,'vision_range':40, 'angular_noise': 0.45,
                                         'color': "#ffbc62",'maxFlight': 240, 'offspringPollen' : 2200, 'when_active' : [0,1,1,1,0,1,1,1,0],'mean_age': self.seasonLength*2 }}
     
     def InitializeBees(self, n, nests, birth=0):
@@ -33,7 +33,7 @@ class Swarm:
         self.bees.append(Bee(beenest, birth,beetraits)) 
     
     def CreateNewGeneration(self, time, nests):
-        # self.bees = []
+        #self.bees = []
 
         for i in range(len(self.newNests)):
             self.AddBee(nests[i], time,self.newTraits[i])
@@ -41,6 +41,7 @@ class Swarm:
     def BeeDistribution(self) -> dict:
         distribution = {'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0}
         for bee in self.bees:
+            distribution[bee.type] += 1
             if bee.type == 1:
                 distribution['Small Bee'] += 1
             elif bee.type == 2:
@@ -82,7 +83,8 @@ class Swarm:
             # if full or flight distance too long
             if sum(bee.pollen.values()) > bee.pollen_capacity or distance_to_home > bee.max_flight:
                 if bee.turningHome:
-                     print('bee turns home')
+                     pass
+                     #print('bee turns home')
                 reproduce_true = bee.ReturnHome() 
 
                 if reproduce_true:
@@ -92,15 +94,15 @@ class Swarm:
             
             elif sum(bee.pollen.values()) < 1:  # Kill bee if starving
                 print('RIP: bee died of starvation.') #Age:',bee_age)
-                #self.bees.pop(i)
-                #self.activeBees.pop(i)
+                self.bees.pop(i)
+                self.activeBees.pop(i)
                 del bee
                 continue
 
             elif  time - bee.birth > bee.max_age:  # Kill bee if old
                 print('RIP: bee died of age:',time-bee.birth,'. Pollen levels:',bee.pollen)
-                #self.bees.pop(i)
-                #self.activeBees.pop(i)
+                self.bees.pop(i)
+                self.activeBees.pop(i)
                 del bee
                 continue
             
@@ -118,6 +120,7 @@ class Bee:
         self.path_length = 40
 
         self.Beetraits = beetraits
+        self.type = self.Beetraits['type']
 
         self.speed = self.Beetraits["speed"]
         self.orientation = np.random.uniform(0, 2 * np.pi)

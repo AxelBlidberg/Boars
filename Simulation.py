@@ -5,6 +5,7 @@ from tkinter import Scale
 
 from Bee import *
 from Environment import *
+from Result import *
 import matplotlib.pyplot as plt
 
 class BeeSim(tk.Tk):
@@ -38,6 +39,13 @@ class BeeSim(tk.Tk):
         #for plot
         self.flowersPlot = []
         self.beesPlot =[]
+        # Plot data
+        self.currentFData = []
+        self.flowerData = []
+        self.currentBData = []
+        self.beeData = []
+        self.currentLData = []
+        self.lifespanData = []
         #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
         #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
         #NOTE: They should be initialized with the amount of food that is collected for them
@@ -140,10 +148,26 @@ class BeeSim(tk.Tk):
             self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
+        
+        if self.timestep % (0.25*self.seasonLength) == 0:
+                self.currentFData.append(self.environment.FlowerDistribution())
+                self.currentBData.append(self.swarm.BeeDistribution())
+        if self.timestep % self.seasonLength == 0:
+                self.flowerData.append(np.copy(self.currentFData))
+                self.currentFData = []
+                self.beeData.append(np.copy(self.currentBData))
+                self.currentBData = []
+                print(self.timestep, self.seasonLength)
+
+        if self.timestep % (4*self.seasonLength) == 0:
+                print(self.timestep, self.seasonLength)
+                print(self.flowerData)
+                print(self.beeData)
+                MergePlots(self.flowerData, self.beeData, self.lifespanData)
             
         self.after(50, self.UpdateModel)
 
 if __name__ == "__main__":
-    bee_sim = BeeSim(size=600, num_bees=3, num_flowers=150, envType='countryside')
+    bee_sim = BeeSim(size=600, num_bees=20, num_flowers=150, envType='countryside')
     bee_sim.mainloop()
 
