@@ -1,52 +1,93 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
+from devFile import *
 
-def PlotFlowerAmount(ax, data):
+def PlotFlowerAmount(ax1, ax2, fData):
+    trends = [[], [], [], [], []]
     labels = ['Lavender', 'Bee balm', 'Sunflower', 'Coneflower', 'Blueberry']
     colors = ['purple', 'red', 'orange', 'pink', 'blue']
-    oldSum = -1
-
-    for i, line in enumerate(data):
-        values = []
-        print(line)
-        for j,l in enumerate(labels):
-            values.append(line[l])
-            ax.plot([i, i+1], [line[l], line[l]], color=colors[j])
-
-        ax.plot([i, i+1], [np.sum(values), np.sum(values)], color='gray', linewidth=2, marker='o')
-        if oldSum != -1:
-            ax.plot([i, i], [oldSum, np.sum(values)], '--', linewidth=1, color='gray')
-        oldSum = np.sum(values)
+    amount = []
     
+    for i, season in enumerate(fData):
+        for j, quarter in enumerate(season):
+            values = []
+            for k, label in enumerate(labels):
+                values.append(quarter[label])
+                trends[k].append(quarter[label])
+            amount.append(np.sum(values))
+    x = np.linspace(0, len(fData)-1, num=len(trends[0]))
+    ax1.plot(x, amount)
+    for i in range(len(trends)):
+        ax2.plot(x, trends[i])
 
-    labels.append('Total amount')
-    ax.set_title('Flower population and distribution')
-    ax.set_xlabel('Seasons')
-    ax.set_ylabel('n Flowers')
-    ax.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
-    #help(ax.legend(labels=labels))
+    ax1.set_title('Total flower amount')
+    ax1.set_xlabel('Seasons')
+    ax1.set_ylabel('n Flowers')
+    ax2.set_title('Flower distribution')
+    ax2.set_xlabel('Seasons')
+    ax2.set_ylabel('n Flowers')
+    ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
+    return x, amount
 
-def PlotBeePopulation(ax):
-    ax.set_title('Bee population')
-    ax.set_xlabel('Seasons')
-    ax.set_ylabel('n Bees')
+def PlotBeePopulation(ax1, ax2, bData, x):
+    labels = ['Small Bee', 'Intermediate Bee']
+    colors = ['blue', 'red']
+    trends = [[], []]
+    amount = []
 
-def PlotFlowerBeeDensity(ax):
+    for i, season in enumerate(bData):
+        for j, quarter in enumerate(season):
+            values = []
+            for k, label in enumerate(labels):
+                values.append(quarter[label])
+                trends[k].append(quarter[label])
+            amount.append(np.sum(values))
+
+    ax1.plot(x, amount)
+    
+    for i in range(len(trends)):
+        ax2.plot(x, trends[i], color=colors[i])
+
+    ax1.set_title('Bee population')
+    ax1.set_xlabel('Seasons')
+    ax1.set_ylabel('n Bees')
+    ax2.set_title('Bee population')
+    ax2.set_xlabel('Seasons')
+    ax2.set_ylabel('n Bees')
+    ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.9))
+    return amount
+
+def PlotFlowerBeeDensity(ax, fData, bData, x):
+    trend = [fData[i] / bData[i] for i in range(len(fData))]
+    ax.plot(x, trend)
     ax.set_title('Flowers / Bee')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Flowers / Bee')
 
-def PlotAvgLifespan(ax):
+def PlotAvgLifespan(ax, lData):
     ax.set_title('Average Lifespan (Bees)')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
-def MergePlots(data):
-    print('Enter')
-    fig, axs = plt.subplots(2, 2, gridspec_kw={'hspace': 0.5, 'wspace': 0.5})
-    PlotFlowerAmount(axs[0, 0], data)  # Pass individual subplot
-    PlotBeePopulation(axs[0, 1])  # Pass individual subplot
-    PlotAvgLifespan(axs[1, 1])    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[1, 0])  # Pass individual subplot
+def MergePlots(flowerData, beeData, lifespanData):
+    #SaveFunction(flowerData, beeData)
+    fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
+    axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
+    axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
+    x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
+    bPop = PlotBeePopulation(axs[0, 1], axs[1, 1], beeData, x)  # Pass individual subplot
+    PlotAvgLifespan(axs[1, 1], lifespanData)    # Pass individual subplot
+    PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     plt.show()
+
+fData = [[{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223}],
+        [{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175}],
+        [{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99}],
+        [{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 308, 'Bee balm': 80, 'Sunflower': 0, 'Coneflower': 53, 'Blueberry': 63}]]
+bData = [[{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 3, 'Intermediate Bee': 7, 'Large Bee': 6}],[
+            {'Small Bee': 0, 'Intermediate Bee': 1, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4}],
+            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2}],
+            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 6}]]
+
+#MergePlots(fData, bData, [])

@@ -1,6 +1,7 @@
 
 from Bee import *
 from Environment import *
+from Result import *
 
 class BeeSimulation():
     def __init__(self, size, numStartingBees, numStartingFlowers, seasonLength, envType='countryside') -> None:
@@ -18,6 +19,14 @@ class BeeSimulation():
     
         self.swarm.InitializeBees(numStartingBees, self.environment.nests)
 
+        # Plot data
+        self.currentFData = []
+        self.flowerData = []
+        self.currentBData = []
+        self.beeData = []
+        self.currentLData = []
+        self.lifespanData = []
+
     def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
             return
@@ -32,3 +41,19 @@ class BeeSimulation():
              
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
+    
+        if self.timestep % 0.25*self.seasonLength == 0:
+            self.currentFData.append(self.environment.FlowerDistribution())
+            self.currentBData.append(self.swarm.BeeDistribution())
+        if self.timestep % self.seasonLength == 0:
+            self.flowerData.append(np.copy(self.currentFData))
+            self.currentFData = []
+            self.beeData.append(np.copy(self.currentBData))
+            self.currentBData = []
+
+        if self.timestep % 10*self.seasonLength == 0:
+            MergePlots(self.flowerData, self.beeData, self.lifespanData)
+
+
+
+        
