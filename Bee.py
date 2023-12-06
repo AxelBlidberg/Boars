@@ -1,6 +1,15 @@
 import numpy as np
 import random
 
+# Sonja o Lisa:
+# RIP lista
+# bee.n.o.eggs
+# Densitet på blommor
+
+#Vid tid:
+#Hur många blommor ett bi pollinerar
+#Hur många barn varje blomma får! 
+
 class Swarm:
     '''
     The class acts as a framework for the swarm of bees and manages its content with initializing methods, adding methods and an update method.
@@ -9,7 +18,12 @@ class Swarm:
     def __init__(self, seasonLength) -> None:
 
         self.bees = []
-        self.RIP = [] # ages of dead bees
+        
+        self.RIP_ages = [] # ages of dead bees
+        self.RIP_number_of_eggs = [] # eggs of dead bees
+        self.RIP_types = [] # type of the dead bees
+        self.RIP_visitedflowers = []
+
         self.newNests = []
         self.newTraits  = []
         self.seasonLength = seasonLength 
@@ -25,7 +39,7 @@ class Swarm:
                                         'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':15, 'pollen_taken_perStem':15}} # eat_pase = how often bee eats
         
         self.total_egg = [0,0]  # For data collection
-        self.distribution = [0,0] # For data collection
+        self.totalDistribution = []
     
     def InitializeBees(self, n, nests, birth=0) -> None:
         bee_types = ['Small Bee', 'Intermediate Bee']
@@ -50,12 +64,13 @@ class Swarm:
     
 
     def BeeDistribution(self) -> list:
+        self.distribution = [0,0] 
         for bee in self.bees:
             if bee.type == 0:
                 self.distribution[0] += 1
             elif bee.type == 1:
                 self.distribution[1] += 1
-        
+        self.totalDistribution.append(self.distribution)
         return self.distribution
     
     def ActivateBees(self, time) -> None:
@@ -98,9 +113,16 @@ class Swarm:
                     self.newNests.append(nest)
                     self.newTraits.append(bee.Beetraits)
                     self.total_egg[bee.Beetraits["type"]] += 1
+
             
             elif sum(bee.pollen.values()) < 1:  #Kill bee if starving
                 print('RIP: bee died of starvation.') #Age:',bee_age)
+
+                self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
+                self.RIP_number_of_eggs.append(bee.number_of_eggs)
+                self.RIP_types.append(bee.type)
+                self.RIP_visitedflowers.append(bee.visitedflowers)
+                
                 self.bees.pop(i)
                 self.activeBees.pop(i)
                 del bee
@@ -108,6 +130,13 @@ class Swarm:
 
             elif  time - bee.birth > bee.max_age:  # Kill bee if old
                 print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
+
+                self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
+                self.RIP_number_of_eggs.append(bee.number_of_eggs)
+                self.RIP_types.append(bee.type)
+                self.RIP_visitedflowers.append(bee.visitedflowers)
+
+
                 self.bees.pop(i)
                 self.activeBees.pop(i)
                 del bee
@@ -157,6 +186,8 @@ class Bee:
         self.waiting_constant = 0.5 # how long bees wait at flower depending on pollen #NOTE: Change to a reasonable value 
         self.chancePollination = 0.9 #NOTE: Change to a reasonable value 
         self.reproductionNestRadius = 40
+        self.number_of_eggs = 0
+        self.visitedflowers = 0
 
 
         self.eating_frequency = self.Beetraits["eat_pase"]
@@ -211,10 +242,11 @@ class Bee:
                     self.pollen[flowerType] = pollen_taken
 
                 nearest_flower.pollen -= pollen_taken
+                self.visitedflowers += 1 
 
                 if len(self.visited_flowers) > self.short_memory:
                     self.visited_flowers.pop(0)
-                
+
         else:
             self.orientation = self.orientation + self.angular_noise * W 
         
@@ -226,7 +258,6 @@ class Bee:
 
         if len(self.path) > self.path_length:
             self.path.pop(0)
-
 
 
     def ReturnHome(self) -> bool:
@@ -278,6 +309,7 @@ class Bee:
     def Reproduction(self) -> list:
         center = [self.x, self.y]
         nest = [center, self.reproductionNestRadius]
+        self.number_of_eggs += 1
         #self.egg.append([center, radius]) # egg = [nest]
         return nest
 

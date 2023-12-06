@@ -11,7 +11,6 @@ class Environment:
         '''
         Stores the content of the environment.
         '''
-
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
         
         # Environment variables
@@ -159,7 +158,7 @@ class Environment:
     def PushUpdate(self, time) -> None:
         '''
         Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
-        '''
+        '''    
 
         # Update flowers
         for i, flower in enumerate(self.flowers):
