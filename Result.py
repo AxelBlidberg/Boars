@@ -24,7 +24,7 @@ def PlotFlowerAmount(ax1, ax2, fData):
                 trends[k].append(quarter[label])
             amount.append(np.sum(values))
     x = np.arange(0, len(fData)/0.25, step=0.25)
-    x = np.linspace(0, len(fData), num=(4*len(fData)+1))
+    x = np.linspace(0, len(fData), num=(4*len(fData)+1)) # remove +1?
     print(len(fData))
     print(len(trends))
     print(len(x), x)
