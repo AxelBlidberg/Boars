@@ -9,7 +9,7 @@ class BeeSimulation():
         self.numStartingBees = numStartingBees
         self.numStartingFlowers = numStartingFlowers
         self.seasonLength = seasonLength
-        self.timestep = 0
+        self.timestep = 1
         self.season = 1
 
         self.environment = Environment(size,self.seasonLength, envType)
@@ -30,9 +30,10 @@ class BeeSimulation():
         self.swarm.PushUpdate(self.environment.flowers, self.timestep)
         self.environment.PushUpdate(self.timestep)
         
-        if self.timestep % self.seasonLength ==0 and self.timestep>0:
+        if self.timestep % self.seasonLength ==0:
             self.season += 1
-            print(f"season{self.season}")
+            print(f"season {self.season}")
+
             self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
