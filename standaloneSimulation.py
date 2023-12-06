@@ -28,16 +28,18 @@ class BeeSimulation():
     def Update(self):
         self.timestep += 1 
         self.swarm.PushUpdate(self.environment.flowers, self.timestep)
-
+        self.environment.PushUpdate(self.timestep)
+        
         if self.timestep % self.seasonLength ==0 and self.timestep>0:
             self.season += 1
-
+            print(f"season{self.season}")
             self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
 
         if len(self.swarm.bees) == 0: # Jump in time if no bees
             self.timestep = (self.season+1) * self.seasonLength 
+            print(f"season{self.season}")
              
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
