@@ -29,32 +29,32 @@ def PlotFlowerAmount(ax1, ax2, fData):
     ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
     return x, amount
 
-def PlotBeePopulation(ax1, ax2, bData, x):
-    labels = ['Small Bee', 'Intermediate Bee']
-    colors = ['blue', 'red']
+def PlotBeePopulation(ax1, bData, x):
+    labels = ['Small Bee', 'Intermediate Bee', 'Bee population']
+    colors = ['blue', 'red', 'gray']
     trends = [[], []]
     amount = []
+    print('Lengths: ', len(bData))
+    for i in bData:
+        print(len(i))
 
     for i, season in enumerate(bData):
         for j, quarter in enumerate(season):
             values = []
-            for k, label in enumerate(labels):
-                values.append(quarter[label])
-                trends[k].append(quarter[label])
+            for k in range(len(labels)-1):
+                values.append(quarter[k])
+                trends[k].append(quarter[k])
             amount.append(np.sum(values))
 
-    ax1.plot(x, amount)
+    ax1.plot(x, amount, color=colors[2])
     
     for i in range(len(trends)):
-        ax2.plot(x, trends[i], color=colors[i])
+        ax1.plot(x, trends[i], color=colors[i])
 
     ax1.set_title('Bee population')
     ax1.set_xlabel('Seasons')
     ax1.set_ylabel('n Bees')
-    ax2.set_title('Bee population')
-    ax2.set_xlabel('Seasons')
-    ax2.set_ylabel('n Bees')
-    ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.9))
+    ax1.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.9))
     return amount
 
 def PlotFlowerBeeDensity(ax, fData, bData, x):
@@ -75,7 +75,7 @@ def MergePlots(flowerData, beeData, lifespanData):
     axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
     axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
     x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
-    bPop = PlotBeePopulation(axs[0, 1], axs[1, 1], beeData, x)  # Pass individual subplot
+    bPop = PlotBeePopulation(axs[0, 1], beeData, x)  # Pass individual subplot
     PlotAvgLifespan(axs[1, 1], lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     plt.show()

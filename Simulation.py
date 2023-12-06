@@ -96,6 +96,22 @@ class BeeSim(tk.Tk):
             return
         bee.orientation += np.pi/3
 
+    def SkipTimeSteps(self):
+        TimeJump = lambda multiplier: self.seasonLength*self.season + multiplier*self.seasonLength
+        start = self.timestep
+        goal = (self.season + 1)*self.seasonLength
+        steps = [TimeJump(0), TimeJump(0.25), TimeJump(0.5), TimeJump(0.75)]
+        for iStep in steps:
+            print(f'iStep', iStep)
+            print('Timestep: ', self.timestep)
+            nextStep = max(self.timestep, iStep)
+            if nextStep > self.timestep:
+                 self.timestep = nextStep
+                 self.environment.PushUpdate(self.timestep)
+                 self.currentFData.append(self.environment.FlowerDistribution())
+                 self.currentBData.append(self.swarm.BeeDistribution())
+        self.timestep = self.seasonLength*(self.season+1)
+
     def UpdateModel(self):
         self.canvas.delete('all')
         self.timestep += 1
@@ -106,9 +122,9 @@ class BeeSim(tk.Tk):
 
         self.swarm.PushUpdate(self.environment.flowers,self.timestep)
         
-        if len(self.swarm.bees) == 0: # Jump in time if no bees
+        if len(self.swarm.bees) == 0 and self.timestep % self.seasonLength != 0: # Jump in time if no bees
             #print('No bees left, Next generation')
-            self.timestep = (self.season+1) * self.seasonLength  
+            self.SkipTimeSteps() 
         
         for bee in self.swarm.activeBees:
             #This needs to be sent to push update
@@ -136,13 +152,14 @@ class BeeSim(tk.Tk):
                 self.currentFData = []
                 self.beeData.append(np.copy(self.currentBData))
                 self.currentBData = []
-                print(self.timestep, self.seasonLength)
 
         if self.timestep % (4*self.seasonLength) == 0:
+            MergePlots(self.flowerData, self.beeData, self.lifespanData)
+            if True:
                 print(self.timestep, self.seasonLength)
                 print(self.flowerData)
                 print(self.beeData)
-                MergePlots(self.flowerData, self.beeData, self.lifespanData)
+                     
             
         self.after(50, self.UpdateModel)
 
