@@ -25,10 +25,10 @@ def PlotFlowerAmount(ax1, ax2, fData):
             amount.append(np.sum(values))
     x = np.arange(0, len(fData)/0.25, step=0.25)
     x = np.linspace(0, len(fData), num=(4*len(fData)+1))
-    print(len(fData))
-    print(len(trends))
-    print(len(x), x)
-    print(len(trends[0]))
+    #print(len(fData))
+    #print(len(trends))
+    #print(len(x), x)
+    #print(len(trends[0]))
     for i in range(len(trends)):
         ax2.plot(x, trends[i], color=colors[i])
     ax1.plot(x, amount, color='gray')
@@ -47,9 +47,9 @@ def PlotBeePopulation(ax1, bData, x):
     colors = ['blue', 'red', 'gray']
     trends = [[], []]
     amount = []
-    print('Lengths: ', len(bData))
-    for i in bData:
-        print(len(i))
+    #print('Lengths: ', len(bData))
+    #for i in bData:
+        #print(len(i))
 
     for i, season in enumerate(bData):
         for j, quarter in enumerate(season):
@@ -58,9 +58,9 @@ def PlotBeePopulation(ax1, bData, x):
                 values.append(quarter[k])
                 trends[k].append(quarter[k])
             amount.append(np.sum(values))
-    print('x: ', x)
-    print('Total: ', amount)
-    print('Trends: ', trends)
+    #print('x: ', x)
+    #print('Total: ', amount)
+    #print('Trends: ', trends)
     ax1.plot(x, amount, color=colors[2])
     
     for i in range(len(trends)):
@@ -94,7 +94,7 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
     ax.set_ylabel('Time')
 
 
-def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs):
+def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs):
     #Ta ut index för varje typ 
     #Använd de indexen flr att ta ut lifespan, antal egg och visited flowers
     smallBee_eggs =[]
@@ -115,24 +115,27 @@ def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_ty
             mediumBee_flowers.append(visitedFlowers[i])
             mediumBee_age.append(lifespanData[i])
 
-    eggs = np.zeros((2,len(beeDistribution)))
-    flowers = np.zeros((2,len(beeDistribution)))
-    age = np.zeros((2,len(beeDistribution)))
+    eggs = np.zeros((2,len(beeDistributionHistory)))
+    flowers = np.zeros((2,len(beeDistributionHistory)))
+    age = np.zeros((2,len(beeDistributionHistory)))
     
     j = 0
     k = 0
-    print("BeeDistribution:",beeDistribution)
-    for i,n in enumerate(beeDistribution):
-        nBees = n[i]
-        eggs[0,i] = smallBee_eggs[j:j+nBees[0]]
-        eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
-        flowers[0,i] = smallBee_eggs[j:j+nBees[0]]
-        flowers[1,i] = mediumBee_eggs[k:k+nBees[1]]
-        age[0,i] = smallBee_eggs[j:j+nBees[0]]
-        age[1,i] = mediumBee_eggs[k:k+nBees[1]]
+    #print("beeDistributionHistory:",beeDistributionHistory)
+    for i,n in enumerate(beeDistributionHistory):
+        iSmallBee = n[0]
+        iMediumBee = n[1]
+        if iSmallBee > 0:
+            eggs[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
+            flowers[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
+            age[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
+            j = j + nBees[0]
 
-        j = j + nBees[0]
-        k = k + nBees[1]
+        if iMediumBee > 0:
+            eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
+            flowers[1,i] = mediumBee_eggs[k:k+iMediumBee[1]]
+            age[1,i] = mediumBee_eggs[k:k+iMediumBee[1]]
+            k = k + iMediumBee[1]
 
     ax1 = axs[1, 1]
     
@@ -143,7 +146,7 @@ def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_ty
 def BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age):
     pass
 
-def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types):
+def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory):
     SaveData(flowerData, 'fData.csv')
     SaveData(beeDistribution, 'bData.csv')
     #SaveFunction(flowerData, beeDistribution)
@@ -156,7 +159,9 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+    #SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+
+    print("BEE distribution history", beeDistributionHistory)
 
     plt.show()
 

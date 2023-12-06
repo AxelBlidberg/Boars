@@ -31,6 +31,7 @@ class BeeSimulation():
         self.eggsData = []
         self.visitedFlowers = []
         self.bee_types =[]
+        self.beeDistributionHistory =[]
 
     def CheckBoundaryCollision(self, bee): 
         if 0+5 < bee.x < self.size-5 and 0+5 < bee.y < self.size-5:
@@ -47,7 +48,7 @@ class BeeSimulation():
                 print(f'Data save at timestep: {self.timestep}')
                 self.environment.PushUpdate(self.timestep)
                 self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution())
+                self.currentBData.append(self.swarm.BeeDistribution(0))
         self.timestep = self.seasonLength*(self.season+1)
 
     def Update(self):
@@ -79,7 +80,7 @@ class BeeSimulation():
         if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1: # every quarter season: 0.25, 0.5,0.75..
             print(f'Data save at timestep: {self.timestep}')
             self.currentFData.append(self.environment.FlowerDistribution())
-            self.currentBData.append(self.swarm.BeeDistribution())
+            self.currentBData.append(self.swarm.BeeDistribution(0))
             
         if self.timestep % self.seasonLength == 0: # start of every season
             self.flowerData.append(np.copy(self.currentFData))
@@ -88,8 +89,10 @@ class BeeSimulation():
             self.currentBData = []
 
         if self.timestep % (10*self.seasonLength) == 0: # after 10 seasons
-            MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types)
+            self.beeDistributionHistory = self.swarm.BeeDistribution(1)
 
+            MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types,self.beeDistributionHistory)
+            
 
 
         
