@@ -61,6 +61,7 @@ class Swarm:
         
         self.ActivateBees(time)
         self.totalDistribution = self.BeeDistribution(1)
+        self.newNests = []
     
 
     def BeeDistribution(self, historicDistribution) -> list:
@@ -143,7 +144,6 @@ class Swarm:
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
                 self.RIP_types.append(bee.type)
                 self.RIP_visitedflowers.append(bee.visitedflowers)
-
 
                 self.bees.pop(i)
                 self.activeBees.pop(i)
