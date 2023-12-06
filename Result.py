@@ -25,6 +25,7 @@ def PlotFlowerAmount(ax1, ax2, fData):
             amount.append(np.sum(values))
     x = np.arange(0, len(fData)/0.25, step=0.25)
     x = np.linspace(0, len(fData), num=(4*len(fData)+1)) # remove +1?
+    x = x[:-1]
     print(len(fData))
     print(len(trends))
     print(len(x), x)
@@ -58,9 +59,6 @@ def PlotBeePopulation(ax1, bData, x):
                 values.append(quarter[k])
                 trends[k].append(quarter[k])
             amount.append(np.sum(values))
-    print('x: ', x)
-    print('Total: ', amount)
-    print('Trends: ', trends)
     ax1.plot(x, amount, color=colors[2])
     
     for i in range(len(trends)):
@@ -92,7 +90,6 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
     ax.set_title('Average Lifespan (Bees)')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
-
 
 def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs):
     #Ta ut index för varje typ 
@@ -156,17 +153,8 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+    #SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
 
     plt.show()
-
-fData = [[{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223}],
-        [{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175}],
-        [{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99}],
-        [{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 308, 'Bee balm': 80, 'Sunflower': 0, 'Coneflower': 53, 'Blueberry': 63}]]
-bData = [[{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 3, 'Intermediate Bee': 7, 'Large Bee': 6}],[
-            {'Small Bee': 0, 'Intermediate Bee': 1, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4}],
-            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2}],
-            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 6}]]
 
 #MergePlots(fData, bData, [])

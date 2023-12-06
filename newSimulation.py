@@ -47,8 +47,17 @@ class BeeSimulation():
                 print(f'Data save at timestep: {self.timestep}')
                 self.environment.PushUpdate(self.timestep)
                 self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution())
+                self.currentBData.append(self.swarm.BeeDistribution(0))
+                print(self.timestep)
+        self.SeasonalData()
         self.timestep = self.seasonLength*(self.season+1)
+    
+    def SeasonalData(self):
+        self.flowerData.append(np.copy(self.currentFData))
+        self.currentFData = []
+        self.beeData.append(np.copy(self.currentBData))
+        self.currentBData = []
+
 
     def Update(self):
         self.timestep += 1 
@@ -61,8 +70,15 @@ class BeeSimulation():
              
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
-        
 
+        if (1 + self.timestep % self.seasonLength) == 1 and self.timestep > 1:
+            self.environment.newNests = self.swarm.newNests
+            self.environment.CreateNewGeneration(self.timestep)
+            self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
+            self.season += 1
+
+        
+        # Data saving for plots
         if self.timestep %self.seasonLength ==0 and self.timestep !=0: # Every change of season
             
             self.eggsData = self.swarm.RIP_number_of_eggs
@@ -70,22 +86,16 @@ class BeeSimulation():
             self.bee_types = self.swarm.RIP_types
             self.lifespanData = self.swarm.RIP_ages
 
-            self.environment.newNests = self.swarm.newNests
-            self.environment.CreateNewGeneration(self.timestep)
-            self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
 
-            self.season += 1
-
-        if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1: # every quarter season: 0.25, 0.5,0.75..
+        if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1 and self.timestep % self.seasonLength != 0: # every quarter season: 0.25, 0.5,0.75..
             print(f'Data save at timestep: {self.timestep}')
             self.currentFData.append(self.environment.FlowerDistribution())
-            self.currentBData.append(self.swarm.BeeDistribution())
+            self.currentBData.append( self.swarm.BeeDistribution(0))
 
-        if self.timestep % self.seasonLength == 0: # start of every season
-            self.flowerData.append(np.copy(self.currentFData))
-            self.currentFData = []
-            self.beeData.append(np.copy(self.currentBData))
-            self.currentBData = []
+        if self.timestep % self.seasonLength == 0 and len(self.currentFData) > 3: # start of every season
+            self.SeasonalData()
+            self.currentFData.append(self.environment.FlowerDistribution())
+            self.currentBData.append(self.swarm.BeeDistribution(0))
             
 
         if self.timestep % (10*self.seasonLength) == 0: # after 10 seasons
