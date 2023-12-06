@@ -11,7 +11,6 @@ class Environment:
         '''
         Stores the content of the environment.
         '''
-
         print(f'\nAn environment has been created of type: \'{environmentType}\'')
         
         # Environment variables
@@ -159,7 +158,7 @@ class Environment:
     def PushUpdate(self, time) -> None:
         '''
         Updates the content of the environment based on interactions in the simulation. Also manages the seasons.
-        '''
+        '''    
 
         # Update flowers
         for i, flower in enumerate(self.flowers):
@@ -291,8 +290,8 @@ class Nest:
     def __init__(self, center, radius) -> None:
 
         # Location
-        self.x = center[0] + radius*np.random.uniform(-1, 1)
-        self.y = center[1] + radius*np.random.uniform(-1, 1)
+        self.x = center[0] + radius * np.random.uniform(-1, 1)
+        self.y = center[1] + radius * np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.color = '#5C4033'
         self.pollen = 0

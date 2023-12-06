@@ -9,27 +9,16 @@ from newSimulation import *
 #Vi räknar med att ett bi max lever 8 veckor
 #En dag är 2000 tidssteg
 
+#size, numStartingBees, numStartingFlowers, seasonLength,
 
-beesim = BeeSimulation(1000, 3, 2000,112000)
+seasonLength = 1000
+numStartingFlowers = 2000
+numStartingBees = 20
 
-mean_egg = [0,0]
+beesim = BeeSimulation(1000, numStartingBees, numStartingFlowers,seasonLength)
 
-n_days = 10
+simulationLength = seasonLength * 4
 
-for i in range(2000*n_days):
+for i in range(simulationLength): #Defining ho
     beesim.Update()
-
-    if i % 2000 == 0 and i > 0:
-        distribution_result = beesim.swarm.distribution
-        #print(distribution_result)
-        #print(beesim.swarm.total_egg)
-        if distribution_result[0] > 0:
-            mean_egg[0] += beesim.swarm.total_egg[0]/(distribution_result[0])
-        
-        if distribution_result[1] > 0:
-            mean_egg[1] += beesim.swarm.total_egg[1]/(distribution_result[1])
-
-
-print(mean_egg[0]/n_days)
-print(mean_egg[1]/n_days)
 
