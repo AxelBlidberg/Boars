@@ -87,6 +87,7 @@ class BeeSimulation():
             self.currentFData = []
             self.beeData.append(np.copy(self.currentBData))
             self.currentBData = []
+            
 
         if self.timestep % (10*self.seasonLength) == 0: # after 10 seasons
             self.beeDistributionHistory = self.swarm.BeeDistribution(1)
