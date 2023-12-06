@@ -9,11 +9,11 @@ from Result import *
 import matplotlib.pyplot as plt
 
 class BeeSim(tk.Tk):
-    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside'):
+    def __init__(self, size=112000, num_bees=4, num_flowers=200, envType='countryside'):
         super().__init__()
         self.size = size
         self.num_flowers = num_flowers
-        self.seasonLength = 1000
+        self.seasonLength = 1000 #112000
         self.timestep = 0
         self.season = 1
 
@@ -101,20 +101,24 @@ class BeeSim(tk.Tk):
         bee.orientation += np.pi/3
 
     def SkipTimeSteps(self):
-        TimeJump = lambda multiplier: self.seasonLength*self.season + multiplier*self.seasonLength
+        TimeJump = lambda multiplier: (self.seasonLength*(int(self.timestep/self.seasonLength))) + multiplier*self.seasonLength
         start = self.timestep
-        goal = (self.season + 1)*self.seasonLength
+        goal = (self.season + 1) * self.seasonLength
         steps = [TimeJump(0), TimeJump(0.25), TimeJump(0.5), TimeJump(0.75)]
         for iStep in steps:
             print(f'iStep', iStep)
             print('Timestep: ', self.timestep)
             nextStep = max(self.timestep, iStep)
-            if nextStep > self.timestep:
-                 self.timestep = nextStep
-                 self.environment.PushUpdate(self.timestep)
-                 self.currentFData.append(self.environment.FlowerDistribution())
-                 self.currentBData.append(self.swarm.BeeDistribution())
-        self.timestep = self.seasonLength*(self.season+1)
+            if nextStep > self.timestep: 
+                print('time becomes nextStep:')
+                print(self.timestep, nextStep)
+                print('Enter')
+                self.timestep = nextStep
+                print(f'Data save at timestep: {self.timestep}')
+                self.environment.PushUpdate(self.timestep)
+                self.currentFData.append(self.environment.FlowerDistribution())
+                self.currentBData.append(self.swarm.BeeDistribution())
+        self.timestep = self.seasonLength*(self.season)
 
     def UpdateModel(self):
         self.canvas.delete('all')
@@ -128,6 +132,7 @@ class BeeSim(tk.Tk):
         
         if len(self.swarm.bees) == 0 and self.timestep % self.seasonLength != 0: # Jump in time if no bees
             #print('No bees left, Next generation')
+            print(f'All bees are dead, time: {self.timestep}')
             self.SkipTimeSteps() 
         
         for bee in self.swarm.activeBees:
@@ -150,7 +155,8 @@ class BeeSim(tk.Tk):
             self.visitedFlowers = self.swarm.RIP_visitedflowers
             self.bee_types = self.swarm.RIP_visitedflowers
         
-        if self.timestep % (0.25*self.seasonLength) == 0: # quarter season, half season, 0.75 season, whole season
+        if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1: # quarter season, half season, 0.75 season, whole season
+                print(f'Data save at timestep: {self.timestep}')
                 self.currentFData.append(self.environment.FlowerDistribution())
                 self.currentBData.append(self.swarm.BeeDistribution())
 
@@ -161,7 +167,7 @@ class BeeSim(tk.Tk):
                 self.currentBData = []
 
         if self.timestep % (4*self.seasonLength) == 0:
-            MergePlots(self.flowerData, self.beeData, self.lifespanData)
+            MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types)
             if True:
                 print(self.timestep, self.seasonLength)
                 print(self.flowerData)

@@ -116,7 +116,8 @@ class Swarm:
 
             
             elif sum(bee.pollen.values()) < 1:  #Kill bee if starving
-                print('RIP: bee died of starvation.') #Age:',bee_age)
+                #print('RIP: bee died of starvation.') #Age:',bee_age)
+                #print(f'RIP: {bee.type} has died of starvation.')
 
                 self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
@@ -129,7 +130,8 @@ class Swarm:
                 continue
 
             elif  time - bee.birth > bee.max_age:  # Kill bee if old
-                print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
+                #print(f'RIP: {bee.type} has died of age: {(time-bee.birth)//self.dayLength} days. Pollen levels: {bee.pollen}')
+                #print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
 
                 self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
@@ -310,6 +312,7 @@ class Bee:
         center = [self.x, self.y]
         nest = [center, self.reproductionNestRadius]
         self.number_of_eggs += 1
+        #print('bee laid egg')
         #self.egg.append([center, radius]) # egg = [nest]
         return nest
 

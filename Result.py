@@ -1,6 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
+import os, csv
+
+def SaveData(data, filename):
+    folder = 'Data'
+    filePath = os.path.join(os.getcwd(), folder, filename)
+    with open(filePath, 'w', newline='') as file:
+        writer=csv.writer(file)
+        writer.writerows(data)
 
 def PlotFlowerAmount(ax1, ax2, fData):
     trends = [[], [], [], [], []]
@@ -15,10 +23,15 @@ def PlotFlowerAmount(ax1, ax2, fData):
                 values.append(quarter[label])
                 trends[k].append(quarter[label])
             amount.append(np.sum(values))
-    x = np.linspace(0, len(fData)-1, num=len(trends[0]))
-    ax1.plot(x, amount)
+    x = np.arange(0, len(fData)/0.25, step=0.25)
+    x = np.linspace(0, len(fData), num=(4*len(fData)+1))
+    print(len(fData))
+    print(len(trends))
+    print(len(x), x)
+    print(len(trends[0]))
     for i in range(len(trends)):
-        ax2.plot(x, trends[i])
+        ax2.plot(x, trends[i], color=colors[i])
+    ax1.plot(x, amount, color='gray')
 
     ax1.set_title('Total flower amount')
     ax1.set_xlabel('Seasons')
@@ -45,7 +58,9 @@ def PlotBeePopulation(ax1, bData, x):
                 values.append(quarter[k])
                 trends[k].append(quarter[k])
             amount.append(np.sum(values))
-
+    print('x: ', x)
+    print('Total: ', amount)
+    print('Trends: ', trends)
     ax1.plot(x, amount, color=colors[2])
     
     for i in range(len(trends)):
@@ -64,15 +79,22 @@ def PlotFlowerBeeDensity(ax, fData, bData, x):
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Flowers / Bee')
 
-def PlotAvgLifespan(ax, lData):
+def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
+    #Convert to boxplot
+    if len(smallBeeData) > len(mediumBeeData):
+        ticks = np.arange(0,len(smallBeeData))
+    else: 
+        ticks = np.arange(0,len(mediumBeeData))
     
-    ax.plot(lData)
+    ax.boxplot(smallBeeData)
+    #ax.boxplot(mediumBeeData)
+    ax.set_xticklabels(ticks)
     ax.set_title('Average Lifespan (Bees)')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
 
-def PlotBeeData(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types,axList):
+def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs):
     #Ta ut index för varje typ 
     #Använd de indexen flr att ta ut lifespan, antal egg och visited flowers
     smallBee_eggs =[]
@@ -99,7 +121,9 @@ def PlotBeeData(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_type
     
     j = 0
     k = 0
-    for i,nBees in enumerate(beeDistribution):
+    for i,n in enumerate(beeDistribution):
+        print(n)
+        nBees = n[i]
         eggs[0,i] = smallBee_eggs[j:j+nBees[0]]
         eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
         flowers[0,i] = smallBee_eggs[j:j+nBees[0]]
@@ -109,20 +133,31 @@ def PlotBeeData(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_type
 
         j = j + nBees[0]
         k = k + nBees[1]
+
+    ax1 = axs[1, 1]
     
+    PlotAvgLifespan(ax1,smallBee_age,mediumBee_age)
         
     return smallBee_eggs, smallBee_flowers,smallBee_age,mediumBee_eggs,mediumBee_flowers,mediumBee_age
-    
+
+def BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age):
+    pass
+
 def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types):
+    SaveData(flowerData, 'fData.csv')
+    SaveData(beeDistribution, 'bData.csv')
     #SaveFunction(flowerData, beeDistribution)
-    s_eggs, s_flowers,s_age,m_eggs,m_flowers,m_age = SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types)
+    #s_eggs, s_flowers,s_age,m_eggs,m_flowers,m_age = SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types)
     fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
-    axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
-    axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
+    #axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
+    #axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
     x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
-    bPop = PlotBeePopulation(axs[0, 1], beeData, x)  # Pass individual subplot
-    PlotAvgLifespan(axs[1, 1], lifespanData)    # Pass individual subplot
+    bPop = PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
+    #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
+    #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
+    #SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+
     plt.show()
 
 fData = [[{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223}],
