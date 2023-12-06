@@ -121,8 +121,8 @@ def SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_ty
     
     j = 0
     k = 0
+    print("BeeDistribution:",beeDistribution)
     for i,n in enumerate(beeDistribution):
-        print(n)
         nBees = n[i]
         eggs[0,i] = smallBee_eggs[j:j+nBees[0]]
         eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
@@ -156,7 +156,7 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    #SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+    SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types, axs)
 
     plt.show()
 

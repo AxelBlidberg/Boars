@@ -49,7 +49,7 @@ class Swarm:
             beeTraits = self.Beetypes[beetype]
             self.AddBee(nests[i], birth, beeTraits)
 
-        self.distribution = self.BeeDistribution()
+        self.totalDistribution = self.BeeDistribution(1)
 
     def AddBee(self, beenest, birth, beeTraits) -> None:
         self.bees.append(Bee(beenest, birth, beeTraits)) 
@@ -59,18 +59,24 @@ class Swarm:
         for i in range(len(self.newNests)):
             self.AddBee(nests[i], time,self.newTraits[i])
         
-        self.distribution = self.BeeDistribution()
         self.ActivateBees(time)
+        self.totalDistribution = self.BeeDistribution(1)
     
 
-    def BeeDistribution(self) -> list:
+    def BeeDistribution(self, historicDistribution) -> list:
         self.distribution = [0,0] 
-        for bee in self.bees:
+        
+        for bee in self.activeBees:
             if bee.type == 0:
                 self.distribution[0] += 1
             elif bee.type == 1:
                 self.distribution[1] += 1
+        
         self.totalDistribution.append(self.distribution)
+
+        if historicDistribution == 1:
+            return self.totalDistribution
+        
         return self.distribution
     
     def ActivateBees(self, time) -> None:
