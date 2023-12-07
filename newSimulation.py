@@ -91,7 +91,7 @@ class BeeSimulation():
             self.beeDistributionHistory = self.swarm.RIP_Generation
 
             MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types,self.beeDistributionHistory)
-            
+            exit()
 
 
         
