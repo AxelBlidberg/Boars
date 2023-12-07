@@ -85,7 +85,7 @@ class Swarm:
         Different types are active during different times of the season.
         '''
         self.activeBees = []
-        current_month = time // self.monthLength % 3 # = n.o. simulated months
+        current_month = int(time // self.monthLength % 3) # = n.o. simulated months
 
         #year = ['june','july','august']
         #print('Month:',year[current_month])

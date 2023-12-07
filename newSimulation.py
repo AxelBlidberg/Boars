@@ -70,7 +70,7 @@ class BeeSimulation():
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
 
-        if (1 + self.timestep % self.seasonLength) == 1 and self.timestep > 1:
+        if (1 + (self.timestep % self.seasonLength)) == 1 and self.timestep > 1:
             self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
             self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
