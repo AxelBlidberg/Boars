@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 import os, csv
+import pandas as pd
+import seaborn as sns
 
 def SaveData(data, filename):
     folder = 'Data'
@@ -87,6 +89,45 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
     ax.set_ylabel('Time')
 
 
+def SeparateTypes2(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types):
+
+    data = {'lifespanData': lifespanData, 'eggsData': eggsData, 'visitedFlowers': visitedFlowers,'bee_types': bee_types, 'generation': beeDistributionHistory}
+
+    df = pd.DataFrame(data)
+    df.to_csv('test.csv', index=False)
+
+    df['eggsDataPerDay'] = df['eggsData'] / df['lifespanData']
+    df['visitedFlowersPerDay'] = df['visitedFlowers'] / df['lifespanData']
+
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
+
+    sns.boxplot(x='generation', y='eggsDataPerDay', data=df, hue="bee_types", width=0.6, ax=axes[0])
+    #sns.boxplot(x='generation', y='eggsData', data=df_LargeBee, width=0.6, ax=axes[0])
+    axes[0].set_title('Box Plot of eggsData')
+    axes[0].set_xlabel('Generation')
+    axes[0].set_ylabel('eggsData')
+
+    sns.boxplot(x='generation', y='visitedFlowersPerDay', data=df, hue="bee_types", width=0.6, ax=axes[1])
+   #sns.boxplot(x='generation', y='visitedFlowers', data=df_LargeBee, width=0.6, ax=axes[1])
+    axes[1].set_title('Box Plot of visitedFlowers')
+    axes[1].set_xlabel('Generation')
+    axes[1].set_ylabel('visitedFlowers')
+
+    sns.boxplot(x='generation', y='lifespanData', data=df, hue="bee_types", width=0.6, ax=axes[2])
+    #sns.boxplot(x='generation', y='lifespanData', data=df_LargeBee, width=0.6, ax=axes[2])
+    axes[2].set_title('Box Plot of lifespanData')
+    axes[2].set_xlabel('Generation')
+    axes[2].set_ylabel('lifespanData')
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Show the plot
+    plt.show()
+    #print(df_smallBee)
+    #print(beeDistributionHistory)
+
+
 def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs):
     #Ta ut index för varje typ 
     #Använd de indexen flr att ta ut lifespan, antal egg och visited flowers
@@ -152,7 +193,7 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
     PlotFlowerBeeDensity(axs[2, 0], fbRatio)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    #SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+    SeparateTypes2(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types)
 
     #print("BEE distribution history", beeDistributionHistory)
 
