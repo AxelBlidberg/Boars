@@ -11,7 +11,7 @@ from Simulation2 import *
 
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
-seasonLength = 1000
+seasonLength = 5000
 numStartingFlowers = 2000
 numStartingBees = 20
 nSeasons = 4

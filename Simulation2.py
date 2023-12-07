@@ -118,15 +118,12 @@ class BeeSim(tk.Tk):
             else:
                 self.fbRatio.append(0)
         
-
     def RunQuarter(self, quarter):
         """
         Tar över stafettpinnen och kör simulationen en hel quarter, eller tills alla bin är döda
         """
-        print('Q:',quarter)
-        print('n.o. bees:', len(self.swarm.activeBees))
-        print('n.o. flowers:',len(self.environment.flowers))
-        for step in range(int(0.25*self.seasonLength)):
+
+        for _ in range(int(0.25*self.seasonLength)):
             self.timestep += 1
             self.swarm.PushUpdate(self.environment.flowers,self.timestep)
             self.environment.PushUpdate(self.timestep)
@@ -143,9 +140,7 @@ class BeeSim(tk.Tk):
                         self.DrawVisionField(bee)
             if len(self.swarm.bees) == 0:
                 print(f'All bees are dead, time: {self.timestep}')
-                #print('season:',self.season, 'quarter:',quarter, 's-length:',self.seasonLength)
                 self.timestep = self.seasonLength*(self.season + 0.25*quarter)
-                #print(f'When bees are dead, next timestep: {self.timestep}')
                 break
 
     def RunSimulation(self):
