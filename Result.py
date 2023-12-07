@@ -28,10 +28,7 @@ def PlotFlowerAmount(ax1, ax2, fData):
     x = np.arange(0, len(fData)/0.25, step=0.25)
     x = np.linspace(0, len(fData), num=(4*len(fData)+1)) # remove +1?
     x = x[:-1]
-    print(len(fData))
-    print(len(trends))
-    print(len(x), x)
-    print(len(trends[0]))
+
     for i in range(len(trends)):
         ax2.plot(x, trends[i], color=colors[i])
     ax1.plot(x, amount, color='gray')
@@ -48,11 +45,8 @@ def PlotFlowerAmount(ax1, ax2, fData):
 def PlotBeePopulation(ax1, bData, x):
     labels = ['Small Bee', 'Intermediate Bee', 'Bee population']
     colors = ['blue', 'red', 'gray']
-    trends = [[], []]
+    trends = [[], [], []]
     amount = []
-    #print('Lengths: ', len(bData))
-    #for i in bData:
-        #print(len(i))
 
     for i, season in enumerate(bData):
         for j, quarter in enumerate(season):
@@ -60,24 +54,22 @@ def PlotBeePopulation(ax1, bData, x):
             for k in range(len(labels)-1):
                 values.append(quarter[k])
                 trends[k].append(quarter[k])
+            trends[2].append(np.sum(values))
             amount.append(np.sum(values))
-    #print('x: ', x)
-    #print('Total: ', amount)
-    #print('Trends: ', trends)
-    ax1.plot(x, amount, color=colors[2])
     
     for i in range(len(trends)):
-        ax1.plot(x, trends[i], color=colors[i])
+        ax1.plot(x, trends[-(i+1)], color=colors[-(i+1)], label=labels[-(i+1)])
+    
 
     ax1.set_title('Bee population')
     ax1.set_xlabel('Seasons')
     ax1.set_ylabel('n Bees')
-    ax1.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.9))
+    ax1.legend(loc='center left', bbox_to_anchor=(1, 0.9))
     return amount
 
-def PlotFlowerBeeDensity(ax, fData, bData, x):
-    trend = [fData[i] / bData[i] for i in range(len(fData))]
-    ax.plot(x, trend)
+def PlotFlowerBeeDensity(ax, r):
+    x = np.linspace(0, len(r), num=len(r))
+    ax.plot(x, r)
     ax.set_title('Flowers / Bee')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Flowers / Bee')
@@ -188,7 +180,7 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
 def BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age):
     pass
 
-def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory):
+def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio):
     SaveData(flowerData, 'fData.csv')
     SaveData(beeDistribution, 'bData.csv')
     #SaveFunction(flowerData, beeDistribution)
@@ -199,11 +191,11 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
     bPop = PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
+    PlotFlowerBeeDensity(axs[2, 0], fbRatio)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
     SeparateTypes2(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types)
 
-    print("BEE distribution history", beeDistributionHistory)
+    #print("BEE distribution history", beeDistributionHistory)
 
     plt.show()
 
