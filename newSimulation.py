@@ -48,7 +48,7 @@ class BeeSimulation():
                 print(f'Data save at timestep: {self.timestep}')
                 self.environment.PushUpdate(self.timestep)
                 self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution(0))
+                self.currentBData.append(self.swarm.BeeDistribution())
         self.timestep = self.seasonLength*(self.season+1)
     
     def SeasonalData(self):
@@ -89,7 +89,7 @@ class BeeSimulation():
         if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1 and self.timestep % self.seasonLength != 0: # every quarter season: 0.25, 0.5,0.75..
             print(f'Data save at timestep: {self.timestep}')
             self.currentFData.append(self.environment.FlowerDistribution())
-            self.currentBData.append(self.swarm.BeeDistribution(0))
+            self.currentBData.append(self.swarm.BeeDistribution())
             
         if self.timestep % self.seasonLength == 0: # start of every season
             self.flowerData.append(np.copy(self.currentFData))
@@ -99,7 +99,7 @@ class BeeSimulation():
             
 
         if self.timestep % (10*self.seasonLength) == 0: # after 10 seasons
-            self.beeDistributionHistory = self.swarm.BeeDistribution(1)
+            self.beeDistributionHistory = self.swarm.BeeDistribution()
 
             MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types,self.beeDistributionHistory)
             

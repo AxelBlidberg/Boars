@@ -44,7 +44,7 @@ class Environment:
             flowersPerCluster = int(n/clusters)  # all clusters have same amount of flowers, perhaps it should be percental?
             for i in range(clusters):
                 center = [self.xLimit/2, self.yLimit/2]
-                clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
+                clusterCenterFlower = Flower(center, self.xLimit/1.5, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
                 for _ in range(flowersPerCluster):
                     self.AddFlower(clusterCenterFlower.location, 25, clusterCenterFlower.type, 0)        
@@ -215,19 +215,19 @@ class Flower:
 
         # Characteristics of flowers
         life = seasonLength
-        pollenUnit = 20
+        pollenUnit = 5
         pollenRegenerationUnit = 0.1
 
         if self.type == 1: # Lavender
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(7, 15)
+            self.flowersPerStem = np.random.randint(10, 15)
             self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = 2 * pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
 
         elif self.type == 2: # Bee balm
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(1, 3)
+            self.flowersPerStem = np.random.randint(1, 5)
             self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,0,0,0,1,1,1,0,0] 

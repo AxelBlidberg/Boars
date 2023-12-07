@@ -14,7 +14,7 @@ class BeeSim(tk.Tk):
         # Define grid and start simulation
         self.size = size
         self.num_flowers = num_flowers
-        self.seasonLength = 1000 #112000
+        self.seasonLength = 5000 #112000
         self.timestep = 0
         self.season = 0
         self.visualize = visualize
@@ -124,20 +124,21 @@ class BeeSim(tk.Tk):
                 print(f'Data save at timestep: {self.timestep}')
                 self.environment.PushUpdate(self.timestep)
                 self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution(0))
+                self.currentBData.append(self.swarm.BeeDistribution())
         self.timestep = self.seasonLength*(self.season)
     """
     def DataSave(self): 
         print(f'Data save at timestep: {self.timestep}')
         self.currentFData.append(self.environment.FlowerDistribution())
-        self.currentBData.append(self.swarm.BeeDistribution(0))
+        self.currentBData.append(self.swarm.BeeDistribution())
 
         if self.timestep % self.seasonLength == 0 and self.timestep>0: # Only by season change
             
             self.lifespanData = self.swarm.RIP_ages
             self.eggsData = self.swarm.RIP_number_of_eggs
             self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_visitedflowers
+            self.bee_types = self.swarm.RIP_types
+            self.beeDataHistory = self.swarm.RIP_Generation
         
 
     def RunQuarter(self, quarter):
@@ -182,6 +183,7 @@ class BeeSim(tk.Tk):
                 self.eggsData = self.swarm.RIP_number_of_eggs
                 self.visitedFlowers = self.swarm.RIP_visitedflowers
                 self.bee_types = self.swarm.RIP_visitedflowers
+                self.beeDataHistory = self.swarm.RIP_Generation
 
             for quarter in quarters:
                 # [0-25%, 25-50%, 50-75%, 75-100%]
@@ -197,7 +199,7 @@ class BeeSim(tk.Tk):
             self.currentBData = []
         
         # Plot data
-        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeData)
+        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory)
 
     """
     def UpdateModel(self): # NOT USED
@@ -239,7 +241,7 @@ class BeeSim(tk.Tk):
         if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1: # quarter season, half season, 0.75 season, whole season
                 print(f'Data save at timestep: {self.timestep}')
                 self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution(0))
+                self.currentBData.append(self.swarm.BeeDistribution())
 
         if self.timestep % self.seasonLength == 0: # every season start
                 self.flowerData.append(np.copy(self.currentFData))
