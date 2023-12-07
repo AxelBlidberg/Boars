@@ -95,9 +95,10 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
 def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, ax1, ax2, ax3):
 
     data = {'lifespanData': lifespanData, 'eggsData': eggsData, 'visitedFlowers': visitedFlowers,'bee_types': bee_types, 'generation': beeDistributionHistory}
-
+    folder = 'Data'
+    filePath = os.path.join(os.getcwd(), folder, 'test.csv')
     df = pd.DataFrame(data)
-    df.to_csv('test.csv', index=False)
+    df.to_csv(filePath, index=False)
 
     df['visitedFlowersPerDay'] = df['visitedFlowers'] / df['lifespanData']
 
@@ -126,8 +127,10 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     #SaveData(beeDistribution, 'bData.csv')
     fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
     x = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
-    PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
-    PlotFlowerBeeDensity(axs[2, 0], fbRatio)  # Pass individual subplot
+    PlotBeePopulation(axs[0, 1], axs[1,1], beeDistribution, x)  # Pass individual subplot
+    PlotFlowerBeeDensity(axs[2, 1], fbRatio)  # Pass individual subplot
     SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs[0, 2], axs[1, 2], axs[2, 2])
+    # axs[2,0] sparad till clustering coefficient, axels plot
+    axs[2,0].set_title('Clustering coefficient')
 
     plt.show()

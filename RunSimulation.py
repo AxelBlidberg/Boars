@@ -1,4 +1,4 @@
-from Simulation2 import *
+from Simulation import *
 
 #Definition av rum
 #Grid på 1000 x 1000

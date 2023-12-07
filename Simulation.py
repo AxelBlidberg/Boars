@@ -1,12 +1,12 @@
 import tkinter as tk
 import numpy as np
-
+from tqdm import tqdm
 from tkinter import Scale
-
 from Bee import *
 from Environment import *
 from Result import *
 import matplotlib.pyplot as plt
+import time
 
 class BeeSim(tk.Tk):
     def __init__(self, size=112000, num_bees=4, num_flowers=200, envType='countryside',visualize=False, NumSeason=10, seasonLength=1000):
@@ -59,7 +59,6 @@ class BeeSim(tk.Tk):
         self.swarm = Swarm(self.seasonLength)
         self.swarm.InitializeBees(num_bees, self.environment.nests)
         
-    
     def DrawEnvironment(self):
         
         flower_size = 3
@@ -101,7 +100,7 @@ class BeeSim(tk.Tk):
         bee.orientation += np.pi/3
 
     def DataSave(self): 
-        print(f'Data save at timestep: {self.timestep}')
+        #print(f'Data save at timestep: {self.timestep}')
         self.currentFData.append(self.environment.FlowerDistribution())
         self.currentBData.append(self.swarm.BeeDistribution())
 
@@ -139,16 +138,24 @@ class BeeSim(tk.Tk):
                     if self.show_vision_var.get():
                         self.DrawVisionField(bee)
             if len(self.swarm.bees) == 0:
-                print(f'All bees are dead, time: {self.timestep}')
+                #print(f'All bees are dead, time: {self.timestep}')
                 self.timestep = self.seasonLength*(self.season + 0.25*quarter)
                 break
 
     def RunSimulation(self):
         quarters = [1, 2, 3, 4]
+        startTime = time.time()
+        SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
         for season in range(self.simulationLength):
+            seasonStart = time.time()
+            # Use tqdm function with an external iterator
+            #SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
+            #SeasonBar = tqdm(total=self.seasonLength, desc=f"Progress, season: {self.season+1}", unit="Time steps")
+
+
             # Create new generation
             if season > 0:
-                print('Creating the new generation')
+                #print('Creating the new generation')
                 self.environment.newNests = self.swarm.newNests
                 self.environment.CreateNewGeneration(self.timestep)
                 self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
@@ -162,7 +169,10 @@ class BeeSim(tk.Tk):
                 # [0-25%, 25-50%, 50-75%, 75-100%]
                 self.DataSave()
                 self.RunQuarter(quarter)
-            
+                #SeasonBar.update((self.timestep-self.season*self.seasonLength))
+                SimulationBar.update(self.timestep)
+            #SeasonBar.close()
+            #SimulationBar.close()
             self.season += 1
 
             # Save plotting data
@@ -170,8 +180,11 @@ class BeeSim(tk.Tk):
             self.beeData.append(np.copy(self.currentBData))
             self.currentFData = []
             self.currentBData = []
+            print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
         
         # Plot data
+        SimulationBar.close()
+        print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
         MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
 
 
