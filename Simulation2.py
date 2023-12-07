@@ -54,18 +54,11 @@ class BeeSim(tk.Tk):
         self.eggsData = []
         self.visitedFlowers = []
         self.bee_types =[]
-        #ages_first_bees = np.random.randint(-200, 0, size=num_bees) # random birth-dates on first bees
-        #pollen_first_bees = [abs(age) for age in ages_first_bees] # so first bees that are old don't starve immediately
-        #NOTE: They should be initialized with the amount of food that is collected for them
-        self.swarm = Swarm(self.seasonLength)
-        #Skapa en lista av nests 
-        self.swarm.InitializeBees(num_bees, self.environment.nests)
-        #Skicka 
+        self.flowerBeeRatio = [num_flowers/num_bees]
 
-        #self.RunSimulation()
-        self.after(50, self.RunSimulation) #NOTE: Model updates after 50 milli seconds?
-        
-    
+        self.swarm = Swarm(self.seasonLength)
+        self.swarm.InitializeBees(num_bees, self.environment.nests)
+
     def DrawEnvironment(self):
         
         flower_size = 3
@@ -106,29 +99,8 @@ class BeeSim(tk.Tk):
             return
         bee.orientation += np.pi/3
 
-    """
-    def SkipTimeSteps(self): # NOT USED
-        TimeJump = lambda multiplier: (self.seasonLength*(int(self.timestep/self.seasonLength))) + multiplier*self.seasonLength
-        start = self.timestep
-        goal = (self.season + 1) * self.seasonLength
-        steps = [TimeJump(0), TimeJump(0.25), TimeJump(0.5), TimeJump(0.75)]
-        for iStep in steps:
-            print(f'iStep', iStep)
-            print('Timestep: ', self.timestep)
-            nextStep = max(self.timestep, iStep)
-            if nextStep > self.timestep: 
-                print('time becomes nextStep:')
-                print(self.timestep, nextStep)
-                print('Enter')
-                self.timestep = nextStep
-                print(f'Data save at timestep: {self.timestep}')
-                self.environment.PushUpdate(self.timestep)
-                self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution(0))
-        self.timestep = self.seasonLength*(self.season)
-    """
     def DataSave(self): 
-        print(f'Data save at timestep: {self.timestep}')
+        print(f'\nData save at timestep: {self.timestep}')
         self.currentFData.append(self.environment.FlowerDistribution())
         self.currentBData.append(self.swarm.BeeDistribution(0))
 
@@ -138,7 +110,10 @@ class BeeSim(tk.Tk):
             self.eggsData = self.swarm.RIP_number_of_eggs
             self.visitedFlowers = self.swarm.RIP_visitedflowers
             self.bee_types = self.swarm.RIP_visitedflowers
-        
+            if (len(self.swarm.bees) != 0) and (len(self.environment.flowers) != 0):
+                self.flowerBeeRatio.append(len(self.environment.flowers)/len(self.swarm.bees))
+            else:
+                self.flowerBeeRatio.append(0)  
 
     def RunQuarter(self, quarter):
         """
@@ -197,67 +172,6 @@ class BeeSim(tk.Tk):
             self.currentBData = []
         
         # Plot data
-        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeData)
+        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeData, self.flowerBeeRatio)
 
-    """
-    def UpdateModel(self): # NOT USED
-        self.timestep += 1
-        if self.visualize:
-            self.canvas.delete('all')
-            self.title(f"Bee Simulation - time: {self.timestep} | season: {self.season}")
-            self.DrawEnvironment() 
-
-        self.swarm.PushUpdate(self.environment.flowers,self.timestep)
-        
-        if len(self.swarm.bees) == 0 and self.timestep % self.seasonLength != 0: # Jump in time if no bees
-            #print('No bees left, Next generation')
-            print(f'All bees are dead, time: {self.timestep}')
-            self.SkipTimeSteps() 
-        
-        for bee in self.swarm.activeBees:
-            #This needs to be sent to push update
-            self.CheckBoundaryCollision(bee)
-
-            if self.visualize:
-                self.DrawBee(bee)
-                self.DrawPath(bee)
-            
-                if self.show_vision_var.get():
-                    self.DrawVisionField(bee)  
-                    
-        if self.timestep % self.seasonLength ==0 and self.timestep>0: # every season change
-            self.season += 1
-      
-            self.environment.newNests = self.swarm.newNests
-            self.environment.CreateNewGeneration(self.timestep)
-            self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
-            self.lifespanData = self.swarm.RIP_ages
-            self.eggsData = self.swarm.RIP_number_of_eggs
-            self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_visitedflowers
-        
-        if self.timestep % (0.25*self.seasonLength) == 0 or self.timestep == 1: # quarter season, half season, 0.75 season, whole season
-                print(f'Data save at timestep: {self.timestep}')
-                self.currentFData.append(self.environment.FlowerDistribution())
-                self.currentBData.append(self.swarm.BeeDistribution(0))
-
-        if self.timestep % self.seasonLength == 0: # every season start
-                self.flowerData.append(np.copy(self.currentFData))
-                self.currentFData = []
-                self.beeData.append(np.copy(self.currentBData)) 
-                self.currentBData = []
-
-        if self.timestep % (4*self.seasonLength) == 0: # after 4 seasons
-            MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types,)
-            if True:
-                print(self.timestep, self.seasonLength)
-                print(self.flowerData)
-                print(self.beeData)
-                     
-        self.after(50, self.UpdateModel)
-    """
-
-if __name__ == "__main__":
-    bee_sim = BeeSim(size=1000, num_bees=20, num_flowers=2000, envType='countryside', runTime=4)
-    bee_sim.mainloop()
 
