@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 import os, csv
+import pandas as pd
+import seaborn as sns
 
 def SaveData(data, filename):
     folder = 'Data'
@@ -93,6 +95,47 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
+def SeparateTypes2(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types):
+
+    data = {'lifespanData': lifespanData, 'eggsData': eggsData, 'visitedFlowers': visitedFlowers,'bee_types': bee_types, 'generation': beeDistributionHistory}
+
+    df = pd.DataFrame(data)
+    df.to_csv('test.csv', index=False)
+
+    df_smallBee = df[df['bee_types'] == 0]
+    df_LargeBee = df[df['bee_types'] == 1]
+
+    fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
+
+    # Box plot for eggsData
+    sns.boxplot(x='generation', y='eggsData', data=df_smallBee, width=0.6, ax=axes[0])
+    sns.boxplot(x='generation', y='eggsData', data=df_LargeBee, width=0.6, ax=axes[0])
+    axes[0].set_title('Box Plot of eggsData')
+    axes[0].set_xlabel('Generation')
+    axes[0].set_ylabel('eggsData')
+
+    # Box plot for visitedFlowers
+    sns.boxplot(x='generation', y='visitedFlowers', data=df_smallBee, width=0.6, ax=axes[1])
+    sns.boxplot(x='generation', y='visitedFlowers', data=df_LargeBee, width=0.6, ax=axes[1])
+    axes[1].set_title('Box Plot of visitedFlowers')
+    axes[1].set_xlabel('Generation')
+    axes[1].set_ylabel('visitedFlowers')
+
+    # Box plot for lifespanData
+    sns.boxplot(x='generation', y='lifespanData', data=df_smallBee, width=0.6, ax=axes[2])
+    sns.boxplot(x='generation', y='lifespanData', data=df_LargeBee, width=0.6, ax=axes[2])
+    axes[2].set_title('Box Plot of lifespanData')
+    axes[2].set_xlabel('Generation')
+    axes[2].set_ylabel('lifespanData')
+
+    # Adjust layout
+    plt.tight_layout()
+
+    # Show the plot
+    plt.show()
+    #print(df_smallBee)
+    #print(beeDistributionHistory)
+
 
 def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs):
     #Ta ut index för varje typ 
@@ -129,7 +172,7 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
             eggs[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
             flowers[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
             age[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
-            j = j + nBees[0]
+            j = j + iSmallBee[0]
 
         if iMediumBee > 0:
             eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
@@ -151,17 +194,22 @@ def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowe
     SaveData(beeDistribution, 'bData.csv')
     #SaveFunction(flowerData, beeDistribution)
     #s_eggs, s_flowers,s_age,m_eggs,m_flowers,m_age = SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types)
-    fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
     #axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
     #axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
-    x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
-    bPop = PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
+        
     #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
     #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    #SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs)
+    
 
-    print("BEE distribution history", beeDistributionHistory)
+    #PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
+    SeparateTypes2(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types)
+
+    #fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
+    #x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
+    #bPop = PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
+
+    #print("BEE distribution history", beeDistributionHistory)
+    #print("BEE distribution history", flowerData)
 
     plt.show()
 

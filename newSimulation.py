@@ -63,13 +63,7 @@ class BeeSimulation():
         for bee in self.swarm.activeBees:
             self.CheckBoundaryCollision(bee)
         
-
         if self.timestep %self.seasonLength ==0 and self.timestep !=0: # Every change of season
-            
-            self.eggsData = self.swarm.RIP_number_of_eggs
-            self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_types
-            self.lifespanData = self.swarm.RIP_ages
 
             self.environment.newNests = self.swarm.newNests
             self.environment.CreateNewGeneration(self.timestep)
@@ -90,7 +84,11 @@ class BeeSimulation():
             
 
         if self.timestep % (10*self.seasonLength) == 0: # after 10 seasons
-            self.beeDistributionHistory = self.swarm.BeeDistribution(1)
+            self.eggsData = self.swarm.RIP_number_of_eggs
+            self.visitedFlowers = self.swarm.RIP_visitedflowers
+            self.bee_types = self.swarm.RIP_types
+            self.lifespanData = self.swarm.RIP_ages
+            self.beeDistributionHistory = self.swarm.RIP_Generation
 
             MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types,self.beeDistributionHistory)
             

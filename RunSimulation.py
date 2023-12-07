@@ -9,11 +9,15 @@ from newSimulation import *
 #Vi räknar med att ett bi max lever 8 veckor
 #En dag är 2000 tidssteg
 
-#size, numStartingBees, numStartingFlowers, seasonLength,
-
-seasonLength = 1000
+### Some what stable values:
+seasonLength = 5000
 numStartingFlowers = 2000
 numStartingBees = 20
+
+### For bow plot
+#seasonLength = 1000
+#numStartingFlowers = 2000
+#numStartingBees = 20
 
 beesim = BeeSimulation(1000, numStartingBees, numStartingFlowers,seasonLength)
 

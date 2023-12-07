@@ -37,7 +37,7 @@ class Environment:
         if self.envType == 'countryside':
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
-                self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
+                self.flowers.append(Flower(center, self.xLimit/1.5, 0, self.seasonLength, t='random', environment=self.envType))
         
         elif self.envType == 'urban':
             clusters = np.random.randint(5, 20)
@@ -170,7 +170,7 @@ class Environment:
             elif status == 2: # 2 = dead
                 del self.flowers[i]
 
-            if time % 2000 == 0: #regenerate pollen every 2000 timesteps so every day should this be less
+            if time % 1000 == 0: #regenerate pollen every 2000 timesteps so every day should this be less
                 flower.pollen += flower.pollenRegeneration*2000
 
 class Flower:
@@ -215,19 +215,19 @@ class Flower:
 
         # Characteristics of flowers
         life = seasonLength
-        pollenUnit = 20
+        pollenUnit = 5
         pollenRegenerationUnit = 0.1
 
         if self.type == 1: # Lavender
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(7, 15)
+            self.flowersPerStem = np.random.randint(10, 15)
             self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = 2 * pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
 
         elif self.type == 2: # Bee balm
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(1, 3)
+            self.flowersPerStem = np.random.randint(1, 5)
             self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [0,0,0,0,1,1,1,0,0] 

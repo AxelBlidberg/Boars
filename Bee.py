@@ -23,6 +23,9 @@ class Swarm:
         self.RIP_number_of_eggs = [] # eggs of dead bees
         self.RIP_types = [] # type of the dead bees
         self.RIP_visitedflowers = []
+        self.RIP_Generation= []
+
+        self.BeeGeneration = 0
 
         self.newNests = []
         self.newTraits  = []
@@ -31,12 +34,12 @@ class Swarm:
         self.weekLength = self.seasonLength //13 # = n.o. weeks in 3 months
         self.dayLength = self.seasonLength//90 #   
         self.activeBees = []     #     offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500   
-        self.Beetypes = { 'Small Bee': {'speed': 1, 'pollen_capacity': 30,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
-                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 120, 'when_active' : [1,1,1], 'mean_age': self.weekLength*5.5,
-                                        'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':10, 'pollen_taken_perStem':10}, 
-                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 40,'vision_angle': 280,'vision_range':20, 'angular_noise': 0.45,
-                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' : 200, 'when_active' : [1,0,0],  'mean_age': self.dayLength*22 ,
-                                        'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':15, 'pollen_taken_perStem':15}} # eat_pase = how often bee eats
+        self.Beetypes = { 'Small Bee': {'speed': 3, 'pollen_capacity': 200,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
+                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 900, 'when_active' : [1,1,1], 'mean_age': self.weekLength*6,
+                                        'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':100, 'pollen_taken_perStem':5}, 
+                    'Intermediate Bee': {'speed': 5, 'pollen_capacity': 300,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
+                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' :700, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
+                                        'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':200, 'pollen_taken_perStem':10}} # eat_pase = how often bee eats
         
         self.total_egg = [0,0]  # For data collection
         self.totalDistribution = []
@@ -62,6 +65,7 @@ class Swarm:
         self.ActivateBees(time)
         self.totalDistribution = self.BeeDistribution(1)
         self.newNests = []
+        self.BeeGeneration += 1
     
 
     def BeeDistribution(self, historicDistribution) -> list:
@@ -124,12 +128,13 @@ class Swarm:
             
             elif sum(bee.pollen.values()) < 1:  #Kill bee if starving
                 #print('RIP: bee died of starvation.') #Age:',bee_age)
-                #print(f'RIP: {bee.type} has died of starvation.')
+                print(f'RIP: {bee.type} has died of starvation.')
 
                 self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
                 self.RIP_types.append(bee.type)
                 self.RIP_visitedflowers.append(bee.visitedflowers)
+                self.RIP_Generation.append(self.BeeGeneration)
                 
                 self.bees.pop(i)
                 self.activeBees.pop(i)
@@ -138,12 +143,13 @@ class Swarm:
 
             elif  time - bee.birth > bee.max_age:  # Kill bee if old
                 #print(f'RIP: {bee.type} has died of age: {(time-bee.birth)//self.dayLength} days. Pollen levels: {bee.pollen}')
-                #print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
+                print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
 
                 self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
                 self.RIP_types.append(bee.type)
                 self.RIP_visitedflowers.append(bee.visitedflowers)
+                self.RIP_Generation.append(self.BeeGeneration)
 
                 self.bees.pop(i)
                 self.activeBees.pop(i)
@@ -165,7 +171,7 @@ class Bee:
         self.y = nest.y
         self.home = nest
         self.path = [[self.x-0.2,self.y-0.2],[self.x, self.y]]
-        self.path_length = 40
+        self.path_length = 15
 
         self.Beetraits = beeTraits
 
