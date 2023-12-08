@@ -148,10 +148,6 @@ class BeeSim(tk.Tk):
         SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
         for season in range(self.simulationLength):
             seasonStart = time.time()
-            # Use tqdm function with an external iterator
-            #SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
-            #SeasonBar = tqdm(total=self.seasonLength, desc=f"Progress, season: {self.season+1}", unit="Time steps")
-
 
             # Create new generation
             if season > 0:

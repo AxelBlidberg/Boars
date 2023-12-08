@@ -6,6 +6,9 @@ import pandas as pd
 import seaborn as sns
 
 def SaveData(data, filename):
+    '''
+    Temporary file for saving data to CSV for finding problems in the data sent from the Simulation file
+    '''
     folder = 'Data'
     filePath = os.path.join(os.getcwd(), folder, filename)
     with open(filePath, 'w', newline='') as file:
@@ -102,8 +105,6 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
 
     df['visitedFlowersPerDay'] = df['visitedFlowers'] / df['lifespanData']
 
-    #fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
-
     sns.boxplot(x='generation', y='eggsData', data=df, hue="bee_types", width=0.6, ax=ax1)
     ax1.set_title('Box Plot of eggsData')
     ax1.set_xlabel('Generation')
@@ -118,9 +119,6 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
     ax3.set_title('Box Plot of lifespanData')
     ax3.set_xlabel('Generation')
     ax3.set_ylabel('lifespanData')
-
-def BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age):
-    pass
 
 def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio):
     #SaveData(flowerData, 'fData.csv')
