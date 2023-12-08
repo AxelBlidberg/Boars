@@ -40,15 +40,29 @@ class Environment:
                 self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
         
         elif self.envType == 'urban':
-            clusters = np.random.randint(5, 20)
-            flowersPerCluster = int(n/clusters)  # all clusters have same amount of flowers, perhaps it should be percental?
+            
+            clusters = np.random.randint(30, 50)
+            
+            meanClusterSize = int(n/clusters)
+            stdDev = 4 #int(meanClusterSize/10) 
+
+            clusterSizes = np.random.normal(meanClusterSize, stdDev, clusters)
+            clusterSizes = np.round(clusterSizes).astype(int)
+            clusterSizes[-1] -= (np.sum(clusterSizes) - n)
+            
+            if clusterSizes[-1] < 0:
+                clusterSizes.pop(clusters-1)
+                clusters -= 1
+
             for i in range(clusters):
+
                 center = [self.xLimit/2, self.yLimit/2]
                 clusterCenterFlower = Flower(center, self.xLimit/1.5, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
-                for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 25, clusterCenterFlower.type, 0)        
-        
+                
+                for _ in range(clusterSizes[i]-1):
+                    self.AddFlower(clusterCenterFlower.location, 50, clusterCenterFlower.type, 0)        
+
         elif self.envType == 'agriculture':
             # Flower distribution
             types = [1, 2, 3, 4, 5]

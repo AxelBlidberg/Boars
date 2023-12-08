@@ -1,4 +1,6 @@
-from Simulation import *
+#from Simulation import *
+from Simulation2 import *
+
 
 #Definition av rum
 #Grid på 1000 x 1000
@@ -12,9 +14,13 @@ from Simulation import *
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
 seasonLength = 5000
-numStartingFlowers = 2000
-numStartingBees = 20
-nSeasons = 10
+numStartingFlowers = 500
+numStartingBees = 5
+nSeasons = 4
 
-sim = BeeSim(size=1000, num_bees=20, num_flowers=2000, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
-sim.RunSimulation()
+
+#sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+#sim.RunSimulation()
+
+simV = BeeSimV(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+simV.RunSimulation()
