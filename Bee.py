@@ -43,12 +43,15 @@ class Swarm:
         self.total_egg = [0,0]  # For data collection
     
     def InitializeBees(self, n, nests, birth=0) -> None:
+
         bee_types = ['Small Bee', 'Intermediate Bee']
         
         for i in range(n):
             beetype = random.choice(bee_types)
             beeTraits = self.Beetypes[beetype]
             self.AddBee(nests[i], birth, beeTraits)
+        
+        self.ActivateBees(birth)
 
     def AddBee(self, beenest, birth, beeTraits) -> None:
         self.bees.append(Bee(beenest, birth, beeTraits)) 

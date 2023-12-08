@@ -8,8 +8,9 @@ from Result import *
 import matplotlib.pyplot as plt
 import time
 
+
 class BeeSim(tk.Tk):
-    def __init__(self, size=112000, num_bees=4, num_flowers=200, envType='countryside',visualize=False, NumSeason=10, seasonLength=1000):
+    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', visualize=False, NumSeason=10, seasonLength=1000):
         super().__init__()
         # Define grid and start simulation
         self.size = size
@@ -19,6 +20,22 @@ class BeeSim(tk.Tk):
         self.season = 0
         self.visualize = visualize
         self.simulationLength = NumSeason
+
+        #for plot
+        self.flowersPlot = []
+        self.beesPlot = []
+
+        # Plot data
+        self.currentFData = []
+        self.flowerData = []
+        self.currentBData = []
+        self.beeData = []
+        self.currentLData = []
+        self.lifespanData = []
+        self.eggsData = []
+        self.visitedFlowers = []
+        self.bee_types =[]
+        self.fbRatio = [num_flowers/num_bees]
 
         if self.visualize:
             self.title("Bee Simulation")
@@ -40,24 +57,9 @@ class BeeSim(tk.Tk):
         self.environment.InitializeFlowers(num_flowers)
         self.environment.InitializeBeeNest(num_bees)
         
-        #for plot
-        self.flowersPlot = []
-        self.beesPlot = []
-
-        # Plot data
-        self.currentFData = []
-        self.flowerData = []
-        self.currentBData = []
-        self.beeData = []
-        self.currentLData = []
-        self.lifespanData = []
-        self.eggsData = []
-        self.visitedFlowers = []
-        self.bee_types =[]
-        self.fbRatio = [num_flowers/num_bees]
-
         self.swarm = Swarm(self.seasonLength)
         self.swarm.InitializeBees(num_bees, self.environment.nests)
+        
         
     def DrawEnvironment(self):
         
@@ -123,7 +125,7 @@ class BeeSim(tk.Tk):
         """
 
         for _ in range(int(0.25*self.seasonLength)):
-            self.timestep += 1
+            #self.timestep += 1
             self.swarm.PushUpdate(self.environment.flowers,self.timestep)
             self.environment.PushUpdate(self.timestep)
 
@@ -137,6 +139,9 @@ class BeeSim(tk.Tk):
                     self.DrawPath(bee)
                     if self.show_vision_var.get():
                         self.DrawVisionField(bee)
+                
+                self.update()
+
             if len(self.swarm.bees) == 0:
                 #print(f'All bees are dead, time: {self.timestep}')
                 self.timestep = self.seasonLength*(self.season + 0.25*quarter)
@@ -181,7 +186,7 @@ class BeeSim(tk.Tk):
             self.currentFData = []
             self.currentBData = []
             print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
-        
+
         # Plot data
         SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
