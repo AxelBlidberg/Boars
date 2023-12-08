@@ -14,6 +14,7 @@ class BeeSim(tk.Tk):
         # Define grid and start simulation
         self.size = size
         self.num_flowers = num_flowers
+        self.num_bees = num_bees
         self.seasonLength = seasonLength #112000
         self.timestep = 0
         self.season = 0
@@ -167,6 +168,14 @@ class BeeSim(tk.Tk):
                 self.RunQuarter(quarter)
                 #SeasonBar.update((self.timestep-self.season*self.seasonLength))
                 SimulationBar.update(self.timestep)
+                # Stop condition
+                if (len(self.swarm.bees) > (2*self.num_bees)) or (len(self.environment.flowers) > (2*self.num_flowers)):
+                    stopSimulation = True
+                    if (len(self.swarm.bees) > (2*self.num_bees)):
+                        print(f'Simulation stopped because of exploding bee population: {len(self.swarm.bees)}')
+                    else:
+                        print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
+                    break
             #SeasonBar.close()
             #SimulationBar.close()
             self.season += 1
@@ -176,6 +185,9 @@ class BeeSim(tk.Tk):
             self.beeData.append(np.copy(self.currentBData))
             self.currentFData = []
             self.currentBData = []
+            if stopSimulation:
+                print('Simulation stopped.')
+                break
             print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
         
         # Plot data
