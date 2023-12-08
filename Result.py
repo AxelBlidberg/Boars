@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
 import os, csv
+import pandas as pd
+import seaborn as sns
 
 def SaveData(data, filename):
     folder = 'Data'
@@ -24,11 +26,9 @@ def PlotFlowerAmount(ax1, ax2, fData):
                 trends[k].append(quarter[label])
             amount.append(np.sum(values))
     x = np.arange(0, len(fData)/0.25, step=0.25)
-    x = np.linspace(0, len(fData), num=(4*len(fData)+1))
-    #print(len(fData))
-    #print(len(trends))
-    #print(len(x), x)
-    #print(len(trends[0]))
+    x = np.linspace(0, len(fData), num=(4*len(fData)+1)) # remove +1?
+    x = x[:-1]
+
     for i in range(len(trends)):
         ax2.plot(x, trends[i], color=colors[i])
     ax1.plot(x, amount, color='gray')
@@ -40,16 +40,13 @@ def PlotFlowerAmount(ax1, ax2, fData):
     ax2.set_xlabel('Seasons')
     ax2.set_ylabel('n Flowers')
     ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
-    return x, amount
+    return x
 
-def PlotBeePopulation(ax1, bData, x):
+def PlotBeePopulation(ax1, ax2, bData, x):
     labels = ['Small Bee', 'Intermediate Bee', 'Bee population']
     colors = ['blue', 'red', 'gray']
-    trends = [[], []]
+    trends = [[], [], []]
     amount = []
-    #print('Lengths: ', len(bData))
-    #for i in bData:
-        #print(len(i))
 
     for i, season in enumerate(bData):
         for j, quarter in enumerate(season):
@@ -57,24 +54,26 @@ def PlotBeePopulation(ax1, bData, x):
             for k in range(len(labels)-1):
                 values.append(quarter[k])
                 trends[k].append(quarter[k])
+            trends[2].append(np.sum(values))
             amount.append(np.sum(values))
-    #print('x: ', x)
-    #print('Total: ', amount)
-    #print('Trends: ', trends)
-    ax1.plot(x, amount, color=colors[2])
     
-    for i in range(len(trends)):
-        ax1.plot(x, trends[i], color=colors[i])
+    ax1.plot(x, trends[-1], color=colors[-1], label=labels[-1])
+    ax2.plot(x, trends[0], color=colors[0], label=labels[0])
+    ax2.plot(x, trends[1], color=colors[1], label=labels[1])
+    
 
     ax1.set_title('Bee population')
     ax1.set_xlabel('Seasons')
-    ax1.set_ylabel('n Bees')
-    ax1.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.9))
-    return amount
+    ax1.set_ylabel('n.o. Bees')
 
-def PlotFlowerBeeDensity(ax, fData, bData, x):
-    trend = [fData[i] / bData[i] for i in range(len(fData))]
-    ax.plot(x, trend)
+    ax2.set_title('Bee type distribution')
+    ax2.set_xlabel('Seasons')
+    ax2.set_ylabel('n.o. Bees')
+    ax2.legend(loc='center left', bbox_to_anchor=(1, 0.9))
+
+def PlotFlowerBeeDensity(ax, r):
+    x = np.linspace(0, len(r), num=len(r))
+    ax.plot(x, r)
     ax.set_title('Flowers / Bee')
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Flowers / Bee')
@@ -93,85 +92,45 @@ def PlotAvgLifespan(ax,smallBeeData,mediumBeeData):
     ax.set_xlabel('Seasons')
     ax.set_ylabel('Time')
 
+def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, ax1, ax2, ax3):
 
-def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs):
-    #Ta ut index för varje typ 
-    #Använd de indexen flr att ta ut lifespan, antal egg och visited flowers
-    smallBee_eggs =[]
-    smallBee_flowers = []
-    smallBee_age = []
-    
-    mediumBee_eggs= []
-    mediumBee_flowers = []
-    mediumBee_age = []
+    data = {'lifespanData': lifespanData, 'eggsData': eggsData, 'visitedFlowers': visitedFlowers,'bee_types': bee_types, 'generation': beeDistributionHistory}
+    folder = 'Data'
+    filePath = os.path.join(os.getcwd(), folder, 'test.csv')
+    df = pd.DataFrame(data)
+    df.to_csv(filePath, index=False)
 
-    for i in range(len(lifespanData)):
-        if bee_types[i] == 0:
-            smallBee_eggs.append(eggsData[i])
-            smallBee_flowers.append(visitedFlowers[i])
-            smallBee_age.append(lifespanData[i])
-        else:
-            mediumBee_eggs.append(eggsData[i])
-            mediumBee_flowers.append(visitedFlowers[i])
-            mediumBee_age.append(lifespanData[i])
+    df['visitedFlowersPerDay'] = df['visitedFlowers'] / df['lifespanData']
 
-    eggs = np.zeros((2,len(beeDistributionHistory)))
-    flowers = np.zeros((2,len(beeDistributionHistory)))
-    age = np.zeros((2,len(beeDistributionHistory)))
-    
-    j = 0
-    k = 0
-    #print("beeDistributionHistory:",beeDistributionHistory)
-    for i,n in enumerate(beeDistributionHistory):
-        iSmallBee = n[0]
-        iMediumBee = n[1]
-        if iSmallBee > 0:
-            eggs[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
-            flowers[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
-            age[0,i] = smallBee_eggs[j:j+iSmallBee[0]]
-            j = j + nBees[0]
+    #fig, axes = plt.subplots(nrows=1, ncols=3, figsize=(18, 6))
 
-        if iMediumBee > 0:
-            eggs[1,i] = mediumBee_eggs[k:k+nBees[1]]
-            flowers[1,i] = mediumBee_eggs[k:k+iMediumBee[1]]
-            age[1,i] = mediumBee_eggs[k:k+iMediumBee[1]]
-            k = k + iMediumBee[1]
+    sns.boxplot(x='generation', y='eggsData', data=df, hue="bee_types", width=0.6, ax=ax1)
+    ax1.set_title('Box Plot of eggsData')
+    ax1.set_xlabel('Generation')
+    ax1.set_ylabel('eggsData')
 
-    ax1 = axs[1, 1]
-    
-    PlotAvgLifespan(ax1,smallBee_age,mediumBee_age)
-        
-    return smallBee_eggs, smallBee_flowers,smallBee_age,mediumBee_eggs,mediumBee_flowers,mediumBee_age
+    sns.boxplot(x='generation', y='visitedFlowersPerDay', data=df, hue="bee_types", width=0.6, ax=ax2)
+    ax2.set_title('Box Plot of visitedFlowers')
+    ax2.set_xlabel('Generation')
+    ax2.set_ylabel('visitedFlowers')
+
+    sns.boxplot(x='generation', y='lifespanData', data=df, hue="bee_types", width=0.6, ax=ax3)
+    ax3.set_title('Box Plot of lifespanData')
+    ax3.set_xlabel('Generation')
+    ax3.set_ylabel('lifespanData')
 
 def BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age):
     pass
 
-def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory):
-    SaveData(flowerData, 'fData.csv')
-    SaveData(beeDistribution, 'bData.csv')
-    #SaveFunction(flowerData, beeDistribution)
-    #s_eggs, s_flowers,s_age,m_eggs,m_flowers,m_age = SeparateTypes(beeDistribution, lifespanData, eggsData,visitedFlowers, bee_types)
+def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio):
+    #SaveData(flowerData, 'fData.csv')
+    #SaveData(beeDistribution, 'bData.csv')
     fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
-    #axs[0, 0].get_shared_x_axes().join(axs[0, 0], axs[1, 0])
-    #axs[0, 1].get_shared_x_axes().join(axs[0, 1], axs[1, 1])
-    x, fPop = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
-    bPop = PlotBeePopulation(axs[0, 1], beeDistribution, x)  # Pass individual subplot
-    #PlotAvgLifespan(axs[1, 1],lifespanData)    # Pass individual subplot
-    PlotFlowerBeeDensity(axs[2, 0], fPop, bPop, x)  # Pass individual subplot
-    #BoxPlot(s_eggs,s_flowers,s_age,m_eggs,m_flowers,m_age)
-    #SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs)
-
-    print("BEE distribution history", beeDistributionHistory)
+    x = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
+    PlotBeePopulation(axs[0, 1], axs[1,1], beeDistribution, x)  # Pass individual subplot
+    PlotFlowerBeeDensity(axs[2, 1], fbRatio)  # Pass individual subplot
+    SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs[0, 2], axs[1, 2], axs[2, 2])
+    # axs[2,0] sparad till clustering coefficient, axels plot
+    axs[2,0].set_title('Clustering coefficient')
 
     plt.show()
-
-fData = [[{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 24, 'Coneflower': 51, 'Blueberry': 41},{'Lavender': 17, 'Bee balm': 17, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223}],
-        [{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 40, 'Coneflower': 172, 'Blueberry': 223},{'Lavender': 126, 'Bee balm': 70, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175}],
-        [{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 19, 'Coneflower': 153, 'Blueberry': 175},{'Lavender': 255, 'Bee balm': 113, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99}],
-        [{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 5, 'Coneflower': 79, 'Blueberry': 99},{'Lavender': 153, 'Bee balm': 78, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0},{'Lavender': 308, 'Bee balm': 80, 'Sunflower': 0, 'Coneflower': 53, 'Blueberry': 63}]]
-bData = [[{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 4, 'Intermediate Bee': 9, 'Large Bee': 7},{'Small Bee': 3, 'Intermediate Bee': 7, 'Large Bee': 6}],[
-            {'Small Bee': 0, 'Intermediate Bee': 1, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4}],
-            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 4},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 0},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2}],
-            [{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 2},{'Small Bee': 0, 'Intermediate Bee': 0, 'Large Bee': 6}]]
-
-#MergePlots(fData, bData, [])

@@ -23,6 +23,8 @@ class Swarm:
         self.RIP_number_of_eggs = [] # eggs of dead bees
         self.RIP_types = [] # type of the dead bees
         self.RIP_visitedflowers = []
+        self.RIP_Generation= []
+        self.BeeGeneration = 0
 
         self.newNests = []
         self.newTraits  = []
@@ -31,15 +33,14 @@ class Swarm:
         self.weekLength = self.seasonLength //13 # = n.o. weeks in 3 months
         self.dayLength = self.seasonLength//90 #   
         self.activeBees = []     #     offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500   
-        self.Beetypes = { 'Small Bee': {'speed': 1, 'pollen_capacity': 30,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
-                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 120, 'when_active' : [1,1,1], 'mean_age': self.weekLength*5.5,
-                                        'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':10, 'pollen_taken_perStem':10}, 
-                    'Intermediate Bee': {'speed': 2, 'pollen_capacity': 40,'vision_angle': 280,'vision_range':20, 'angular_noise': 0.45,
-                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' : 200, 'when_active' : [1,0,0],  'mean_age': self.dayLength*22 ,
-                                        'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':15, 'pollen_taken_perStem':15}} # eat_pase = how often bee eats
+        self.Beetypes = { 'Small Bee': {'speed': 3, 'pollen_capacity': 200,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
+                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 900, 'when_active' : [1,1,1], 'mean_age': self.weekLength*6,
+                                        'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':100, 'pollen_taken_perStem':5}, 
+                    'Intermediate Bee': {'speed': 5, 'pollen_capacity': 300,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
+                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' :700, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
+                                        'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':200, 'pollen_taken_perStem':10}} # eat_pase = how often bee eats
         
         self.total_egg = [0,0]  # For data collection
-        self.totalDistribution = []
     
     def InitializeBees(self, n, nests, birth=0) -> None:
         bee_types = ['Small Bee', 'Intermediate Bee']
@@ -48,8 +49,9 @@ class Swarm:
             beetype = random.choice(bee_types)
             beeTraits = self.Beetypes[beetype]
             self.AddBee(nests[i], birth, beeTraits)
-
-        self.totalDistribution = self.BeeDistribution(1)
+        
+        self.ActivateBees(birth)
+        
 
     def AddBee(self, beenest, birth, beeTraits) -> None:
         self.bees.append(Bee(beenest, birth, beeTraits)) 
@@ -60,11 +62,11 @@ class Swarm:
             self.AddBee(nests[i], time,self.newTraits[i])
         
         self.ActivateBees(time)
-        self.totalDistribution = self.BeeDistribution(1)
         self.newNests = []
+        self.BeeGeneration += 1
     
 
-    def BeeDistribution(self, historicDistribution) -> list:
+    def BeeDistribution(self) -> list:
         self.distribution = [0,0] 
         
         for bee in self.activeBees:
@@ -73,11 +75,6 @@ class Swarm:
             elif bee.type == 1:
                 self.distribution[1] += 1
         
-        self.totalDistribution.append(self.distribution)
-
-        if historicDistribution == 1:
-            return self.totalDistribution
-        
         return self.distribution
     
     def ActivateBees(self, time) -> None:
@@ -85,7 +82,7 @@ class Swarm:
         Different types are active during different times of the season.
         '''
         self.activeBees = []
-        current_month = time // self.monthLength % 3 # = n.o. simulated months
+        current_month = int(time // self.monthLength % 3) # = n.o. simulated months
 
         #year = ['june','july','august']
         #print('Month:',year[current_month])
@@ -130,6 +127,7 @@ class Swarm:
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
                 self.RIP_types.append(bee.type)
                 self.RIP_visitedflowers.append(bee.visitedflowers)
+                self.RIP_Generation.append(self.BeeGeneration)
                 
                 self.bees.pop(i)
                 self.activeBees.pop(i)
@@ -144,6 +142,7 @@ class Swarm:
                 self.RIP_number_of_eggs.append(bee.number_of_eggs)
                 self.RIP_types.append(bee.type)
                 self.RIP_visitedflowers.append(bee.visitedflowers)
+                self.RIP_Generation.append(self.BeeGeneration)
 
                 self.bees.pop(i)
                 self.activeBees.pop(i)

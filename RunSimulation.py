@@ -1,4 +1,4 @@
-from newSimulation import *
+from Simulation import *
 
 #Definition av rum
 #Grid på 1000 x 1000
@@ -11,14 +11,10 @@ from newSimulation import *
 
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
-seasonLength = 1000
+seasonLength = 5000
 numStartingFlowers = 2000
 numStartingBees = 20
+nSeasons = 4
 
-beesim = BeeSimulation(1000, numStartingBees, numStartingFlowers,seasonLength)
-
-simulationLength = seasonLength * 4
-
-for i in range(simulationLength): #Defining ho
-    beesim.Update()
-
+sim = BeeSim(size=1000, num_bees=20, num_flowers=2000, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+sim.RunSimulation()
