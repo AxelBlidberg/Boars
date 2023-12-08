@@ -18,6 +18,7 @@ numStartingFlowers = 500
 numStartingBees = 5
 nSeasons = 4
 
+
 #sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
 #sim.RunSimulation()
 
