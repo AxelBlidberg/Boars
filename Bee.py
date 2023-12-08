@@ -49,6 +49,9 @@ class Swarm:
             beetype = random.choice(bee_types)
             beeTraits = self.Beetypes[beetype]
             self.AddBee(nests[i], birth, beeTraits)
+        
+        self.ActivateBees(birth)
+        
 
     def AddBee(self, beenest, birth, beeTraits) -> None:
         self.bees.append(Bee(beenest, birth, beeTraits)) 

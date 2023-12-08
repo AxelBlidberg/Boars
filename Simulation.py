@@ -57,7 +57,7 @@ class BeeSim(tk.Tk):
         self.fbRatio = [num_flowers/num_bees]
 
         self.swarm = Swarm(self.seasonLength)
-        self.swarm.InitializeBees(num_bees, self.environment.nests)
+        self.swarm.InitializeBees(num_bees, self.environment.nests,self.timestep)
         
     def DrawEnvironment(self):
         
