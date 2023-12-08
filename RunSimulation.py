@@ -1,7 +1,6 @@
 #from Simulation import *
 from Simulation2 import *
 
-
 #Definition av rum
 #Grid på 1000 x 1000
 #En pixel är 0.2 x 0.2 m i verkligheten total utsträckning på 1 km
@@ -14,9 +13,9 @@ from Simulation2 import *
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
 seasonLength = 5000
-numStartingFlowers = 500
-numStartingBees = 5
-nSeasons = 4
+numStartingFlowers = 4000
+numStartingBees = 20
+nSeasons = 7
 
 
 #sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)

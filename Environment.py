@@ -28,6 +28,7 @@ class Environment:
         # Nests
         self.nests = []
         self.newNests = []
+        self.radius = 0
 
     def InitializeFlowers(self, n) -> None:
         '''
@@ -35,6 +36,7 @@ class Environment:
         '''
 
         if self.envType == 'countryside':
+            self.radius = 500
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
                 self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
@@ -57,7 +59,7 @@ class Environment:
             for i in range(clusters):
 
                 center = [self.xLimit/2, self.yLimit/2]
-                clusterCenterFlower = Flower(center, self.xLimit/1.5, 0, self.seasonLength, t='random', environment=self.envType)
+                clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
                 
                 for _ in range(clusterSizes[i]-1):
@@ -132,7 +134,7 @@ class Environment:
         self.flowers = []
 
         for individual in self.newGeneration:
-            self.AddFlower(individual[0], individual[1], individual[2], time)
+            self.AddFlower(individual[0], self.radius, individual[2], time)
 
         for nest in self.newNests:
             self.AddBeeNest(nest[0], nest[1])
@@ -180,7 +182,7 @@ class Environment:
             if status == 1: # 1 = reproduce
                 nFlowers = np.random.randint(1,flower.max_siblings) # how many "siblings"
                 for _ in range(nFlowers): 
-                    self.newGeneration.append([center, 70, flower.type]) #center, radius, type
+                    self.newGeneration.append([center, 40, flower.type]) #center, radius, type
             elif status == 2: # 2 = dead
                 del self.flowers[i]
 
@@ -234,7 +236,7 @@ class Flower:
 
         if self.type == 1: # Lavender
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(10, 15)
+            self.flowersPerStem = np.random.randint(5, 10)
             self.pollen = pollenUnit * self.flowersPerStem
             self.pollenRegeneration = 2 * pollenRegenerationUnit * self.flowersPerStem
             #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
