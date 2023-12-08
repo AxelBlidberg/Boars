@@ -1,4 +1,5 @@
-from Simulation import *
+#from Simulation import *
+from Simulation2 import *
 
 
 #Definition av rum
@@ -12,15 +13,13 @@ from Simulation import *
 
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
-seasonLength = 1000
+seasonLength = 5000
 numStartingFlowers = 500
 numStartingBees = 5
 nSeasons = 4
 
-sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+#sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+#sim.RunSimulation()
 
-sim.RunSimulation()
-
-#simV = BeeSimV(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', visualize=True, NumSeason=nSeasons, seasonLength=seasonLength)
-
-#simV.RunSimulation()
+simV = BeeSimV(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
+simV.RunSimulation()
