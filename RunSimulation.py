@@ -14,7 +14,7 @@ from Simulation import *
 seasonLength = 5000
 numStartingFlowers = 2000
 numStartingBees = 20
-nSeasons = 4
+nSeasons = 10
 
 sim = BeeSim(size=1000, num_bees=20, num_flowers=2000, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
 sim.RunSimulation()

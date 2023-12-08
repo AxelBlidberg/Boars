@@ -146,8 +146,9 @@ class BeeSim(tk.Tk):
     def RunSimulation(self):
         quarters = [1, 2, 3, 4]
         startTime = time.time()
-        SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
-        for season in range(self.simulationLength):
+        #SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
+        stopSimulation = False
+        for season in tqdm(range(self.simulationLength), desc="Progress simulation:", unit="season"):
             seasonStart = time.time()
 
             # Create new generation
@@ -162,17 +163,18 @@ class BeeSim(tk.Tk):
                 self.bee_types = self.swarm.RIP_visitedflowers
                 self.beeDataHistory = self.swarm.RIP_Generation
 
-            for quarter in quarters:
+            #for quarter in quarters:
+            for quarter in tqdm(quarters, desc="Season Progress", unit="quarter"):
                 # [0-25%, 25-50%, 50-75%, 75-100%]
                 self.DataSave()
                 self.RunQuarter(quarter)
                 #SeasonBar.update((self.timestep-self.season*self.seasonLength))
-                SimulationBar.update(self.timestep)
+                #SimulationBar.update(self.timestep)
                 # Stop condition
-                if (len(self.swarm.bees) > (2*self.num_bees)) or (len(self.environment.flowers) > (2*self.num_flowers)):
+                if (len(self.swarm.bees) > (10*self.num_bees)) or (len(self.environment.flowers) > (10*self.num_flowers)):
                     stopSimulation = True
                     if (len(self.swarm.bees) > (2*self.num_bees)):
-                        print(f'Simulation stopped because of exploding bee population: {len(self.swarm.bees)}')
+                        print(f'\nSimulation stopped because of exploding bee population: {len(self.swarm.bees)}')
                     else:
                         print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
                     break
@@ -180,18 +182,19 @@ class BeeSim(tk.Tk):
             #SimulationBar.close()
             self.season += 1
 
+            if stopSimulation:
+                print('Simulation stopped.')
+                break
+            print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
+
             # Save plotting data
             self.flowerData.append(np.copy(self.currentFData))
             self.beeData.append(np.copy(self.currentBData))
             self.currentFData = []
             self.currentBData = []
-            if stopSimulation:
-                print('Simulation stopped.')
-                break
-            print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
-        
+
         # Plot data
-        SimulationBar.close()
+        #SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
         MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
 
