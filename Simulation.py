@@ -15,7 +15,9 @@ class BeeSim(tk.Tk):
         # Define grid and start simulation
         self.size = size
         self.num_flowers = num_flowers
+        self.num_bees = num_bees
         self.seasonLength = seasonLength #112000
+        self.envType = envType
         self.timestep = 0
         self.season = 0
         self.visualize = visualize
@@ -38,28 +40,59 @@ class BeeSim(tk.Tk):
         self.fbRatio = [num_flowers/num_bees]
 
         if self.visualize:
-            self.title("Bee Simulation")
+            self.visualizationSetup()
+
+        self.simulationSetup()
+
+
+    def visualizationSetup(self):
         
-            self.canvas_frame = tk.Frame(self)
-            self.canvas_frame.pack(side="left", padx=10)
-            self.canvas = tk.Canvas(self.canvas_frame, width=size, height=size, bg='#355E3B')
-            self.canvas.pack()
+        self.title("Bee Simulation")
+        
+        self.canvas_frame = tk.Frame(self)
+        self.canvas_frame.pack(side="left", padx=10)
+        self.canvas = tk.Canvas(self.canvas_frame, width=self.size, height=self.size, bg='#355E3B')
+        self.canvas.pack()
 
-            # Frame for sliders
-            self.slider_frame = tk.Frame(self)
-            self.slider_frame.pack(side="right", padx=10)
+        # Frame for sliders
+        self.slider_frame = tk.Frame(self)
+        self.slider_frame.pack(side="right", padx=10)
 
-            self.show_vision_var = tk.BooleanVar(value=True)
-            self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
-            self.draw_vision_checkbox.pack(pady=5)
+        self.show_vision_var = tk.BooleanVar(value=True)
+        self.draw_vision_checkbox = tk.Checkbutton(self.slider_frame, text="Draw Vision", variable=self.show_vision_var, onvalue=True, offvalue=False)
+        self.draw_vision_checkbox.pack(pady=5)
 
-        self.environment = Environment(size, self.seasonLength, envType)
-        self.environment.InitializeFlowers(num_flowers)
-        self.environment.InitializeBeeNest(num_bees)
+    def visualizationUpdate(self):
+        self.canvas.delete('all')
+        self.title(f"Bee Simulation - time: {self.timestep} | season: {self.season}")
+        self.DrawEnvironment()
+        for bee in self.swarm.activeBees:
+            self.CheckBoundaryCollision(bee)
+            self.DrawBee(bee)
+            self.DrawPath(bee)
+            if self.show_vision_var.get():
+                self.DrawVisionField(bee)
+        
+        self.update()
+
+    def simulationSetup(self):
+        self.environment = Environment(self.size, self.seasonLength, self.envType)
+        self.environment.InitializeFlowers(self.num_flowers)
+        self.environment.InitializeBeeNest(self.num_bees)
         
         self.swarm = Swarm(self.seasonLength)
-        self.swarm.InitializeBees(num_bees, self.environment.nests)
-        
+        self.swarm.InitializeBees(self.num_bees, self.environment.nests)
+
+    def simulationUpdate(self):
+        pass
+
+    def runVisualization(self):
+        pass
+
+    #def runSimulation(self):
+        #pass
+
+
         
     def DrawEnvironment(self):
         
@@ -75,7 +108,7 @@ class BeeSim(tk.Tk):
             x, y = nest.x, nest.y
             self.canvas.create_rectangle(x - nest_size, y - nest_size, x + nest_size, y + nest_size, fill=nest.color)
         
-        self.environment.PushUpdate(self.timestep)
+        #self.environment.PushUpdate(self.timestep)
         
     def DrawBee(self, bee):
         x, y = bee.x, bee.y
@@ -102,7 +135,7 @@ class BeeSim(tk.Tk):
         bee.orientation += np.pi/3
 
     def DataSave(self): 
-        #print(f'Data save at timestep: {self.timestep}')
+        print(f'Data save at timestep: {self.timestep}')
         self.currentFData.append(self.environment.FlowerDistribution())
         self.currentBData.append(self.swarm.BeeDistribution())
 
@@ -125,22 +158,12 @@ class BeeSim(tk.Tk):
         """
 
         for _ in range(int(0.25*self.seasonLength)):
-            #self.timestep += 1
+            self.timestep += 1
             self.swarm.PushUpdate(self.environment.flowers,self.timestep)
             self.environment.PushUpdate(self.timestep)
 
             if self.visualize:
-                self.canvas.delete('all')
-                self.title(f"Bee Simulation - time: {self.timestep} | season: {self.season}")
-                self.DrawEnvironment()
-                for bee in self.swarm.activeBees:
-                    self.CheckBoundaryCollision(bee)
-                    self.DrawBee(bee)
-                    self.DrawPath(bee)
-                    if self.show_vision_var.get():
-                        self.DrawVisionField(bee)
-                
-                self.update()
+                self.visualizationUpdate()
 
             if len(self.swarm.bees) == 0:
                 #print(f'All bees are dead, time: {self.timestep}')
