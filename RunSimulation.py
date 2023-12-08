@@ -12,11 +12,15 @@ from Simulation import *
 
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
-seasonLength = 5000
+seasonLength = 1000
 numStartingFlowers = 500
 numStartingBees = 5
 nSeasons = 4
 
-sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', visualize=True, NumSeason=nSeasons, seasonLength=seasonLength)
+sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', NumSeason=nSeasons, seasonLength=seasonLength)
 
 sim.RunSimulation()
+
+#simV = BeeSimV(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', visualize=True, NumSeason=nSeasons, seasonLength=seasonLength)
+
+#simV.RunSimulation()
