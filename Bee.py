@@ -34,12 +34,11 @@ class Swarm:
         self.dayLength = self.seasonLength//90 #   
         self.activeBees = []     #     offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500   
         self.Beetypes = { 'Small Bee': {'speed': 3, 'pollen_capacity': 200,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
-                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 900, 'when_active' : [1,1,1], 'mean_age': self.weekLength*6,
+                                        'color': "#ffd662", 'maxFlight': 250, 'offspringPollen' : 800, 'when_active' : [1,1,1], 'mean_age': self.weekLength*6,
                                         'type': 0, 'age_variation': int(self.weekLength*2.5), 'eat_pase':100, 'pollen_taken_perStem':5}, 
-                    'Intermediate Bee': {'speed': 5, 'pollen_capacity': 300,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
-                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' :700, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
+                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 270,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
+                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen' :750, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
                                         'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':200, 'pollen_taken_perStem':10}} # eat_pase = how often bee eats
-        
         self.total_egg = [0,0]  # For data collection
     
     def InitializeBees(self, n, nests, birth=0) -> None:
@@ -191,7 +190,7 @@ class Bee:
         self.color = self.Beetraits["color"]
         self.birth = birth
         self.waiting_constant = 0.5 # how long bees wait at flower depending on pollen #NOTE: Change to a reasonable value 
-        self.chancePollination = 0.9 #NOTE: Change to a reasonable value 
+        self.chancePollination = 0.75 #NOTE: Change to a reasonable value 
         self.reproductionNestRadius = 40
         self.number_of_eggs = 0
         self.visitedflowers = 0
