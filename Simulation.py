@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import time
 
 class BeeSim(tk.Tk):
-    def __init__(self, size=112000, num_bees=4, num_flowers=200, envType='countryside',visualize=False, NumSeason=10, seasonLength=1000):
+    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', beeDist = 'random', visualize=False, NumSeason=10, seasonLength=1000):
         super().__init__()
         # Define grid and start simulation
         self.size = size
@@ -20,6 +20,7 @@ class BeeSim(tk.Tk):
         self.season = 0
         self.visualize = visualize
         self.simulationLength = NumSeason
+        self.beeDist = beeDist
 
         if self.visualize:
             self.title("Bee Simulation")
@@ -55,10 +56,11 @@ class BeeSim(tk.Tk):
         self.eggsData = []
         self.visitedFlowers = []
         self.bee_types =[]
+        self.beeDataHistory = []
         self.fbRatio = [num_flowers/num_bees]
 
         self.swarm = Swarm(self.seasonLength)
-        self.swarm.InitializeBees(num_bees, self.environment.nests)
+        self.swarm.InitializeBees(num_bees, self.environment.nests,self.beeDist)
         
     def DrawEnvironment(self):
         
@@ -196,6 +198,6 @@ class BeeSim(tk.Tk):
         # Plot data
         #SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
-        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
-
-
+        
+        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio
+        

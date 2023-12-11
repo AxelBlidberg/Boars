@@ -10,7 +10,7 @@ import time
 
 
 class BeeSimV(tk.Tk):
-    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', visualize=True, NumSeason=10, seasonLength=1000):
+    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', beeDist = 'random', visualize=False, NumSeason=10, seasonLength=1000):
         super().__init__()
         # Define grid and start simulation
         self.size = size
@@ -22,6 +22,7 @@ class BeeSimV(tk.Tk):
         self.season = 0
         self.visualize = visualize
         self.simulationLength = NumSeason
+        self.beeDist = beeDist
 
         #for plot
         self.flowersPlot = []
@@ -37,6 +38,7 @@ class BeeSimV(tk.Tk):
         self.eggsData = []
         self.visitedFlowers = []
         self.bee_types =[]
+        self.beeDataHistory = []
         self.fbRatio = [num_flowers/num_bees]
 
         if self.visualize:
@@ -81,7 +83,7 @@ class BeeSimV(tk.Tk):
         self.environment.InitializeBeeNest(self.num_bees)
         
         self.swarm = Swarm(self.seasonLength)
-        self.swarm.InitializeBees(self.num_bees, self.environment.nests)
+        self.swarm.InitializeBees(self.num_bees, self.environment.nests,self.beeDist)
 
     def simulationUpdate(self):
         pass
@@ -140,12 +142,6 @@ class BeeSimV(tk.Tk):
         self.currentBData.append(self.swarm.BeeDistribution())
 
         if self.timestep % self.seasonLength == 0 and self.timestep>0: # Only by season change
-            
-            self.lifespanData = self.swarm.RIP_ages
-            self.eggsData = self.swarm.RIP_number_of_eggs
-            self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_types
-            self.beeDataHistory = self.swarm.RIP_Generation
 
             if (len(self.environment.flowers) != 0) and (len(self.swarm.bees) != 0):
                 self.fbRatio.append(len(self.environment.flowers)/len(self.swarm.bees))
@@ -180,18 +176,12 @@ class BeeSimV(tk.Tk):
             #SimulationBar = tqdm(total=self.simulationLength*self.seasonLength, desc="Progress simulation:", unit="Time steps")
             #SeasonBar = tqdm(total=self.seasonLength, desc=f"Progress, season: {self.season+1}", unit="Time steps")
 
-
             # Create new generation
             if season > 0:
                 #print('Creating the new generation')
                 self.environment.newNests = self.swarm.newNests
                 self.environment.CreateNewGeneration(self.timestep)
                 self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
-                self.lifespanData = self.swarm.RIP_ages
-                self.eggsData = self.swarm.RIP_number_of_eggs
-                self.visitedFlowers = self.swarm.RIP_visitedflowers
-                self.bee_types = self.swarm.RIP_visitedflowers
-                self.beeDataHistory = self.swarm.RIP_Generation
 
             for quarter in quarters:
                 # [0-25%, 25-50%, 50-75%, 75-100%]
@@ -213,12 +203,19 @@ class BeeSimV(tk.Tk):
         # Plot data
         SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
-        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
+        self.lifespanData = self.swarm.RIP_ages
+        self.eggsData = self.swarm.RIP_number_of_eggs
+        self.visitedFlowers = self.swarm.RIP_visitedflowers
+        self.bee_types = self.swarm.RIP_types
+        self.beeDataHistory = self.swarm.RIP_Generation
+        
+        #MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
 
-
+        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio
+        
 
 class BeeSim():
-    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', NumSeason=10, seasonLength=1000):
+    def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', beeDist = 'random', NumSeason=10, seasonLength=1000):
         # Define grid and start simulation
         self.size = size
         self.num_flowers = num_flowers
@@ -228,6 +225,7 @@ class BeeSim():
         self.timestep = 0
         self.season = 0
         self.simulationLength = NumSeason
+        self.beeDist = beeDist
 
         #for plot
         self.flowersPlot = []
@@ -242,6 +240,7 @@ class BeeSim():
         self.lifespanData = []
         self.eggsData = []
         self.visitedFlowers = []
+        self.beeDataHistory = []
         self.bee_types =[]
         self.fbRatio = [num_flowers/num_bees]
 
@@ -253,7 +252,7 @@ class BeeSim():
         self.environment.InitializeBeeNest(self.num_bees)
         
         self.swarm = Swarm(self.seasonLength)
-        self.swarm.InitializeBees(self.num_bees, self.environment.nests)
+        self.swarm.InitializeBees(self.num_bees, self.environment.nests,self.beeDist)
 
     def simulationUpdate(self):
         pass
@@ -268,12 +267,6 @@ class BeeSim():
         self.currentBData.append(self.swarm.BeeDistribution())
 
         if self.timestep % self.seasonLength == 0 and self.timestep>0: # Only by season change
-            
-            self.lifespanData = self.swarm.RIP_ages
-            self.eggsData = self.swarm.RIP_number_of_eggs
-            self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_types
-            self.beeDataHistory = self.swarm.RIP_Generation
 
             if (len(self.environment.flowers) != 0) and (len(self.swarm.bees) != 0):
                 self.fbRatio.append(len(self.environment.flowers)/len(self.swarm.bees))
@@ -313,11 +306,11 @@ class BeeSim():
                 self.environment.newNests = self.swarm.newNests
                 self.environment.CreateNewGeneration(self.timestep)
                 self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
-                self.lifespanData = self.swarm.RIP_ages
-                self.eggsData = self.swarm.RIP_number_of_eggs
-                self.visitedFlowers = self.swarm.RIP_visitedflowers
-                self.bee_types = self.swarm.RIP_visitedflowers
-                self.beeDataHistory = self.swarm.RIP_Generation
+                #self.lifespanData = self.swarm.RIP_ages
+                #self.eggsData = self.swarm.RIP_number_of_eggs
+                #self.visitedFlowers = self.swarm.RIP_visitedflowers
+                #self.bee_types = self.swarm.RIP_visitedflowers
+                #self.beeDataHistory = self.swarm.RIP_Generation
 
             for quarter in quarters:
                 # [0-25%, 25-50%, 50-75%, 75-100%]
@@ -337,8 +330,19 @@ class BeeSim():
             print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
 
         # Plot data
+
+        self.lifespanData = self.swarm.RIP_ages
+        self.eggsData = self.swarm.RIP_number_of_eggs
+        self.visitedFlowers = self.swarm.RIP_visitedflowers
+        self.bee_types = self.swarm.RIP_types
+        self.beeDataHistory = self.swarm.RIP_Generation
+        
         SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
-        MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
+        
+        #MergePlots(self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio)
+
+        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio
+        
 
 
