@@ -61,9 +61,11 @@ class Environment:
                 center = [self.xLimit/2, self.yLimit/2]
                 clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
+
                 
                 for _ in range(clusterSizes[i]-1):
                     self.AddFlower(clusterCenterFlower.location, 50, clusterCenterFlower.type, 0)        
+
 
         elif self.envType == 'agriculture':
             # Flower distribution
