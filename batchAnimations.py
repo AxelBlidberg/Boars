@@ -10,7 +10,7 @@ def run_simulation(params):
 
     def update(frame, params):
         beesim.SimulationBar.write(f'{len(beesim.swarm.bees)} Bees')
-        if len(beesim.swarm.bees) > 300:
+        if len(beesim.swarm.bees) > 70:                                            # overpopulation limit
             beesim.SimulationBar.write('Bee population explosion limit')
             return
         
@@ -42,10 +42,10 @@ def run_simulation(params):
 
 simulation_params = [
     {'size': 1000, 'num_bees': 2, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 10000},
-    {'size': 1000, 'num_bees': 8, 'num_flowers': 1500, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5000},
-    {'size': 1000, 'num_bees': 10, 'num_flowers': 2500, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5500},
-    {'size': 1000, 'num_bees': 10, 'num_flowers': 1800, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5000},
-    {'size': 1000, 'num_bees': 20, 'num_flowers': 2200, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5000}
+    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'urban', 'NumSeason': 20, 'seasonLength': 10000},
+    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 10000},
+    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'urban', 'NumSeason': 20, 'seasonLength': 10000},
+    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5000}
 ]
 
 for i , params in enumerate(simulation_params):
