@@ -10,7 +10,7 @@ def run_simulation(params):
 
     def update(frame, params):
         beesim.SimulationBar.write(f'{len(beesim.swarm.bees)} Bees')
-        if len(beesim.swarm.bees) > 70:                                            # overpopulation limit
+        if len(beesim.swarm.bees) > 30:                                            # overpopulation limit
             beesim.SimulationBar.write('Bee population explosion limit')
             return
         
@@ -37,15 +37,15 @@ def run_simulation(params):
 
     ani = FuncAnimation(fig, update, frames=params['NumSeason'], fargs=(params,), repeat=True, interval=1000)
 
-    ani.save(f'GIFs/S{i}_SLen{params["seasonLength"]}_B{params["num_bees"]}F{params["num_flowers"]}.gif')
+    ani.save(f'GIFs/run2/S{i}_SLen{params["seasonLength"]}_B{params["num_bees"]}F{params["num_flowers"]}.gif')
 
 
 simulation_params = [
-    {'size': 1000, 'num_bees': 2, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 10000},
-    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'urban', 'NumSeason': 20, 'seasonLength': 10000},
-    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 10000},
-    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'urban', 'NumSeason': 20, 'seasonLength': 10000},
-    {'size': 1000, 'num_bees': 4, 'num_flowers': 2000, 'envType': 'countryside', 'NumSeason': 20, 'seasonLength': 5000}
+    {'size': 1000, 'num_bees': 20, 'num_flowers': 4000, 'envType': 'countryside', 'NumSeason': 10, 'seasonLength': 5000},
+    {'size': 1000, 'num_bees': 20, 'num_flowers': 4000, 'envType': 'countryside', 'NumSeason': 10, 'seasonLength': 5000},
+    {'size': 1000, 'num_bees': 20, 'num_flowers': 4000, 'envType': 'countryside', 'NumSeason': 10, 'seasonLength': 5000},
+    {'size': 1000, 'num_bees': 20, 'num_flowers': 4000, 'envType': 'countryside', 'NumSeason': 10, 'seasonLength': 5000},
+    {'size': 1000, 'num_bees': 20, 'num_flowers': 4000, 'envType': 'countryside', 'NumSeason': 10, 'seasonLength': 5000}
 ]
 
 for i , params in enumerate(simulation_params):
