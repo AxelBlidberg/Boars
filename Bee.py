@@ -28,8 +28,8 @@ class Swarm:
         self.Beetypes = { 'Small Bee': {'speed': 3, 'pollen_capacity': 175,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
                                         'color': "#ffd662", 'maxFlight': 300, 'offspringPollen' : 175 * 4, 'when_active' : [1,1,1], 'mean_age':int(self.dayLength*7*6),
                                         'type': 0, 'age_variation': int(self.dayLength*7*2.5), 'eat_pase':5000, 'pollen_taken_perStem':5}, 
-                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 225,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
-                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen': 225 * 3.5, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
+                    'Intermediate Bee': {'speed': 4, 'pollen_capacity': 200,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
+                                        'color': "#FF6600",'maxFlight': 500 , 'offspringPollen': 200 * 3.5, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
                                         'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':5000, 'pollen_taken_perStem':10}} # eat_pase = how often bee eats
         #self.total_egg = [0,0]  # For data collection
     
