@@ -28,6 +28,7 @@ class Environment:
         # Nests
         self.nests = []
         self.newNests = []
+        self.radius = 0
 
     def InitializeFlowers(self, n) -> None:
         '''
@@ -35,20 +36,37 @@ class Environment:
         '''
 
         if self.envType == 'countryside':
+            self.radius = 500
             for i in range(n):
                 center = [self.xLimit/2, self.yLimit/2]
                 self.flowers.append(Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType))
         
         elif self.envType == 'urban':
-            clusters = np.random.randint(5, 20)
-            flowersPerCluster = int(n/clusters)  # all clusters have same amount of flowers, perhaps it should be percental?
+            
+            clusters = np.random.randint(30, 50)
+            
+            meanClusterSize = int(n/clusters)
+            stdDev = 4 #int(meanClusterSize/10) 
+
+            clusterSizes = np.random.normal(meanClusterSize, stdDev, clusters)
+            clusterSizes = np.round(clusterSizes).astype(int)
+            clusterSizes[-1] -= (np.sum(clusterSizes) - n)
+            
+            if clusterSizes[-1] < 0:
+                clusterSizes.pop(clusters-1)
+                clusters -= 1
+
             for i in range(clusters):
+
                 center = [self.xLimit/2, self.yLimit/2]
-                clusterCenterFlower = Flower(center, self.xLimit/1.5, 0, self.seasonLength, t='random', environment=self.envType)
+                clusterCenterFlower = Flower(center, self.xLimit/2, 0, self.seasonLength, t='random', environment=self.envType)
                 self.flowers.append(clusterCenterFlower)
-                for _ in range(flowersPerCluster):
-                    self.AddFlower(clusterCenterFlower.location, 35, clusterCenterFlower.type, 0)        
-        
+
+                
+                for _ in range(clusterSizes[i]-1):
+                    self.AddFlower(clusterCenterFlower.location, 50, clusterCenterFlower.type, 0)        
+
+
         elif self.envType == 'agriculture':
             # Flower distribution
             types = [1, 2, 3, 4, 5]
@@ -118,7 +136,7 @@ class Environment:
         self.flowers = []
 
         for individual in self.newGeneration:
-            self.AddFlower(individual[0], individual[1], individual[2], time)
+            self.AddFlower(individual[0], self.radius, individual[2], time)
 
         for nest in self.newNests:
             self.AddBeeNest(nest[0], nest[1])
@@ -166,7 +184,7 @@ class Environment:
             if status == 1: # 1 = reproduce
                 nFlowers = np.random.randint(1,flower.max_siblings) # how many "siblings"
                 for _ in range(nFlowers): 
-                    self.newGeneration.append([center, 70, flower.type]) #center, radius, type
+                    self.newGeneration.append([center, 40, flower.type]) #center, radius, type
             elif status == 2: # 2 = dead
                 del self.flowers[i]
 
@@ -185,8 +203,6 @@ class Flower:
         self.y = center[1] + radius * np.random.uniform(-1, 1)
         self.location = [self.x, self.y]
         self.reproduce = False
-        
-        self.max_siblings = 3  # max "siblings" among flowers
 
         # Type of flower
         types = [1, 2, 3, 4, 5] # [Lavender, Bee balm, Sunflower, Coneflower, Blueberry]      
@@ -215,43 +231,43 @@ class Flower:
 
         # Characteristics of flowers
         life = seasonLength
-        pollenUnit = 5
-        pollenRegenerationUnit = 0.1
+        pollenUnit = 1 #Assmue 1 unit 0.5 mm3
+        pollenRegenerationUnit = 0.01
 
         if self.type == 1: # Lavender
             self.lifespan = life
-            self.flowersPerStem = np.random.randint(10, 15)
-            self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = 2 * pollenRegenerationUnit * self.flowersPerStem
-            #self.active_months = [1,1,1,1,1,1,0,0,0] # mars, april, may, june, july, aug, sept, oct, nov
+            self.flowersPerStem = np.random.randint(5, 10)
+            self.pollen = pollenUnit * self.flowersPerStem * 10 #Max 100 pollen
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem * pollenUnit #Antar 10 stems per flower
+            self.max_siblings = 5
 
         elif self.type == 2: # Bee balm
             self.lifespan = life
             self.flowersPerStem = np.random.randint(1, 5)
-            self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
-            #self.active_months = [0,0,0,0,1,1,1,0,0] 
+            self.pollen = pollenUnit * self.flowersPerStem * 10  #Max 50 pollen
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem * pollenUnit
+            self.max_siblings = 5
 
         elif self.type == 3: # Sunflower #NOTE: agriculture exclusive?
             self.lifespan = life//2
             self.flowersPerStem = 1
-            self.pollen = (5) * pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = (5) * pollenRegenerationUnit * self.flowersPerStem
-            #self.active_months = [0,0,0,1,1,1,1,0,0] 
+            self.pollen = 20 * pollenUnit * self.flowersPerStem  #Max 20 pollen
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem * pollenUnit
+            self.max_siblings = 6
 
         elif self.type == 4: # Coneflowers
             self.lifespan = life//2
             self.flowersPerStem = np.random.randint(1, 5)
-            self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
-            #self.active_months = [0,0,1,1,1,1,1,1,0] 
-
+            self.pollen = pollenUnit * self.flowersPerStem * 10  #Max 50 pollen
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem * pollenUnit
+            self.max_siblings = 5
+        
         elif self.type == 5: # Blueberry
             self.lifespan = life //2
-            self.flowersPerStem = np.random.randint(5, 10)
-            self.pollen = pollenUnit * self.flowersPerStem
-            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem
-            #self.active_months = [0,1,1,1,0,0,0,0,0] 
+            self.flowersPerStem = np.random.randint(1, 5)
+            self.pollen = pollenUnit * self.flowersPerStem * 5 #Max 25 pollen
+            self.pollenRegeneration = pollenRegenerationUnit * self.flowersPerStem * pollenUnit
+            self.max_siblings = 6
         
         self.color = typeColors[self.type - 1]
 
