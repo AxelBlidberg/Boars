@@ -45,6 +45,36 @@ def PlotFlowerAmount(ax1, ax2, fData):
     ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
     return x
 
+def PlotPollenAmount(ax1, ax2, fData):
+    trends = [[], [], [], [], []]
+    labels = ['Lavender', 'Bee balm', 'Sunflower', 'Coneflower', 'Blueberry']
+    colors = ['purple', 'red', 'orange', 'pink', 'blue']
+    amount = []
+    
+    for i, season in enumerate(fData):
+        for j, quarter in enumerate(season):
+            values = []
+            for k, label in enumerate(labels):
+                values.append(quarter[label])
+                trends[k].append(quarter[label])
+            amount.append(np.sum(values))
+    x = np.arange(0, len(fData)/0.25, step=0.25)
+    x = np.linspace(0, len(fData), num=(4*len(fData)+1)) # remove +1?
+    x = x[:-1]
+
+    for i in range(len(trends)):
+        ax2.plot(x, trends[i], color=colors[i])
+    ax1.plot(x, amount, color='gray')
+
+    ax1.set_title('Total pollen amount')
+    ax1.set_xlabel('Seasons')
+    ax1.set_ylabel('n Flowers')
+    ax2.set_title('Pollen distribution')
+    ax2.set_xlabel('Seasons')
+    ax2.set_ylabel('n Flowers')
+    ax2.legend(labels=labels, loc='center left', bbox_to_anchor=(1, 0.75))
+    return x
+
 def PlotBeePopulation(ax1, ax2, bData, x):
     labels = ['Small Bee', 'Intermediate Bee', 'Bee population']
     colors = ['blue', 'red', 'gray']
@@ -120,15 +150,16 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
     ax3.set_xlabel('Generation')
     ax3.set_ylabel('lifespanData')
 
-def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio):
+def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio,pollenData):
     #SaveData(flowerData, 'fData.csv')
     #SaveData(beeDistribution, 'bData.csv')
     fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
     x = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
     PlotBeePopulation(axs[0, 1], axs[1,1], beeDistribution, x)  # Pass individual subplot
-    PlotFlowerBeeDensity(axs[2, 1], fbRatio)  # Pass individual subplot
+    #PlotFlowerBeeDensity(axs[2, 1], fbRatio)  # Pass individual subplot
+    PlotPollenAmount(axs[2,0], axs[2,1], pollenData)
     SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs[0, 2], axs[1, 2], axs[2, 2])
     # axs[2,0] sparad till clustering coefficient, axels plot
-    axs[2,0].set_title('Clustering coefficient')
+    #axs[2,0].set_title('Clustering coefficient')
 
     plt.show()

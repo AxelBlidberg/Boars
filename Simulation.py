@@ -52,12 +52,14 @@ class BeeSim(tk.Tk):
         self.currentBData = []
         self.beeData = []
         self.currentLData = []
+        self.currentPData = []
         self.lifespanData = []
         self.eggsData = []
         self.visitedFlowers = []
         self.bee_types =[]
         self.beeDataHistory = []
         self.fbRatio = [num_flowers/num_bees]
+        self.pollenData = []
 
         self.swarm = Swarm(self.seasonLength)
         self.swarm.InitializeBees(num_bees, self.environment.nests,self.beeDist)
@@ -106,14 +108,9 @@ class BeeSim(tk.Tk):
         #print(f'Data save at timestep: {self.timestep}')
         self.currentFData.append(self.environment.FlowerDistribution())
         self.currentBData.append(self.swarm.BeeDistribution())
+        self.currentPData.append(self.environment.AmountOfPollen())
 
         if self.timestep % self.seasonLength == 0 and self.timestep>0: # Only by season change
-            
-            self.lifespanData = self.swarm.RIP_ages
-            self.eggsData = self.swarm.RIP_number_of_eggs
-            self.visitedFlowers = self.swarm.RIP_visitedflowers
-            self.bee_types = self.swarm.RIP_types
-            self.beeDataHistory = self.swarm.RIP_Generation
 
             if (len(self.environment.flowers) != 0) and (len(self.swarm.bees) != 0):
                 self.fbRatio.append(len(self.environment.flowers)/len(self.swarm.bees))
@@ -159,11 +156,7 @@ class BeeSim(tk.Tk):
                 self.environment.newNests = self.swarm.newNests
                 self.environment.CreateNewGeneration(self.timestep)
                 self.swarm.CreateNewGeneration(self.timestep, self.environment.nests)
-                self.lifespanData = self.swarm.RIP_ages
-                self.eggsData = self.swarm.RIP_number_of_eggs
-                self.visitedFlowers = self.swarm.RIP_visitedflowers
-                self.bee_types = self.swarm.RIP_visitedflowers
-                self.beeDataHistory = self.swarm.RIP_Generation
+
 
             #for quarter in quarters:
             for quarter in tqdm(quarters, desc="Season Progress", unit="quarter"):
@@ -173,31 +166,38 @@ class BeeSim(tk.Tk):
                 #SeasonBar.update((self.timestep-self.season*self.seasonLength))
                 #SimulationBar.update(self.timestep)
                 # Stop condition
-                if (len(self.swarm.bees) > (10*self.num_bees)) or (len(self.environment.flowers) > (10*self.num_flowers)):
-                    stopSimulation = True
-                    if (len(self.swarm.bees) > (2*self.num_bees)):
-                        print(f'\nSimulation stopped because of exploding bee population: {len(self.swarm.bees)}')
-                    else:
-                        print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
-                    break
+                #if (len(self.swarm.bees) > (10*self.num_bees)) or (len(self.environment.flowers) > (10*self.num_flowers)):
+                #    stopSimulation = True
+                #    if (len(self.swarm.bees) > (2*self.num_bees)):
+                #        print(f'\nSimulation stopped because of exploding bee population: {len(self.swarm.bees)}')
+                #    else:
+                #        print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
+                #    break
             #SeasonBar.close()
             #SimulationBar.close()
             self.season += 1
 
-            if stopSimulation:
-                print('Simulation stopped.')
-                break
-            print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
-
-            # Save plotting data
+                        # Save plotting data
             self.flowerData.append(np.copy(self.currentFData))
             self.beeData.append(np.copy(self.currentBData))
+            self.pollenData.append(np.copy(self.currentPData))
             self.currentFData = []
             self.currentBData = []
+            self.currentPData = []
 
+            #if stopSimulation:
+            #    print('Simulation stopped.')
+            #    break
+            print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
+
+        self.lifespanData = self.swarm.RIP_ages
+        self.eggsData = self.swarm.RIP_number_of_eggs
+        self.visitedFlowers = self.swarm.RIP_visitedflowers
+        self.bee_types = self.swarm.RIP_types
+        self.beeDataHistory = self.swarm.RIP_Generation
         # Plot data
         #SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
         
-        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio
+        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio,self.pollenData
         

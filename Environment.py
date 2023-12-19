@@ -157,6 +157,21 @@ class Environment:
             content.append(['Nest', 'Nest', nest.x, nest.y, nest])
         
         return content
+    
+    def AmountOfPollen(self) -> dict:
+        distribution = {'Lavender': 0, 'Bee balm': 0, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}
+        for flower in self.flowers:
+            if flower.type == 1:
+                distribution['Lavender'] += flower.pollen
+            elif flower.type == 2:
+                distribution['Bee balm'] += flower.pollen
+            elif flower.type == 3:
+                distribution['Sunflower'] += flower.pollen
+            elif flower.type == 4:
+                distribution['Coneflower'] += flower.pollen
+            elif flower.type == 5:
+                distribution['Blueberry'] += flower.pollen
+        return distribution
 
     def FlowerDistribution(self) -> dict:
         distribution = {'Lavender': 0, 'Bee balm': 0, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}

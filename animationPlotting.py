@@ -35,10 +35,10 @@ def update(frame):
 
 
 size = 1000
-seasonLength = 10000
-numStartingFlowers = 2000
-numStartingBees = 10
-NumSeason = 10
+seasonLength = 5000
+numStartingFlowers = 4000
+numStartingBees = 20
+NumSeason = 5
 
 
 beesim = BeeSim(size, numStartingBees, numStartingFlowers, 'countryside', NumSeason, seasonLength)

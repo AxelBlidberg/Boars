@@ -24,6 +24,7 @@ class Swarm:
         #self.weekLength = self.seasonLength //13    # = n.o. weeks in 3 months
         self.dayLength = self.seasonLength//90   
         self.activeBees = []                        #offspring pollen before = 400, 500, 800        pollen_capacity before = 300, 500   
+        #'offspringPollen': 200 * 3.5 previously
         
         self.Beetypes = { 'Small Bee': {'speed': 3, 'pollen_capacity': 175,'vision_angle': 280 , 'vision_range':5, 'angular_noise': 0.45, 
                                         'color': "#ffd662", 'maxFlight': 300, 'offspringPollen' : 175 * 4, 'when_active' : [1,1,1], 'mean_age':int(self.dayLength*7*6),
