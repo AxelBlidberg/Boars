@@ -85,8 +85,8 @@ def PlotBeePopulation(ax1, ax2, bData, x):
         for j, quarter in enumerate(season):
             values = []
             for k in range(len(labels)-1):
-                values.append(quarter[k])
-                trends[k].append(quarter[k])
+                values.append(quarter[labels[k]])
+                trends[k].append(quarter[labels[k]])
             trends[2].append(np.sum(values))
             amount.append(np.sum(values))
     
@@ -150,16 +150,13 @@ def SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers,
     ax3.set_xlabel('Generation')
     ax3.set_ylabel('lifespanData')
 
-def MergePlots(flowerData, beeDistribution, lifespanData, eggsData, visitedFlowers, bee_types,beeDistributionHistory, fbRatio,pollenData):
+def MergePlots(flowerData, beeDistribution,pollenData):
     #SaveData(flowerData, 'fData.csv')
     #SaveData(beeDistribution, 'bData.csv')
-    fig, axs = plt.subplots(3, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
+    
+    fig, axs = plt.subplots(2, 3, gridspec_kw={'hspace': 0.5, 'wspace': 0.75})
     x = PlotFlowerAmount(axs[0, 0], axs[1,0], flowerData)  # Pass individual subplot
     PlotBeePopulation(axs[0, 1], axs[1,1], beeDistribution, x)  # Pass individual subplot
-    #PlotFlowerBeeDensity(axs[2, 1], fbRatio)  # Pass individual subplot
-    PlotPollenAmount(axs[2,0], axs[2,1], pollenData)
-    SeparateTypes(beeDistributionHistory, lifespanData, eggsData,visitedFlowers, bee_types, axs[0, 2], axs[1, 2], axs[2, 2])
-    # axs[2,0] sparad till clustering coefficient, axels plot
-    #axs[2,0].set_title('Clustering coefficient')
+    PlotPollenAmount(axs[0,2], axs[1,2], pollenData)
 
     plt.show()

@@ -8,14 +8,17 @@ class Swarm:
     '''
     def __init__(self, seasonLength) -> None:
 
-        self.bees = []                  
+        self.bees = []
 
-        self.RIP_ages = []              # ages of dead bees
-        self.RIP_number_of_eggs = []    # eggs of dead bees
-        self.RIP_types = []             # type of the dead bees
-        self.RIP_visitedflowers = []
-        self.RIP_Generation= []
-        self.BeeGeneration = 0
+        #Ändra Bee typ till en dictionary
+        # Kolla kort om du kan spara som Keys säsongerna                
+
+        #self.RIP_ages = []              # ages of dead bees
+        #self.RIP_number_of_eggs = []    # eggs of dead bees
+        #self.RIP_types = []             # type of the dead bees
+        #self.RIP_visitedflowers = []
+        #self.RIP_Generation= []
+        #self.BeeGeneration = 0
 
         self.newNests = []
         self.newTraits  = []
@@ -32,7 +35,6 @@ class Swarm:
                     'Intermediate Bee': {'speed': 4, 'pollen_capacity': 200,'vision_angle': 280,'vision_range':10, 'angular_noise': 0.45,
                                         'color': "#FF6600",'maxFlight': 500 , 'offspringPollen': 200 * 3.5, 'when_active' : [1,0,0],  'mean_age': self.dayLength*25 ,
                                         'type': 1, 'age_variation': int(self.dayLength*5), 'eat_pase':5000, 'pollen_taken_perStem':10}} # eat_pase = how often bee eats
-        #self.total_egg = [0,0]  # For data collection
     
     def InitializeBees(self, n, nests, beeDist,birth=0) -> None:
 
@@ -63,17 +65,18 @@ class Swarm:
         
         self.ActivateBees(time)
         self.newNests = []
-        self.BeeGeneration += 1
+        #self.BeeGeneration += 1
     
 
     def BeeDistribution(self) -> list:
-        self.distribution = [0,0] 
+        #self.distribution = [0,0] 
+        self.distribution = {"Small Bee": 0, "Intermediate Bee": 0}
         
         for bee in self.activeBees:
             if bee.type == 0:
-                self.distribution[0] += 1
+                self.distribution["Small Bee"] = self.distribution["Small Bee"] + 1
             elif bee.type == 1:
-                self.distribution[1] += 1
+                self.distribution["Intermediate Bee"] = self.distribution["Intermediate Bee"] + 1
         
         return self.distribution
     
@@ -111,17 +114,16 @@ class Swarm:
                     nest = bee.Reproduction()
                     self.newNests.append(nest)
                     self.newTraits.append(bee.Beetraits)
-                    #self.total_egg[bee.Beetraits["type"]] += 1
 
             elif sum(bee.pollen.values()) < 1:  #Kill bee if starving
                 #print('RIP: bee died of starvation.') #Age:',bee_age)
                 #print(f'RIP: {bee.type} has died of starvation.')
 
-                self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
-                self.RIP_number_of_eggs.append(bee.number_of_eggs)
-                self.RIP_types.append(bee.type)
-                self.RIP_visitedflowers.append(bee.visitedflowers)
-                self.RIP_Generation.append(self.BeeGeneration)
+                #self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
+                #self.RIP_number_of_eggs.append(bee.number_of_eggs)
+                #self.RIP_types.append(bee.type)
+                #self.RIP_visitedflowers.append(bee.visitedflowers)
+                #self.RIP_Generation.append(self.BeeGeneration)
                 
                 self.bees.pop(i)
                 self.activeBees.pop(i)
@@ -132,11 +134,11 @@ class Swarm:
                 #print(f'RIP: {bee.type} has died of age: {(time-bee.birth)//self.dayLength} days. Pollen levels: {bee.pollen}')
                 #print('RIP: bee died of age:',(time-bee.birth)//self.dayLength,'days. Pollen levels:',bee.pollen)
 
-                self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
-                self.RIP_number_of_eggs.append(bee.number_of_eggs)
-                self.RIP_types.append(bee.type)
-                self.RIP_visitedflowers.append(bee.visitedflowers)
-                self.RIP_Generation.append(self.BeeGeneration)
+                #self.RIP_ages.append((time-bee.birth)//self.dayLength) # save RIP data
+                #self.RIP_number_of_eggs.append(bee.number_of_eggs)
+                #self.RIP_types.append(bee.type)
+                #self.RIP_visitedflowers.append(bee.visitedflowers)
+                #self.RIP_Generation.append(self.BeeGeneration)
 
                 self.bees.pop(i)
                 self.activeBees.pop(i)

@@ -178,9 +178,9 @@ class BeeSim(): #tk.Tk):
             self.season += 1
 
                         # Save plotting data
-            self.flowerData.append(np.copy(self.currentFData))
-            self.beeData.append(np.copy(self.currentBData))
-            self.pollenData.append(np.copy(self.currentPData))
+            self.flowerData.append((self.currentFData)) #Tog bort np.copy()
+            self.beeData.append((self.currentBData))    #Tog bort np.copy()
+            self.pollenData.append((self.currentPData)) #Tog bort np.copy()
             self.currentFData = []
             self.currentBData = []
             self.currentPData = []
@@ -190,14 +190,14 @@ class BeeSim(): #tk.Tk):
                 break
             print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
 
-        self.lifespanData = self.swarm.RIP_ages
-        self.eggsData = self.swarm.RIP_number_of_eggs
-        self.visitedFlowers = self.swarm.RIP_visitedflowers
-        self.bee_types = self.swarm.RIP_types
-        self.beeDataHistory = self.swarm.RIP_Generation
+        #self.lifespanData = self.swarm.RIP_ages
+        #self.eggsData = self.swarm.RIP_number_of_eggs
+        #self.visitedFlowers = self.swarm.RIP_visitedflowers
+        #self.bee_types = self.swarm.RIP_types
+        #self.beeDataHistory = self.swarm.RIP_Generation
         # Plot data
         #SimulationBar.close()
         print(f'Simulation time: {(time.time() - startTime)//60:2.0f} minutes and {(time.time()-startTime)%60:2.0f} seconds.')
         
-        return self.flowerData, self.beeData, self.lifespanData, self.eggsData, self.visitedFlowers, self.bee_types, self.beeDataHistory, self.fbRatio,self.pollenData
+        return self.flowerData, self.beeData,self.pollenData 
         

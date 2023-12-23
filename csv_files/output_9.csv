@@ -1,0 +1,94 @@
+flowerData,beeData,lifespanData,eggsData,visitedFlowers,bee_types,beeDataHistory,fbRatio
+"[{'Lavender': 504, 'Bee balm': 483, 'Sunflower': 757, 'Coneflower': 1279, 'Blueberry': 977}
+ {'Lavender': 504, 'Bee balm': 483, 'Sunflower': 757, 'Coneflower': 1279, 'Blueberry': 977}
+ {'Lavender': 504, 'Bee balm': 483, 'Sunflower': 757, 'Coneflower': 1279, 'Blueberry': 977}
+ {'Lavender': 504, 'Bee balm': 483, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}]","[[10 10]
+ [10  5]
+ [ 7  0]
+ [ 0  0]]",16.0,0,123,1,0,200.0
+"[{'Lavender': 851, 'Bee balm': 730, 'Sunflower': 1488, 'Coneflower': 1890, 'Blueberry': 1769}
+ {'Lavender': 851, 'Bee balm': 730, 'Sunflower': 1488, 'Coneflower': 1890, 'Blueberry': 1769}
+ {'Lavender': 851, 'Bee balm': 730, 'Sunflower': 1488, 'Coneflower': 1890, 'Blueberry': 1769}
+ {'Lavender': 851, 'Bee balm': 730, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}]","[[8 5]
+ [7 3]
+ [2 0]
+ [0 0]]",19.0,0,145,1,0,517.5384615384615
+"[{'Lavender': 553, 'Bee balm': 515, 'Sunflower': 1071, 'Coneflower': 990, 'Blueberry': 1269}
+ {'Lavender': 553, 'Bee balm': 515, 'Sunflower': 1071, 'Coneflower': 990, 'Blueberry': 1269}
+ {'Lavender': 553, 'Bee balm': 515, 'Sunflower': 1071, 'Coneflower': 990, 'Blueberry': 1269}
+ {'Lavender': 553, 'Bee balm': 515, 'Sunflower': 0, 'Coneflower': 0, 'Blueberry': 0}]","[[ 8 10]
+ [ 6  4]
+ [ 3  0]
+ [ 0  0]]",20.0,0,129,1,0,244.33333333333334
+"[{'Lavender': 640, 'Bee balm': 576, 'Sunflower': 1755, 'Coneflower': 1196, 'Blueberry': 1726}
+ {'Lavender': 640, 'Bee balm': 576, 'Sunflower': 1755, 'Coneflower': 1196, 'Blueberry': 1726}
+ {'Lavender': 640, 'Bee balm': 576, 'Sunflower': 1755, 'Coneflower': 1196, 'Blueberry': 1726}
+ {'Lavender': 640, 'Bee balm': 576, 'Sunflower': 846, 'Coneflower': 565, 'Blueberry': 832}]","[[1 5]
+ [1 5]
+ [0 0]
+ [0 0]]",21.0,0,145,1,0,982.1666666666666
+"[{'Lavender': 234, 'Bee balm': 185, 'Sunflower': 840, 'Coneflower': 345, 'Blueberry': 685}
+ {'Lavender': 234, 'Bee balm': 185, 'Sunflower': 840, 'Coneflower': 345, 'Blueberry': 685}
+ {'Lavender': 234, 'Bee balm': 185, 'Sunflower': 840, 'Coneflower': 345, 'Blueberry': 685}
+ {'Lavender': 234, 'Bee balm': 185, 'Sunflower': 401, 'Coneflower': 171, 'Blueberry': 327}]","[[1 5]
+ [1 2]
+ [0 0]
+ [0 0]]",22.0,0,189,1,0,381.5
+,,24.0,1,178,1,0,
+,,24.0,1,208,1,0,
+,,25.0,1,190,1,0,
+,,26.0,1,165,1,0,
+,,28.0,1,270,1,0,
+,,30.0,0,118,0,0,
+,,31.0,0,112,0,0,
+,,35.0,0,151,0,0,
+,,49.0,1,167,0,0,
+,,56.0,1,162,0,0,
+,,57.0,1,167,0,0,
+,,59.0,1,175,0,0,
+,,59.0,1,184,0,0,
+,,59.0,1,191,0,0,
+,,64.0,2,197,0,0,
+,,17.0,0,103,0,1,
+,,18.0,1,167,1,1,
+,,20.0,1,188,1,1,
+,,23.0,1,173,1,1,
+,,26.0,1,187,1,1,
+,,28.0,1,126,0,1,
+,,35.0,1,158,0,1,
+,,39.0,2,156,0,1,
+,,44.0,2,168,0,1,
+,,44.0,2,172,0,1,
+,,60.0,2,168,0,1,
+,,60.0,1,158,0,1,
+,,90.0,1,158,0,1,
+,,3.0,0,17,0,2,
+,,16.0,0,111,1,2,
+,,18.0,0,108,1,2,
+,,19.0,0,78,0,2,
+,,19.0,0,154,1,2,
+,,20.0,0,159,1,2,
+,,21.0,0,157,1,2,
+,,22.0,0,171,1,2,
+,,24.0,1,202,1,2,
+,,24.0,0,176,1,2,
+,,24.0,1,195,1,2,
+,,28.0,1,245,1,2,
+,,32.0,0,147,0,2,
+,,35.0,0,169,0,2,
+,,36.0,0,165,0,2,
+,,54.0,1,158,0,2,
+,,54.0,1,240,0,2,
+,,57.0,1,169,0,2,
+,,24.0,1,196,1,3,
+,,26.0,1,194,1,3,
+,,27.0,1,181,1,3,
+,,27.0,1,198,1,3,
+,,28.0,1,203,1,3,
+,,43.0,1,157,0,3,
+,,9.0,0,57,1,4,
+,,19.0,0,117,1,4,
+,,21.0,0,80,1,4,
+,,22.0,0,57,0,4,
+,,23.0,0,101,1,4,
+,,24.0,0,115,1,4,
