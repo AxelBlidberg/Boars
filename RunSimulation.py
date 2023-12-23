@@ -1,5 +1,6 @@
 from Simulation import *
-from Simulation2 import *
+#from Simulation2 import *
+from StochasticEvaluation import *
 from Result import *
 import pandas as pd
 from itertools import zip_longest
@@ -17,13 +18,13 @@ import os
 
 #size, numStartingBees, numStartingFlowers, seasonLength,
 
-seasonLength = 10 #5000
+seasonLength = 5000 
 numStartingFlowers = 4000
 numStartingBees = 20
 nSeasons = 5
 
 # Set the number of simulations
-num_simulations = 2
+num_simulations = 10
 
 dataTotalFlower = []
 dataTotalPollen = []
@@ -37,11 +38,16 @@ directory_path = 'data_json/'
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 
+blueprint = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', beeDist = 'dummy', NumSeason=nSeasons, seasonLength=seasonLength)
+
+SaveSimulation('simulations.pkl', blueprint)
+
 # Run simulations in a loop
 for i in range(0,num_simulations):
     print("Simulation", i , "Began")
-    sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', beeDist = 'dummy', visualize=True, NumSeason=nSeasons, seasonLength=seasonLength)
-    
+    #sim = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', beeDist = 'dummy', NumSeason=nSeasons, seasonLength=seasonLength)
+    sim = LoadSimulation('simulations.pkl', 1)
+
     flowerData, beeData,pollenData = sim.RunSimulation()
 
     data_dict = {}
@@ -60,6 +66,6 @@ for i in range(0,num_simulations):
         json.dump(data_dict, json_file, indent=2)
     
 
-MergePlots(flowerData, beeData,pollenData)
+#MergePlots(flowerData, beeData,pollenData)
 
 
