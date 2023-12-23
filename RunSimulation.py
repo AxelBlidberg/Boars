@@ -1,5 +1,5 @@
 from Simulation import *
-#from Simulation2 import *
+from Simulation2 import *
 from Result import *
 import pandas as pd
 from itertools import zip_longest

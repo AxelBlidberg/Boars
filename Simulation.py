@@ -8,9 +8,9 @@ from Result import *
 import matplotlib.pyplot as plt
 import time
 
-class BeeSim(tk.Tk):
+class BeeSim(): #tk.Tk):
     def __init__(self, size=1000, num_bees=4, num_flowers=200, envType='countryside', beeDist = 'random', visualize=False, NumSeason=10, seasonLength=1000):
-        super().__init__()
+        #super().__init__()
         # Define grid and start simulation
         self.size = size
         self.num_flowers = num_flowers
@@ -166,13 +166,13 @@ class BeeSim(tk.Tk):
                 #SeasonBar.update((self.timestep-self.season*self.seasonLength))
                 #SimulationBar.update(self.timestep)
                 # Stop condition
-                #if (len(self.swarm.bees) > (10*self.num_bees)) or (len(self.environment.flowers) > (10*self.num_flowers)):
-                #    stopSimulation = True
-                #    if (len(self.swarm.bees) > (2*self.num_bees)):
-                #        print(f'\nSimulation stopped because of exploding bee population: {len(self.swarm.bees)}')
-                #    else:
-                #        print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
-                #    break
+                if (len(self.swarm.bees) > (5*self.num_bees)) or (len(self.environment.flowers) > (5*self.num_flowers)):
+                    stopSimulation = True
+                    if (len(self.swarm.bees) > (2*self.num_bees)):
+                        print(f'\nSimulation stopped because of exploding bee population: {len(self.swarm.bees)}')
+                    else:
+                        print(f'\nSimulation stopped because of exploding flower population: {len(self.environment.flowers)}')
+                    break
             #SeasonBar.close()
             #SimulationBar.close()
             self.season += 1
@@ -185,9 +185,9 @@ class BeeSim(tk.Tk):
             self.currentBData = []
             self.currentPData = []
 
-            #if stopSimulation:
-            #    print('Simulation stopped.')
-            #    break
+            if stopSimulation:
+                print('Simulation stopped.')
+                break
             print(f'Time to simulate season {self.season}: {(time.time()-seasonStart)//60:2.0f} minutes and {(time.time()-seasonStart)%60:2.0f} seconds.\n')
 
         #self.lifespanData = self.swarm.RIP_ages
