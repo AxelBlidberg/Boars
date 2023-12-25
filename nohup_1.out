@@ -130,3 +130,317 @@ Simulation loaded from simulations.pkl
 
 Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
 Season Progress:  25%|██▌       | 1/4 [1:02:37<3:07:52, 3757.38s/quarter][A
+Season Progress:  50%|█████     | 2/4 [1:08:40<58:40, 1760.50s/quarter]  [A
+Season Progress:  75%|███████▌  | 3/4 [1:08:48<16:00, 960.64s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [1:08:49<00:00, 581.55s/quarter][ASeason Progress: 100%|██████████| 4/4 [1:08:49<00:00, 1032.32s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [1:40:12<00:00, 1812.16s/season]Progress simulation:: 100%|██████████| 5/5 [1:40:12<00:00, 1202.54s/season]
+Time to simulate season 5: 68 minutes and 49 seconds.
+
+Simulation time: 100 minutes and 13 seconds.
+Simulation 3 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:06<12:19, 246.37s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:11<05:50, 175.09s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:21<01:39, 99.47s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:22<00:00, 60.87s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:22<00:00, 95.68s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:22<25:30, 382.74s/season]Time to simulate season 1:  6 minutes and 23 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:20<13:00, 260.16s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:29<04:55, 147.73s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:32<01:21, 81.77s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:32<00:00, 83.12s/quarter]
+Progress simulation::  40%|████      | 2/5 [11:55<17:39, 353.21s/season]Time to simulate season 2:  5 minutes and 33 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [05:06<15:19, 306.44s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:38<06:01, 180.54s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:43<01:40, 100.09s/quarter][A
+Season Progress: 100%|██████████| 4/4 [06:43<00:00, 60.69s/quarter] [ASeason Progress: 100%|██████████| 4/4 [06:43<00:00, 100.87s/quarter]
+Progress simulation::  60%|██████    | 3/5 [18:38<12:32, 376.18s/season]Time to simulate season 3:  6 minutes and 44 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:28<13:26, 268.93s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:36<05:00, 150.29s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:41<01:23, 84.00s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:41<00:00, 85.32s/quarter]
+Progress simulation::  80%|████████  | 4/5 [24:20<06:02, 362.42s/season]Time to simulate season 4:  5 minutes and 41 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:21<13:04, 261.65s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:51<05:21, 160.69s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:58<01:30, 90.51s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [05:59<00:00, 55.14s/quarter][ASeason Progress: 100%|██████████| 4/4 [05:59<00:00, 89.90s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [30:19<00:00, 361.41s/season]Progress simulation:: 100%|██████████| 5/5 [30:19<00:00, 363.95s/season]
+Time to simulate season 5:  5 minutes and 60 seconds.
+
+Simulation time: 30 minutes and 20 seconds.
+Simulation 4 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:09<12:28, 249.35s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:11<05:49, 174.69s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:21<01:39, 99.39s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:23<00:00, 60.89s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:23<00:00, 95.86s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:23<25:33, 383.42s/season]Time to simulate season 1:  6 minutes and 23 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:27<10:23, 207.71s/quarter][A
+Season Progress:  50%|█████     | 2/4 [04:28<04:02, 121.19s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [04:34<01:08, 68.45s/quarter] [ASeason Progress: 100%|██████████| 4/4 [04:34<00:00, 68.51s/quarter]
+Progress simulation::  40%|████      | 2/5 [10:57<15:57, 319.10s/season]Time to simulate season 2:  4 minutes and 34 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:50<11:32, 230.72s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:24<05:00, 150.32s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:28<01:23, 83.16s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [05:28<00:00, 50.42s/quarter][ASeason Progress: 100%|██████████| 4/4 [05:28<00:00, 82.06s/quarter]
+Progress simulation::  60%|██████    | 3/5 [16:25<10:46, 323.28s/season]Time to simulate season 3:  5 minutes and 28 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [02:38<07:54, 158.05s/quarter][A
+Season Progress:  50%|█████     | 2/4 [03:26<03:07, 93.82s/quarter] [A
+Season Progress:  75%|███████▌  | 3/4 [03:31<00:52, 52.97s/quarter][A
+Season Progress: 100%|██████████| 4/4 [03:31<00:00, 32.17s/quarter][ASeason Progress: 100%|██████████| 4/4 [03:31<00:00, 52.89s/quarter]
+Progress simulation::  80%|████████  | 4/5 [19:57<04:39, 279.20s/season]Time to simulate season 4:  3 minutes and 32 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [01:38<04:54, 98.05s/quarter][A
+Season Progress:  50%|█████     | 2/4 [02:23<02:13, 66.85s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [02:25<00:37, 37.36s/quarter][ASeason Progress: 100%|██████████| 4/4 [02:25<00:00, 36.33s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [22:22<00:00, 230.93s/season]Progress simulation:: 100%|██████████| 5/5 [22:22<00:00, 268.54s/season]
+Time to simulate season 5:  2 minutes and 25 seconds.
+
+Simulation time: 22 minutes and 23 seconds.
+Simulation 5 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:02<12:07, 242.35s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:01<05:39, 169.59s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:10<01:36, 96.28s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:11<00:00, 58.93s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:11<00:00, 92.93s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:11<24:46, 371.72s/season]Time to simulate season 1:  6 minutes and 12 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:36<13:48, 276.03s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:54<05:19, 159.61s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:02<01:30, 90.39s/quarter] [ASeason Progress: 100%|██████████| 4/4 [06:02<00:00, 90.54s/quarter]
+Progress simulation::  40%|████      | 2/5 [12:13<18:18, 366.11s/season]Time to simulate season 2:  6 minutes and  2 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:50<14:30, 290.30s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:48<06:17, 188.82s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:51<01:43, 103.98s/quarter][A
+Season Progress: 100%|██████████| 4/4 [06:51<00:00, 63.07s/quarter] [ASeason Progress: 100%|██████████| 4/4 [06:51<00:00, 102.86s/quarter]
+Progress simulation::  60%|██████    | 3/5 [19:05<12:53, 386.83s/season]Time to simulate season 3:  6 minutes and 51 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:19<12:57, 259.30s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:29<04:56, 148.20s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:31<01:21, 81.46s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:31<00:00, 82.94s/quarter]
+Progress simulation::  80%|████████  | 4/5 [24:37<06:05, 365.10s/season]Time to simulate season 4:  5 minutes and 32 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [05:53<17:40, 353.48s/quarter][A
+Season Progress:  50%|█████     | 2/4 [07:39<06:55, 207.72s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [07:40<01:53, 113.48s/quarter][ASeason Progress: 100%|██████████| 4/4 [07:40<00:00, 115.12s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [32:17<00:00, 399.51s/season]Progress simulation:: 100%|██████████| 5/5 [32:17<00:00, 387.54s/season]
+Time to simulate season 5:  7 minutes and 41 seconds.
+
+Simulation time: 32 minutes and 18 seconds.
+Simulation 6 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:01<12:04, 241.44s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:03<05:41, 170.97s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:12<01:37, 97.22s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:14<00:00, 59.62s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:14<00:00, 93.63s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:14<24:58, 374.52s/season]Time to simulate season 1:  6 minutes and 15 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:23<13:09, 263.12s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:07<05:39, 169.72s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:14<01:35, 95.57s/quarter] [ASeason Progress: 100%|██████████| 4/4 [06:14<00:00, 93.70s/quarter]
+Progress simulation::  40%|████      | 2/5 [12:29<18:44, 374.70s/season]Time to simulate season 2:  6 minutes and 15 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [07:24<22:12, 444.32s/quarter][A
+Season Progress:  50%|█████     | 2/4 [11:07<10:28, 314.23s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [11:23<02:58, 178.12s/quarter][A
+Season Progress: 100%|██████████| 4/4 [11:24<00:00, 108.03s/quarter][ASeason Progress: 100%|██████████| 4/4 [11:24<00:00, 171.06s/quarter]
+Progress simulation::  60%|██████    | 3/5 [23:53<17:12, 516.05s/season]Time to simulate season 3: 11 minutes and 24 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [11:57<35:53, 717.99s/quarter][A
+Season Progress:  50%|█████     | 2/4 [15:35<14:07, 423.70s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [15:52<03:57, 237.68s/quarter][ASeason Progress: 100%|██████████| 4/4 [15:52<00:00, 238.00s/quarter]
+Progress simulation::  80%|████████  | 4/5 [39:45<11:28, 688.19s/season]Time to simulate season 4: 15 minutes and 52 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [32:39<1:37:57, 1959.27s/quarter][A
+Season Progress:  50%|█████     | 2/4 [48:14<45:13, 1356.73s/quarter]  [A
+Season Progress:  75%|███████▌  | 3/4 [49:04<12:40, 760.40s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [49:05<00:00, 460.54s/quarter][ASeason Progress: 100%|██████████| 4/4 [49:05<00:00, 736.46s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [1:28:51<00:00, 1502.33s/season]Progress simulation:: 100%|██████████| 5/5 [1:28:51<00:00, 1066.32s/season]
+Time to simulate season 5: 49 minutes and  6 seconds.
+
+Simulation time: 88 minutes and 52 seconds.
+Simulation 7 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:59<11:57, 239.32s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:58<05:37, 168.82s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:08<01:35, 95.98s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:09<00:00, 58.79s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:09<00:00, 92.47s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:09<24:39, 369.86s/season]Time to simulate season 1:  6 minutes and 10 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:07<12:21, 247.11s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:04<04:31, 135.54s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:06<01:14, 74.55s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:06<00:00, 76.63s/quarter]
+Progress simulation::  40%|████      | 2/5 [11:16<16:37, 332.62s/season]Time to simulate season 2:  5 minutes and  7 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:27<10:23, 207.97s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:23<05:06, 153.35s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:27<01:25, 85.35s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:27<00:00, 81.88s/quarter]
+Progress simulation::  60%|██████    | 3/5 [16:43<11:00, 330.32s/season]Time to simulate season 3:  5 minutes and 28 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:49<11:28, 229.40s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:12<04:47, 143.55s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:24<01:23, 83.40s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [05:25<00:00, 50.98s/quarter][ASeason Progress: 100%|██████████| 4/4 [05:25<00:00, 81.49s/quarter]
+Progress simulation::  80%|████████  | 4/5 [22:09<05:28, 328.60s/season]Time to simulate season 4:  5 minutes and 26 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [06:33<19:41, 393.71s/quarter][A
+Season Progress:  50%|█████     | 2/4 [09:05<08:23, 251.68s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [09:20<02:23, 143.51s/quarter][A
+Season Progress: 100%|██████████| 4/4 [09:21<00:00, 87.11s/quarter] [ASeason Progress: 100%|██████████| 4/4 [09:21<00:00, 140.35s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [31:31<00:00, 412.56s/season]Progress simulation:: 100%|██████████| 5/5 [31:31<00:00, 378.28s/season]
+Time to simulate season 5:  9 minutes and 21 seconds.
+
+Simulation time: 31 minutes and 31 seconds.
+Simulation 8 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:56<11:49, 236.39s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:54<05:33, 166.67s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:02<01:34, 94.55s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:05<00:00, 58.08s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:05<00:00, 91.29s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:05<24:20, 365.15s/season]Time to simulate season 1:  6 minutes and  5 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:14<12:44, 254.77s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:50<05:22, 161.34s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:02<01:33, 93.01s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:02<00:00, 56.44s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:02<00:00, 90.70s/quarter]
+Progress simulation::  40%|████      | 2/5 [12:07<18:11, 363.77s/season]Time to simulate season 2:  6 minutes and  3 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [06:42<20:06, 402.30s/quarter][A
+Season Progress:  50%|█████     | 2/4 [08:54<08:06, 243.42s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [08:58<02:14, 134.13s/quarter][ASeason Progress: 100%|██████████| 4/4 [08:58<00:00, 134.64s/quarter]
+Progress simulation::  60%|██████    | 3/5 [21:06<14:47, 443.60s/season]Time to simulate season 3:  8 minutes and 59 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:10<12:32, 250.98s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:33<05:04, 152.05s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:37<01:24, 84.52s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:37<00:00, 84.48s/quarter]
+Progress simulation::  80%|████████  | 4/5 [26:44<06:41, 401.91s/season]Time to simulate season 4:  5 minutes and 38 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [05:15<15:46, 315.45s/quarter][A
+Season Progress:  50%|█████     | 2/4 [06:57<06:19, 189.74s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [07:01<01:45, 105.20s/quarter][A
+Season Progress: 100%|██████████| 4/4 [07:02<00:00, 63.78s/quarter] [ASeason Progress: 100%|██████████| 4/4 [07:02<00:00, 105.52s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [33:46<00:00, 409.19s/season]Progress simulation:: 100%|██████████| 5/5 [33:46<00:00, 405.33s/season]
+Time to simulate season 5:  7 minutes and  2 seconds.
+
+Simulation time: 33 minutes and 47 seconds.
+Simulation 9 Began
+
+Simulation loaded from simulations.pkl
+
+Progress simulation::   0%|          | 0/5 [00:00<?, ?season/s]
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:54<11:44, 234.90s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:54<05:34, 167.27s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [06:04<01:35, 95.20s/quarter] [A
+Season Progress: 100%|██████████| 4/4 [06:05<00:00, 58.16s/quarter][ASeason Progress: 100%|██████████| 4/4 [06:05<00:00, 91.41s/quarter]
+Progress simulation::  20%|██        | 1/5 [06:05<24:22, 365.65s/season]Time to simulate season 1:  6 minutes and  6 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [04:20<13:00, 260.28s/quarter][A
+Season Progress:  50%|█████     | 2/4 [05:06<04:29, 134.61s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [05:07<01:13, 73.36s/quarter] [ASeason Progress: 100%|██████████| 4/4 [05:07<00:00, 76.85s/quarter]
+Progress simulation::  40%|████      | 2/5 [11:13<16:34, 331.41s/season]Time to simulate season 2:  5 minutes and  7 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [03:18<09:55, 198.45s/quarter][A
+Season Progress:  50%|█████     | 2/4 [04:35<04:13, 126.83s/quarter][A
+Season Progress:  75%|███████▌  | 3/4 [04:43<01:12, 72.56s/quarter] [ASeason Progress: 100%|██████████| 4/4 [04:43<00:00, 70.78s/quarter]
+Progress simulation::  60%|██████    | 3/5 [15:56<10:18, 309.37s/season]Time to simulate season 3:  4 minutes and 43 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [02:17<06:53, 137.68s/quarter][A
+Season Progress:  50%|█████     | 2/4 [02:54<02:36, 78.22s/quarter] [A
+Season Progress:  75%|███████▌  | 3/4 [02:57<00:44, 44.06s/quarter][A
+Season Progress: 100%|██████████| 4/4 [02:59<00:00, 27.23s/quarter][ASeason Progress: 100%|██████████| 4/4 [02:59<00:00, 44.78s/quarter]
+Progress simulation::  80%|████████  | 4/5 [18:55<04:17, 257.96s/season]Time to simulate season 4:  2 minutes and 59 seconds.
+
+
+Season Progress:   0%|          | 0/4 [00:00<?, ?quarter/s][A
+Season Progress:  25%|██▌       | 1/4 [01:46<05:19, 106.41s/quarter][A
+Season Progress:  50%|█████     | 2/4 [02:25<02:14, 67.04s/quarter] [A
+Season Progress:  75%|███████▌  | 3/4 [02:30<00:38, 38.42s/quarter][A
+Season Progress: 100%|██████████| 4/4 [02:32<00:00, 24.11s/quarter][ASeason Progress: 100%|██████████| 4/4 [02:32<00:00, 38.10s/quarter]
+Progress simulation:: 100%|██████████| 5/5 [21:27<00:00, 219.90s/season]Progress simulation:: 100%|██████████| 5/5 [21:27<00:00, 257.56s/season]
+Time to simulate season 5:  2 minutes and 32 seconds.
+
+Simulation time: 21 minutes and 28 seconds.

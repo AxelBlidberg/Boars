@@ -1,0 +1,402 @@
+{
+  "season_0": {
+    "flowerdata": [
+      {
+        "Lavender": 482,
+        "Bee balm": 516,
+        "Sunflower": 772,
+        "Coneflower": 1222,
+        "Blueberry": 1008
+      },
+      {
+        "Lavender": 482,
+        "Bee balm": 516,
+        "Sunflower": 772,
+        "Coneflower": 1222,
+        "Blueberry": 1008
+      },
+      {
+        "Lavender": 482,
+        "Bee balm": 516,
+        "Sunflower": 772,
+        "Coneflower": 1222,
+        "Blueberry": 1008
+      },
+      {
+        "Lavender": 482,
+        "Bee balm": 516,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "pollendata": [
+      {
+        "Lavender": 34050,
+        "Bee balm": 13280,
+        "Sunflower": 15440,
+        "Coneflower": 30640,
+        "Blueberry": 12645
+      },
+      {
+        "Lavender": 29545,
+        "Bee balm": 11771,
+        "Sunflower": 13682,
+        "Coneflower": 27295,
+        "Blueberry": 11445
+      },
+      {
+        "Lavender": 95849.0,
+        "Bee balm": 37856.0,
+        "Sunflower": 28391.0,
+        "Coneflower": 87076.0,
+        "Blueberry": 61192.0
+      },
+      {
+        "Lavender": 94297.0,
+        "Bee balm": 37391.0,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "beedata": [
+      {
+        "Small Bee": 10,
+        "Intermediate Bee": 10
+      },
+      {
+        "Small Bee": 10,
+        "Intermediate Bee": 7
+      },
+      {
+        "Small Bee": 6,
+        "Intermediate Bee": 0
+      },
+      {
+        "Small Bee": 2,
+        "Intermediate Bee": 0
+      }
+    ]
+  },
+  "season_1": {
+    "flowerdata": [
+      {
+        "Lavender": 941,
+        "Bee balm": 817,
+        "Sunflower": 1521,
+        "Coneflower": 1798,
+        "Blueberry": 1875
+      },
+      {
+        "Lavender": 941,
+        "Bee balm": 817,
+        "Sunflower": 1521,
+        "Coneflower": 1798,
+        "Blueberry": 1875
+      },
+      {
+        "Lavender": 941,
+        "Bee balm": 817,
+        "Sunflower": 1521,
+        "Coneflower": 1798,
+        "Blueberry": 1875
+      },
+      {
+        "Lavender": 941,
+        "Bee balm": 817,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "pollendata": [
+      {
+        "Lavender": 65730,
+        "Bee balm": 20500,
+        "Sunflower": 30420,
+        "Coneflower": 44610,
+        "Blueberry": 23240
+      },
+      {
+        "Lavender": 192092.0,
+        "Bee balm": 59951.0,
+        "Sunflower": 58454.0,
+        "Coneflower": 130656.0,
+        "Blueberry": 113974.0
+      },
+      {
+        "Lavender": 188653.0,
+        "Bee balm": 59187.0,
+        "Sunflower": 57493.0,
+        "Coneflower": 128516.0,
+        "Blueberry": 112082.0
+      },
+      {
+        "Lavender": 318214.0,
+        "Bee balm": 99784.0,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "beedata": [
+      {
+        "Small Bee": 9,
+        "Intermediate Bee": 7
+      },
+      {
+        "Small Bee": 8,
+        "Intermediate Bee": 4
+      },
+      {
+        "Small Bee": 5,
+        "Intermediate Bee": 0
+      },
+      {
+        "Small Bee": 2,
+        "Intermediate Bee": 0
+      }
+    ]
+  },
+  "season_2": {
+    "flowerdata": [
+      {
+        "Lavender": 840,
+        "Bee balm": 654,
+        "Sunflower": 1664,
+        "Coneflower": 1344,
+        "Blueberry": 2037
+      },
+      {
+        "Lavender": 840,
+        "Bee balm": 654,
+        "Sunflower": 1664,
+        "Coneflower": 1344,
+        "Blueberry": 2037
+      },
+      {
+        "Lavender": 840,
+        "Bee balm": 654,
+        "Sunflower": 1664,
+        "Coneflower": 1344,
+        "Blueberry": 2037
+      },
+      {
+        "Lavender": 840,
+        "Bee balm": 654,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "pollendata": [
+      {
+        "Lavender": 58860,
+        "Bee balm": 16050,
+        "Sunflower": 33280,
+        "Coneflower": 34150,
+        "Blueberry": 25330
+      },
+      {
+        "Lavender": 51926,
+        "Bee balm": 14189,
+        "Sunflower": 29535,
+        "Coneflower": 30503,
+        "Blueberry": 22839
+      },
+      {
+        "Lavender": 167496.0,
+        "Bee balm": 45686.0,
+        "Sunflower": 61522.0,
+        "Coneflower": 97209.0,
+        "Blueberry": 122798.0
+      },
+      {
+        "Lavender": 165948.0,
+        "Bee balm": 45146.0,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "beedata": [
+      {
+        "Small Bee": 15,
+        "Intermediate Bee": 13
+      },
+      {
+        "Small Bee": 12,
+        "Intermediate Bee": 9
+      },
+      {
+        "Small Bee": 6,
+        "Intermediate Bee": 0
+      },
+      {
+        "Small Bee": 1,
+        "Intermediate Bee": 0
+      }
+    ]
+  },
+  "season_3": {
+    "flowerdata": [
+      {
+        "Lavender": 1451,
+        "Bee balm": 1165,
+        "Sunflower": 3620,
+        "Coneflower": 2206,
+        "Blueberry": 4089
+      },
+      {
+        "Lavender": 1451,
+        "Bee balm": 1165,
+        "Sunflower": 3620,
+        "Coneflower": 2206,
+        "Blueberry": 4089
+      },
+      {
+        "Lavender": 1451,
+        "Bee balm": 1165,
+        "Sunflower": 3620,
+        "Coneflower": 2206,
+        "Blueberry": 4089
+      },
+      {
+        "Lavender": 1451,
+        "Bee balm": 1165,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "pollendata": [
+      {
+        "Lavender": 102390,
+        "Bee balm": 28770,
+        "Sunflower": 72400,
+        "Coneflower": 54850,
+        "Blueberry": 51790
+      },
+      {
+        "Lavender": 299479.0,
+        "Bee balm": 83964.0,
+        "Sunflower": 139831.0,
+        "Coneflower": 159901.0,
+        "Blueberry": 253958.0
+      },
+      {
+        "Lavender": 296519.0,
+        "Bee balm": 82774.0,
+        "Sunflower": 138559.0,
+        "Coneflower": 157855.0,
+        "Blueberry": 251385.0
+      },
+      {
+        "Lavender": 500170.0,
+        "Bee balm": 140157.0,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "beedata": [
+      {
+        "Small Bee": 9,
+        "Intermediate Bee": 13
+      },
+      {
+        "Small Bee": 8,
+        "Intermediate Bee": 11
+      },
+      {
+        "Small Bee": 3,
+        "Intermediate Bee": 0
+      },
+      {
+        "Small Bee": 0,
+        "Intermediate Bee": 0
+      }
+    ]
+  },
+  "season_4": {
+    "flowerdata": [
+      {
+        "Lavender": 1101,
+        "Bee balm": 999,
+        "Sunflower": 3683,
+        "Coneflower": 2060,
+        "Blueberry": 4297
+      },
+      {
+        "Lavender": 1101,
+        "Bee balm": 999,
+        "Sunflower": 3683,
+        "Coneflower": 2060,
+        "Blueberry": 4297
+      },
+      {
+        "Lavender": 1101,
+        "Bee balm": 999,
+        "Sunflower": 3683,
+        "Coneflower": 2060,
+        "Blueberry": 4297
+      },
+      {
+        "Lavender": 1101,
+        "Bee balm": 999,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "pollendata": [
+      {
+        "Lavender": 77140,
+        "Bee balm": 24770,
+        "Sunflower": 73660,
+        "Coneflower": 52490,
+        "Blueberry": 53490
+      },
+      {
+        "Lavender": 69380,
+        "Bee balm": 22441,
+        "Sunflower": 66566,
+        "Coneflower": 47457,
+        "Blueberry": 48842
+      },
+      {
+        "Lavender": 219930.0,
+        "Bee balm": 70648.0,
+        "Sunflower": 137706.0,
+        "Coneflower": 150472.0,
+        "Blueberry": 259746.0
+      },
+      {
+        "Lavender": 216603.0,
+        "Bee balm": 69367.0,
+        "Sunflower": 0,
+        "Coneflower": 0,
+        "Blueberry": 0
+      }
+    ],
+    "beedata": [
+      {
+        "Small Bee": 20,
+        "Intermediate Bee": 15
+      },
+      {
+        "Small Bee": 16,
+        "Intermediate Bee": 9
+      },
+      {
+        "Small Bee": 12,
+        "Intermediate Bee": 0
+      },
+      {
+        "Small Bee": 1,
+        "Intermediate Bee": 0
+      }
+    ]
+  }
+}

@@ -38,9 +38,9 @@ directory_path = 'data_json/'
 if not os.path.exists(directory_path):
     os.makedirs(directory_path)
 
-blueprint = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', beeDist = 'dummy', NumSeason=nSeasons, seasonLength=seasonLength)
-
-SaveSimulation('simulations.pkl', blueprint)
+#WARN: Only IF you want to create new simulation blueprint!!
+#blueprint = BeeSim(size=1000, num_bees=numStartingBees, num_flowers=numStartingFlowers, envType='countryside', beeDist = 'dummy', NumSeason=nSeasons, seasonLength=seasonLength)
+#SaveSimulation('simulations_2.pkl', blueprint)
 
 # Run simulations in a loop
 for i in range(0,num_simulations):
@@ -58,7 +58,8 @@ for i in range(0,num_simulations):
         
         data_dict[f"season_{j}"] = data_subdict
 
-    file_name = f'dataSimulation_{i}.json'
+    num = i + 10
+    file_name = f'dataSimulation_{num}.json'
 
     file_path = os.path.join(directory_path, file_name)
 
